@@ -39,6 +39,14 @@ export default function ExitIntentPopup({
     const url = new URL(window.location.href);
     if (url.searchParams.get('nopopup') === '1') return;
 
+    // ?testpopup=1 short-circuits both the dismissal cookie AND the
+    // mouse/scroll trigger so the popup fires immediately. Useful for
+    // visual QA and for sharing a preview link with the founder.
+    if (url.searchParams.get('testpopup') === '1') {
+      setOpen(true);
+      return;
+    }
+
     try {
       const last = Number(localStorage.getItem(STORAGE_KEY) || '0');
       if (last && Date.now() - last < SUPPRESS_DAYS * 86_400_000) return;

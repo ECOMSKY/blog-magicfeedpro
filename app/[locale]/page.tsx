@@ -5,6 +5,7 @@ import { locales } from '@/i18n/config';
 import { getPostsByLocale, getCategoriesByLocale } from '@/lib/content';
 import FeaturedCard from '@/components/FeaturedCard';
 import PostCard from '@/components/PostCard';
+import ExitIntentPopup from '@/components/ExitIntentPopup';
 // Newsletter card removed — the user opted to drop the sidebar capture in
 // favour of a cleaner two-column layout with just Categories on the side.
 import { localePath, absoluteUrl } from '@/lib/seo';
@@ -118,6 +119,10 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
           </div>
         </div>
       </div>
+      {/* Exit-intent popup — fires on mouse-leave-top (desktop) or
+          scroll-back (mobile) once the visitor has spent 25s+ on the
+          index, with a 7-day suppression after dismissal. */}
+      <ExitIntentPopup pathKind="category" />
     </>
   );
 }
