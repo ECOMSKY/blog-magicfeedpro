@@ -953,7 +953,10 @@ p { margin: 0 0 var(--s-8); }
 
 /* ----------------- Article body ----------------- */
 .article-hero {
-  padding: var(--s-16) 0 var(--s-12);
+  /* Top breathing room only — drop the bottom padding so the cover sits
+     flush against the article body. The cover image already has its own
+     border-radius + shadow as a visual stop. */
+  padding: var(--s-16) 0 0;
 }
 /* Hero grid — single column on mobile, 2-col at ≥1024px so the right
    side gets a vibrant audit-promo card. Left column is constrained so
@@ -1341,7 +1344,9 @@ p { margin: 0 0 var(--s-8); }
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--s-16);
-  padding: var(--s-12) 0 var(--s-24);
+  /* Tighter top — the hero cover already drops its bottom padding so
+     the body sits right under it instead of floating away. */
+  padding: var(--s-6) 0 var(--s-24);
 }
 @media (min-width: 1024px) {
   /* TOC moved to right column so the article title, hero image, and
@@ -1480,22 +1485,17 @@ p { margin: 0 0 var(--s-8); }
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  padding: var(--s-16) var(--s-14) var(--s-12);
+  /* Brand-color rail rendered via an inset box-shadow so it lives
+     INSIDE the border-radius (a ::before with absolute positioning
+     extended past the rounded corners). Combining one inset (rail) +
+     one drop shadow keeps the depth without losing the rounding. */
+  box-shadow:
+    inset 4px 0 0 0 var(--brand-500),
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 4px 12px -2px rgba(15, 23, 42, 0.05);
+  padding: var(--s-16) var(--s-14) var(--s-12) calc(var(--s-14) + 4px);
   margin: 0 0 var(--s-16);
-  box-shadow: var(--sh-2);
-}
-/* Brand accent rail — flush with the rounded corners so the rounding
-   stays visually correct (border-left: 4px on a rounded element creates
-   a flat-left/round-right corner mismatch). */
-.tldr::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 4px;
-  background: var(--brand-500);
-  border-radius: var(--r-lg) 0 0 var(--r-lg);
+  overflow: hidden;
 }
 .tldr__label {
   display: inline-flex;
@@ -1588,8 +1588,8 @@ p { margin: 0 0 var(--s-8); }
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
-  padding: var(--s-12) var(--s-16);
-  margin: var(--s-16) 0;
+  padding: var(--s-10) var(--s-14);
+  margin: var(--s-8) 0;
   box-shadow: var(--sh-2);
   transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
@@ -1598,9 +1598,10 @@ p { margin: 0 0 var(--s-8); }
   border-color: var(--brand-100);
 }
 .author-card--text {
-  /* Slightly more breathing room since there's no avatar tile holding
-     the eye on the left edge. */
-  padding: var(--s-14) var(--s-16);
+  /* Compact: tight padding so 3 short lines of copy don't sit in an
+     overinflated box. Bio gets its own small top margin below to keep
+     name/role grouped. */
+  padding: var(--s-8) var(--s-14);
 }
 .author-card__avatar {
   width: 56px;
