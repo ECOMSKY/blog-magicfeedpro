@@ -23,7 +23,8 @@ const STORAGE_KEY = 'mfp_exit_popup_dismissed_at';
 const SUPPRESS_DAYS = 7;
 const SCROLL_THRESHOLD = 0.1;
 const SCROLL_BACK_PX = 200;
-const DWELL_ARM_MS = 25_000;
+const DWELL_ARM_MS = 15_000;       // arm after 15s on page
+const HARD_FIRE_MS = 60_000;       // force-fire after 60s if engaged but no exit signal
 
 export default function ExitIntentPopup({
   pathKind,
@@ -76,17 +77,27 @@ export default function ExitIntentPopup({
       const frac = docH > 0 ? y / docH : 0;
       if (frac > maxScroll) maxScroll = frac;
       if (maxScroll > SCROLL_THRESHOLD) armed = true;
-      // Mobile scroll-back trigger
-      if ('ontouchstart' in window && armed && lastY - y > SCROLL_BACK_PX) {
+      // Scroll-back trigger now ALSO on desktop, not just mobile —
+      // blog readers rarely move the mouse to leave the viewport,
+      // they just scroll back up when they're done reading.
+      if (armed && lastY - y > SCROLL_BACK_PX) {
         fire();
       }
       lastY = y;
     };
     const dwellTimer = window.setTimeout(arm, DWELL_ARM_MS);
+    // Hard-fire fallback — if the visitor is still on the page after
+    // 60s but never produced a mouse-leave or scroll-back signal
+    // (common on mobile, common on long-form posts), show the offer
+    // anyway. Without this, ExitIntentPopup misses 80% of readers.
+    const hardFireTimer = window.setTimeout(() => {
+      if (!fired && maxScroll > SCROLL_THRESHOLD) fire();
+    }, HARD_FIRE_MS);
     document.addEventListener('mouseleave', onLeave);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.clearTimeout(dwellTimer);
+      window.clearTimeout(hardFireTimer);
       document.removeEventListener('mouseleave', onLeave);
       window.removeEventListener('scroll', onScroll);
     };
