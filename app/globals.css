@@ -1002,14 +1002,32 @@ p { margin: 0 0 var(--s-8); }
 
 /* ── SidebarAuditPromo — vibrant promo card in the hero right column ── */
 .sidebar-audit-promo {
+  /* Stretch to the full height of the hero column. The grid parent uses
+     align-items: stretch by default; we just need to make sure the
+     inner content distributes top → middle (anim) → bottom (CTA). */
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
+  align-self: stretch;
+  height: 100%;
+  min-height: 480px;
   background: linear-gradient(135deg, #F5F5FE 0%, #ECEBFE 60%, #FFFFFF 100%);
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
   padding: var(--space-24);
   box-shadow: 0 12px 28px -8px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+.sidebar-audit-promo__top { display: flex; flex-direction: column; }
+.sidebar-audit-promo__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: auto;
+}
+.sidebar-audit-promo .feed-anim {
+  margin: var(--space-16) 0;
+  flex: 1 1 auto;
 }
 .sidebar-audit-promo__eyebrow {
   display: inline-flex;
@@ -1074,6 +1092,197 @@ p { margin: 0 0 var(--s-8); }
   font-size: 12px;
   line-height: 1.4;
   margin: var(--space-12) 0 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   FeedScoringAnim — pure-CSS animated illustration of a product feed
+   being scored. Used in both <SidebarAuditPromo /> (vertical) and
+   <AuditBanner /> (compact slot on the right).
+
+   The whole thing is driven by @keyframes feedRowFill / feedRowAppear
+   below; no JS required.
+   ───────────────────────────────────────────────────────────────── */
+.feed-anim {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--r-lg);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6),
+              0 4px 16px -4px rgba(15, 23, 42, 0.06);
+  backdrop-filter: blur(6px);
+}
+.feed-anim__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed rgba(15, 23, 42, 0.08);
+}
+.feed-anim__header-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.15);
+}
+.feed-anim__header-dot--r { background: #FF6357; }
+.feed-anim__header-dot--a { background: #FFB955; }
+.feed-anim__header-dot--g { background: #45D27A; }
+.feed-anim__header-title {
+  margin-left: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--ink-500);
+}
+.feed-anim__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1 1 auto;
+  justify-content: center;
+}
+.feed-anim__row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: #FFFFFF;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  opacity: 0;
+  transform: translateY(4px);
+  animation: feedRowAppear 5s ease-in-out infinite;
+}
+.feed-anim__row-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #716FFF 0%, #0000EE 100%);
+  color: #FFFFFF;
+  font-family: var(--font-display, var(--font-body));
+  font-weight: 700;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+}
+.feed-anim__row-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.feed-anim__row-line {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+}
+.feed-anim__row-line--short { width: 60%; }
+.feed-anim__row-bar {
+  position: relative;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.06);
+  margin-top: 3px;
+  overflow: hidden;
+}
+.feed-anim__row-bar-fill {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 0;
+  border-radius: 999px;
+  animation: feedBarFill 5s ease-in-out infinite;
+}
+.feed-anim__row-bar-fill--low  { background: linear-gradient(90deg, #FB6262 0%, #FF8A65 100%); }
+.feed-anim__row-bar-fill--mid  { background: linear-gradient(90deg, #FFB955 0%, #FFD27A 100%); }
+.feed-anim__row-bar-fill--high { background: linear-gradient(90deg, #5DDB8E 0%, #29B36A 100%); }
+.feed-anim__row-score {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  font-family: var(--font-display, var(--font-body));
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+  animation: feedScoreReveal 5s ease-in-out infinite;
+}
+.feed-anim__row-score-num {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.feed-anim__row-score-unit {
+  font-size: 10px;
+  color: var(--ink-500);
+  font-weight: 600;
+}
+.feed-anim__row-score--low  .feed-anim__row-score-num { color: #D14848; }
+.feed-anim__row-score--mid  .feed-anim__row-score-num { color: #C68A2E; }
+.feed-anim__row-score--high .feed-anim__row-score-num { color: #1F9A53; }
+.feed-anim__footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(15, 23, 42, 0.08);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--ink-500);
+}
+.feed-anim__footer-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #45D27A;
+  box-shadow: 0 0 0 0 rgba(69, 210, 122, 0.7);
+  animation: feedPulse 1.6s ease-out infinite;
+}
+
+/* Banner variant — denser layout to fit the article-bottom slot. */
+.feed-anim--banner {
+  padding: 12px;
+}
+.feed-anim--banner .feed-anim__row-thumb { width: 24px; height: 24px; font-size: 10px; }
+.feed-anim--banner .feed-anim__row { padding: 6px 8px; grid-template-columns: 24px 1fr auto; }
+.feed-anim--banner .feed-anim__row-score-num { font-size: 16px; }
+
+@keyframes feedRowAppear {
+  0%, 8%   { opacity: 0; transform: translateY(4px); }
+  16%, 88% { opacity: 1; transform: translateY(0); }
+  100%     { opacity: 1; transform: translateY(0); }
+}
+@keyframes feedBarFill {
+  0%, 12%  { width: 0; }
+  45%, 88% { width: var(--target, 50%); }
+  100%     { width: var(--target, 50%); }
+}
+@keyframes feedScoreReveal {
+  0%, 40%  { opacity: 0; }
+  55%, 95% { opacity: 1; }
+  100%     { opacity: 1; }
+}
+@keyframes feedPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(69, 210, 122, 0.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(69, 210, 122, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(69, 210, 122, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .feed-anim__row,
+  .feed-anim__row-bar-fill,
+  .feed-anim__row-score,
+  .feed-anim__footer-pulse {
+    animation: none;
+  }
+  .feed-anim__row { opacity: 1; transform: none; }
+  .feed-anim__row-score { opacity: 1; }
+  .feed-anim__row-bar-fill { width: var(--target, 50%); }
 }
 /* Specificity override — prose anchors are tinted blue globally; force
    white text on the promo CTA so the gradient pill stays legible. */
@@ -1369,15 +1578,17 @@ p { margin: 0 0 var(--s-8); }
 }
 .product-cta a.btn { display: inline-flex; }
 
-/* ----------------- Author card ----------------- */
+/* ----------------- Author card -----------------
+   Text-only variant: no avatar image, content distributed across the
+   full width of the box so there's no dead horizontal space. */
 .author-card {
   display: flex;
-  align-items: flex-start; /* name aligns with TOP of the brand mark */
-  gap: var(--s-12);
+  flex-direction: column;
+  gap: var(--s-3);
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
-  padding: var(--s-14) var(--s-16);
+  padding: var(--s-12) var(--s-16);
   margin: var(--s-16) 0;
   box-shadow: var(--sh-2);
   transition: box-shadow 0.2s ease, border-color 0.2s ease;
@@ -1385,6 +1596,11 @@ p { margin: 0 0 var(--s-8); }
 .author-card:hover {
   box-shadow: var(--sh-4);
   border-color: var(--brand-100);
+}
+.author-card--text {
+  /* Slightly more breathing room since there's no avatar tile holding
+     the eye on the left edge. */
+  padding: var(--s-14) var(--s-16);
 }
 .author-card__avatar {
   width: 56px;
