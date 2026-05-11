@@ -7,6 +7,7 @@ import { getCategoriesByLocale, getCategory, getPostsByLocale } from '@/lib/cont
 import PostCard from '@/components/PostCard';
 import { absoluteUrl, breadcrumbJsonLd, localePath, SITE_NAME } from '@/lib/seo';
 import JsonLd from '@/components/JsonLd';
+import ExitIntentPopup from '@/components/ExitIntentPopup';
 import Link from 'next/link';
 
 type Params = { locale: string; slug: string };
@@ -102,6 +103,7 @@ export default async function CategoryPage({ params }: { params: Promise<Params>
           </>
         )}
       </div>
+      <ExitIntentPopup pathKind="category" />
     </>
   );
 }

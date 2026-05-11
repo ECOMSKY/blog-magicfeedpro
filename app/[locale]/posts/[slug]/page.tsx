@@ -25,6 +25,8 @@ import ShareRow from '@/components/ShareRow';
 import PostCard from '@/components/PostCard';
 import Giscus from '@/components/Giscus';
 import JsonLd from '@/components/JsonLd';
+import AuditBanner from '@/components/AuditBanner';
+import ExitIntentPopup from '@/components/ExitIntentPopup';
 
 type Params = { locale: string; slug: string };
 
@@ -199,7 +201,6 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
       </div>
 
       <div className="container article-body">
-        <TableOfContents body={post.body} label={t('tableOfContents')} />
         <article className="prose">
           {post.tldr && (
             <div className="tldr">
@@ -234,6 +235,11 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
             </div>
           </div>
 
+          {/* Article-end CTA — animated gradient banner pushing toward the
+              free audit on lp.magicfeedpro.com. Server-rendered so it ships
+              without a JS payload. */}
+          <AuditBanner locale={locale} slug={post.slug} />
+
           {related.length > 0 && (
             <>
               <h2 style={{ marginTop: 'var(--s-20)' }}>{t('relatedArticles')}</h2>
@@ -262,29 +268,48 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
           {post.comments && <Giscus />}
         </article>
+        <TableOfContents body={post.body} label={t('tableOfContents')} />
       </div>
+
+      {/* Exit-intent popup — fires when the user shows leaving signals
+          (cursor escapes top of viewport on desktop, scroll-back on mobile)
+          and the user is past 30% of the article. Suppressed for 7 days
+          after dismissal. */}
+      <ExitIntentPopup pathKind="article" />
     </>
   );
 }
 
-function DefaultCoverHero({ title }: { title: string }) {
-  const initials = title.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+/**
+ * Hero cover fallback for an article when `post.cover` is missing.
+ * Brand abstract (gradient + sparkles) — same motif as PostCard.DefaultCover
+ * so the placeholder reads as deliberate art rather than missing image.
+ */
+function DefaultCoverHero({ title: _title }: { title: string }) {
   return (
     <div
+      aria-hidden="true"
       style={{
         width: '100%',
         height: '100%',
-        background: 'var(--g-brand)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#fff',
-        fontWeight: 800,
-        fontSize: 88,
-        letterSpacing: -2
+        background: 'var(--g-hero, var(--g-brand))',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      {initials}
+      <div style={{ position: 'absolute', top: '-15%', right: '-8%', width: '55%', height: '60%', background: 'radial-gradient(circle, rgba(255,255,255,0.30) 0%, transparent 60%)' }} />
+      <div style={{ position: 'absolute', bottom: '-10%', left: '-5%', width: '50%', height: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 60%)' }} />
+      <svg
+        viewBox="0 0 1200 480"
+        preserveAspectRatio="xMidYMid slice"
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+      >
+        <g fill="#FFFFFF">
+          <path d="M260 140 L295 230 L390 260 L295 290 L260 380 L225 290 L130 260 L225 230 Z" opacity="0.85" />
+          <path d="M740 110 L760 170 L820 190 L760 210 L740 270 L720 210 L660 190 L720 170 Z" opacity="0.65" />
+          <path d="M900 340 L912 372 L944 384 L912 396 L900 428 L888 396 L856 384 L888 372 Z" opacity="0.5" />
+        </g>
+      </svg>
     </div>
   );
 }

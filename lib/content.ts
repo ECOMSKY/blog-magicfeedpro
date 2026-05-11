@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
-import type { Locale } from '@/i18n/config';
+import type { Locale } from "@/i18n/config";
+import { locales } from "@/i18n/config";
 
 export type Post = {
   slug: string;
@@ -145,10 +146,13 @@ export function getCategory(locale: Locale, slug: string): Category | undefined 
 }
 
 export function getTranslations(post: Post): Record<Locale, Post | undefined> {
+  // Use the canonical  tuple so adding/removing a locale in
+  // i18n/config.ts auto-propagates here. The previous hard-coded en/fr/es
+  // record broke the Type<Locale> contract whenever the locale list grew.
   const all = getAllPosts().filter((p) => p.translationKey === post.translationKey);
-  return {
-    en: all.find((p) => p.locale === 'en'),
-    fr: all.find((p) => p.locale === 'fr'),
-    es: all.find((p) => p.locale === 'es')
-  };
+  const out = {} as Record<Locale, Post | undefined>;
+  for (const loc of locales) {
+    out[loc] = all.find((p) => p.locale === loc);
+  }
+  return out;
 }
