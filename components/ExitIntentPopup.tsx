@@ -4,28 +4,25 @@ import { useEffect, useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 
 /**
- * Exit-intent popup — premium SaaS rewrite.
+ * Exit-intent popup — single-column offer card (DESIGN_AUDIT.md §1).
  *
- * Design choices (vs the first version):
- *   - No looping sparkle animation. Premium SaaS doesn't dance.
- *   - Single visual: a before/after micro-mockup of a Shopping ad title.
- *     It SHOWS the value rather than describing it.
- *   - One primary CTA + one ghost dismiss. No bullet lists, no
- *     decorative gradient bubbles.
- *   - 2-column on desktop, stack on mobile.
+ * Decisions:
+ *   - Single column, max-width 460px. The exit moment is a binary
+ *     decision — strip everything that isn't the offer + the action.
+ *   - Charcoal CTA (matches the marketing-site primary button).
+ *   - One close (×) + one decline link. No third dismiss surface.
+ *   - No before/after demo — that re-explanation belongs on the LP.
+ *   - Factual microcopy under the CTA (~60 s, no signup, no card).
+ *     No fabricated dollar figure, no unverifiable "800+" social proof.
  *
  * Trigger: cursor leaves the top of the viewport (desktop), or
- * scroll-back after 30% page depth (mobile). 7-day dismissal cookie.
+ * scroll-back after 10% page depth (mobile), or 25 s dwell. 7-day
+ * dismissal cookie.
  */
 const STORAGE_KEY = 'mfp_exit_popup_dismissed_at';
 const SUPPRESS_DAYS = 7;
-// Relaxed from 0.3 → 0.10 (10% page depth) so the popup actually has a
-// chance to fire on shorter articles. Below 10% the user clearly bounced.
 const SCROLL_THRESHOLD = 0.1;
 const SCROLL_BACK_PX = 200;
-// Fallback: if the user spends > N ms on the page AND scrolled at all,
-// the popup arms even without a mouseleave event (covers users who
-// reach the back button without crossing the top edge).
 const DWELL_ARM_MS = 25_000;
 
 export default function ExitIntentPopup({
@@ -77,8 +74,6 @@ export default function ExitIntentPopup({
       }
       lastY = y;
     };
-    // Time-based arming: if the user dwells long enough, treat them as
-    // engaged and arm the popup even without scroll.
     const dwellTimer = window.setTimeout(arm, DWELL_ARM_MS);
     document.addEventListener('mouseleave', onLeave);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -108,52 +103,20 @@ export default function ExitIntentPopup({
       <div className="exitpop">
         <button type="button" className="exitpop__close" aria-label={t('close')} onClick={dismiss}>×</button>
 
-        <div className="exitpop__grid">
-          <div className="exitpop__copy">
-            <span className="exitpop__pill">
-              <span className="exitpop__pill-dot" /> {t('pill')}
-            </span>
-            <h2 id="exitpop-title" className="exitpop__title">{t('title')}</h2>
-            <p className="exitpop__lead">{t('lead')}</p>
-            <a href={auditUrl} className="exitpop__cta" target="_blank" rel="noopener" onClick={dismiss}>
-              {t('cta')}
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 8 }}>
-                <path d="M5 12h14M13 5l7 7-7 7" />
-              </svg>
-            </a>
-            <button type="button" className="exitpop__skip" onClick={dismiss}>{t('decline')}</button>
-            <p className="exitpop__trust">{t('trust')}</p>
-          </div>
-
-          <div className="exitpop__demo" aria-hidden="true">
-            {/* Before/after micro-mockup — shows the value (a Google
-                Shopping listing rewrite) instead of an abstract sparkle. */}
-            <div className="exitpop__demo-label exitpop__demo-label--before">{t('before')}</div>
-            <div className="exitpop__card exitpop__card--before">
-              <div className="exitpop__card-img" />
-              <div className="exitpop__card-body">
-                <div className="exitpop__card-title exitpop__card-title--before">Masque running</div>
-                <div className="exitpop__card-price">29,90 €</div>
-              </div>
-            </div>
-            <div className="exitpop__demo-arrow" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14M5 12l7 7 7-7" />
-              </svg>
-            </div>
-            <div className="exitpop__demo-label exitpop__demo-label--after">{t('after')}</div>
-            <div className="exitpop__card exitpop__card--after">
-              <div className="exitpop__card-img" />
-              <div className="exitpop__card-body">
-                <div className="exitpop__card-title">R-PUR Masque Running Anti-Pollution Filtre Nano-light Cycliste</div>
-                <div className="exitpop__card-meta">
-                  <span className="exitpop__card-price">29,90 €</span>
-                  <span className="exitpop__card-stars">★★★★★ <em>(312)</em></span>
-                </div>
-              </div>
-              <div className="exitpop__card-badge">+ {t('ctrBoost')}</div>
-            </div>
-          </div>
+        <div className="exitpop__copy">
+          <span className="exitpop__pill">
+            <span className="exitpop__pill-dot" /> {t('pill')}
+          </span>
+          <h2 id="exitpop-title" className="exitpop__title">{t('title')}</h2>
+          <p className="exitpop__lead">{t('lead')}</p>
+          <a href={auditUrl} className="exitpop__cta" target="_blank" rel="noopener" onClick={dismiss}>
+            {t('cta')}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 8 }}>
+              <path d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
+          </a>
+          <p className="exitpop__meta">{t('meta')}</p>
+          <button type="button" className="exitpop__skip" onClick={dismiss}>{t('decline')}</button>
         </div>
       </div>
     </div>

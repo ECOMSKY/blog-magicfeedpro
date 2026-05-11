@@ -27,6 +27,7 @@ import PostCard from '@/components/PostCard';
 import Giscus from '@/components/Giscus';
 import JsonLd from '@/components/JsonLd';
 import AuditBanner from '@/components/AuditBanner';
+import SidebarAuditPromo from '@/components/SidebarAuditPromo';
 import ExitIntentPopup from '@/components/ExitIntentPopup';
 
 type Params = { locale: string; slug: string };
@@ -168,45 +169,52 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
       {faqLd && <JsonLd data={faqLd} />}
 
       <div className="container article-hero">
-        <div className="breadcrumbs">
-          <Link href={localePath(locale, '/')}>{SITE_NAME}</Link>
-          <span className="breadcrumbs__sep">/</span>
-          <Link href={localePath(locale, `/category/${post.category}`)}>
-            {category?.name || post.category.replace(/-/g, ' ')}
-          </Link>
-          <span className="breadcrumbs__sep">/</span>
-          <span aria-current="page">{post.title}</span>
-        </div>
-        <h1 style={{ maxWidth: 880 }}>{post.title}</h1>
-        <div className="article-meta">
-          <div className="article-meta__author">
-            <span className="article-meta__avatar" aria-hidden="true">
-              {isMfpAuthor ? (
-                <Image src="/favicon.png" alt="" width={56} height={56} sizes="28px" />
-              ) : (
-                initials
-              )}
-            </span>
-            <span>{t('by')} {author.name}</span>
-          </div>
-          <span>·</span>
-          <time dateTime={post.date}>{t('publishedOn')} {formattedDate}</time>
-          {updatedDate && (
-            <>
+        <div className="article-hero__grid">
+          <div className="article-hero__main">
+            <div className="breadcrumbs">
+              <Link href={localePath(locale, '/')}>{SITE_NAME}</Link>
+              <span className="breadcrumbs__sep">/</span>
+              <Link href={localePath(locale, `/category/${post.category}`)}>
+                {category?.name || post.category.replace(/-/g, ' ')}
+              </Link>
+              <span className="breadcrumbs__sep">/</span>
+              <span aria-current="page">{post.title}</span>
+            </div>
+            <h1>{post.title}</h1>
+            <div className="article-meta">
+              <div className="article-meta__author">
+                <span className="article-meta__avatar" aria-hidden="true">
+                  {isMfpAuthor ? (
+                    <Image src="/favicon.png" alt="" width={56} height={56} sizes="28px" />
+                  ) : (
+                    initials
+                  )}
+                </span>
+                <span>{t('by')} {author.name}</span>
+              </div>
               <span>·</span>
-              <span>{t('updatedOn')} {updatedDate}</span>
-            </>
-          )}
-          <span>·</span>
-          <span>{post.readingMinutes} {t('readTime')}</span>
-        </div>
-        <div className="article-hero__cover">
-          {post.cover ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={post.cover} alt={post.coverAlt || post.title} />
-          ) : (
-            <DefaultCoverHero title={post.title} />
-          )}
+              <time dateTime={post.date}>{t('publishedOn')} {formattedDate}</time>
+              {updatedDate && (
+                <>
+                  <span>·</span>
+                  <span>{t('updatedOn')} {updatedDate}</span>
+                </>
+              )}
+              <span>·</span>
+              <span>{post.readingMinutes} {t('readTime')}</span>
+            </div>
+            <div className="article-hero__cover">
+              {post.cover ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={post.cover} alt={post.coverAlt || post.title} />
+              ) : (
+                <DefaultCoverHero title={post.title} />
+              )}
+            </div>
+          </div>
+          <div className="article-hero__aside">
+            <SidebarAuditPromo locale={locale} />
+          </div>
         </div>
       </div>
 
