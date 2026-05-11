@@ -2,29 +2,23 @@ import { getTranslations } from 'next-intl/server';
 import type { Locale } from '@/i18n/config';
 
 /**
- * Article-bottom audit CTA — v5 (Apple/Notion/Stripe-grade redesign).
+ * Article-bottom audit CTA — vibrant gradient variant.
  *
- * Design references:
- *  - Stripe homepage CTA blocks: light surface, single primary action,
- *    a small product fragment that LOOKS like the product (not a fake
- *    browser chrome).
- *  - Notion "Try Notion" footer: generous whitespace, restrained type,
- *    one trust microcopy line, never two.
- *  - Apple product detail CTA: large quiet headline, one button,
- *    no gradient backgrounds in body content.
+ * Founder direction: "pour les banners sur les articles faut que ce soit
+ * un peu plus colorés avec de beaux boutons avec dégradés". So this
+ * banner deliberately overrides the audit's charcoal recommendation —
+ * the exit popup keeps charcoal (binary decision moment), the in-article
+ * banner gets the bolder treatment to interrupt the read.
  *
  * Decisions:
- *  - Light surface (#FAFAFB) bordered with --line, not charcoal. The
- *    article above is already light; a dark slab fights the page.
- *  - Solid Electric Blue primary CTA on light: highest brand recall,
- *    AAA contrast, matches Stripe "Start now" treatment.
- *  - The right side is NOT a fake Google Shopping chrome anymore. It
- *    is a single, real-looking product-feed ROW (the actual unit of
- *    the product), with two stacked indicator lines for title quality
- *    and CTR — both annotated. No browser frame, no traffic lights.
- *  - No looping animations. No glow blobs. No gradient body bg.
- *  - Trust stats moved to a single short line beneath the CTA: one
- *    sentence, not a 3-pill row.
+ *  - Soft brand gradient card surface (white→brand-50→white), reads as
+ *    "the next thing" without screaming.
+ *  - Gradient CTA pill (Electric Blue → deep blue), lifts on hover.
+ *  - Score-comparison visual kept but tightened: first-letter tiles
+ *    instead of generic-mask SVG, danger-tinted "before" 42/100,
+ *    brand-tinted "after" 94/100, only 2 attribute chips not 4.
+ *  - Single microcopy line under the CTA (was 2 — second was a broken
+ *    i18n key).
  */
 export default async function AuditBanner({ locale, slug }: { locale: Locale; slug: string }) {
   const t = await getTranslations({ locale, namespace: 'auditBanner' });
@@ -60,12 +54,11 @@ export default async function AuditBanner({ locale, slug }: { locale: Locale; sl
             </a>
             <span className="audit-cta__meta">{t('metaLine')}</span>
           </div>
-
-          <p className="audit-cta__trust">{t('trustLine')}</p>
         </div>
 
-        {/* ── Right: a real-looking feed row, not a browser mockup ─── */}
+        {/* ── Right: feed-row score comparison ─────────────────────── */}
         <figure className="audit-cta__product" aria-hidden="true">
+          <div className="audit-cta__score-label">{t('scoreLabel')}</div>
           <FeedRow state="before" />
           <FeedRow state="after" />
         </figure>
@@ -75,26 +68,20 @@ export default async function AuditBanner({ locale, slug }: { locale: Locale; sl
 }
 
 /* ────────────────────────────────────────────────────────────────────
-   FeedRow — a single product-feed row, the actual unit of the product
-   we sell. Two states stacked vertically:
-     - "before": dim title, no attributes, gray score
-     - "after":  full title, GTIN + attributes pill, green score
-   This is NOT a fake search result; it is a fragment of the feed-studio
-   table — i.e., the real product. Stripe-style "show, don't decorate".
+   FeedRow — one product-feed row, two states stacked vertically.
+   Thumb is a CSS first-letter tile (brand "R") — cleaner than the old
+   generic-mask SVG, intentionally low-fi so it reads as a credibility
+   prop, not a polished mockup.
    ───────────────────────────────────────────────────────────────── */
 function FeedRow({ state }: { state: 'before' | 'after' }) {
   const isAfter = state === 'after';
   return (
     <div className={`audit-cta__row audit-cta__row--${state}`}>
-      <div className="audit-cta__row-thumb" aria-hidden="true">
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-          <rect width="40" height="40" rx="6" fill={isAfter ? '#EEEEFE' : '#EFEFF1'} />
-          <path
-            d="M9 19 C9 14, 13 11, 20 11 C27 11, 31 14, 31 19 L31 23 C31 26, 27 29, 20 29 C13 29, 9 26, 9 23 Z"
-            fill={isAfter ? '#716FFF' : '#C8C8CC'}
-          />
-          <path d="M13 21 L27 21" stroke="rgba(255,255,255,0.7)" strokeWidth="1" strokeLinecap="round" />
-        </svg>
+      <div
+        className={`audit-cta__row-thumb-letter audit-cta__row-thumb-letter--${state}`}
+        aria-hidden="true"
+      >
+        R
       </div>
 
       <div className="audit-cta__row-body">
@@ -109,9 +96,7 @@ function FeedRow({ state }: { state: 'before' | 'after' }) {
           {isAfter ? (
             <>
               <span className="audit-cta__chip">GTIN</span>
-              <span className="audit-cta__chip">Brand</span>
-              <span className="audit-cta__chip">Color</span>
-              <span className="audit-cta__chip">Size</span>
+              <span className="audit-cta__chip">Attributes</span>
             </>
           ) : (
             <span className="audit-cta__chip audit-cta__chip--missing">— missing —</span>
