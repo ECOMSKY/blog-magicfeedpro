@@ -1,0 +1,46 @@
+name: Auto-generate blog covers
+
+# Trigger when MDX content or the cover script changes on main.
+# Generates missing covers, commits + pushes back via the bot token.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'content/posts/**/*.mdx'
+      - 'scripts/generate-blog-cover.py'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BLOG_AUTOCOMMIT_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install --quiet openai anthropic Pillow
+
+      - name: Generate covers for new articles
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python3 scripts/generate-blog-cover.py
+
+      - name: Commit and push if changed
+        run: |
+          if [ -n "$(git status --porcelain public/blog-covers/ content/posts/)" ]; then
+            git config user.name  'magicfeedpro-bot'
+            git config user.email 'bot@magicfeedpro.com'
+            git add public/blog-covers/ content/posts/
+            git commit -m 'chore(blog): auto-generated covers for new articles [skip ci]'
+            git push
+          else
+            echo 'No new covers to generate.'
+          fi
