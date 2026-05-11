@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import type { Locale } from '@/i18n/config';
@@ -156,6 +157,9 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
     ? new Date(post.updated).toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' })
     : null;
   const initials = author.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+  // The canonical MFP author has no human face — initials read as a
+  // placeholder, the brand mark reinforces identity on every article.
+  const isMfpAuthor = author.slug === 'mfp-team' || /magicfeedpro/i.test(author.name);
 
   return (
     <>
@@ -176,7 +180,13 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
         <h1 style={{ maxWidth: 880 }}>{post.title}</h1>
         <div className="article-meta">
           <div className="article-meta__author">
-            <span className="article-meta__avatar">{initials}</span>
+            <span className="article-meta__avatar" aria-hidden="true">
+              {isMfpAuthor ? (
+                <Image src="/favicon.png" alt="" width={56} height={56} sizes="28px" />
+              ) : (
+                initials
+              )}
+            </span>
             <span>{t('by')} {author.name}</span>
           </div>
           <span>·</span>
@@ -227,11 +237,17 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           <ShareRow url={url} title={post.title} />
 
           <div className="author-card">
-            <span className="author-card__avatar">{initials}</span>
-            <div>
+            <span className="author-card__avatar" aria-hidden="true">
+              {isMfpAuthor ? (
+                <Image src="/favicon.png" alt="" width={128} height={128} sizes="56px" />
+              ) : (
+                initials
+              )}
+            </span>
+            <div className="author-card__body">
               <h3 className="author-card__name">{author.name}</h3>
               <div className="author-card__role">{author.role}</div>
-              <p className="author-card__bio">{author.bio}</p>
+              {author.bio && <p className="author-card__bio">{author.bio}</p>}
             </div>
           </div>
 
