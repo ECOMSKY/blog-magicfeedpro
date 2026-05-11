@@ -70,14 +70,35 @@ npm start
 
 ## How to deploy
 
+### Status (today)
+
+- **GitHub**: https://github.com/ECOMSKY/blog-magicfeedpro
+- **Vercel staging**: https://blog-magicfeedpro.vercel.app
+- **Production domain**: `blog.magicfeedpro.com` (CNAME setup required — see below)
+
 ### Initial deployment to Vercel
 
-1. Push this repo to GitHub (`ECOMSKY/blog-magicfeedpro`).
-2. Visit https://vercel.com/new and import the repo. Framework is auto-detected as Next.js.
-3. Set environment variables from `.env.example`. The minimum for a useful production build:
-   - `NEXT_PUBLIC_SITE_URL=https://blog.magicfeedpro.com`
-   - `NEXT_PUBLIC_PLAUSIBLE_DOMAIN=blog.magicfeedpro.com`
-4. Click Deploy. The build runs `npm run build`.
+The Vercel project is already linked. To redeploy:
+
+```bash
+git push origin main          # triggers automatic production deploy
+# or, from a working tree:
+vercel deploy --prod          # manual prod deploy
+vercel deploy                 # preview deploy (per branch / PR)
+```
+
+Environment variables already configured in Vercel:
+
+- `NEXT_PUBLIC_SITE_URL=https://blog.magicfeedpro.com`
+- `NEXT_PUBLIC_PLAUSIBLE_DOMAIN=blog.magicfeedpro.com`
+
+To add Resend / Giscus / additional locale env vars:
+
+```bash
+vercel env add RESEND_API_KEY production
+vercel env add RESEND_AUDIENCE_ID production
+# (paste value when prompted)
+```
 
 ### Custom domain (CNAME)
 
