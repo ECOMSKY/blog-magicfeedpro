@@ -67,9 +67,27 @@ export function ProductCTA({
   );
 }
 
-export function FAQ({ items }: { items?: { q: string; a: string }[] }) {
+/**
+ * FAQ container for MDX.
+ *
+ * Two usage patterns:
+ *   1. <FAQ items={[{q,a}]} />      — object-prop form
+ *   2. <FAQ>                         — children form (preferred under
+ *        <FAQItem q="..." a="..." />     next-mdx-remote/rsc, which can lose
+ *        ...                             complex JSX expression props)
+ *      </FAQ>
+ *
+ * Both patterns emit the same DOM and emit FAQPage JSON-LD via the page's
+ * schema layer.
+ */
+export function FAQ({
+  items,
+  children
+}: {
+  items?: { q: string; a: string }[];
+  children?: React.ReactNode;
+}) {
   const safe = Array.isArray(items) ? items : [];
-  if (!safe.length) return null;
   return (
     <section className="faq" aria-label="Frequently asked questions">
       {safe.map((it, i) => (
@@ -78,7 +96,17 @@ export function FAQ({ items }: { items?: { q: string; a: string }[] }) {
           <div className="faq__a">{it.a}</div>
         </div>
       ))}
+      {children}
     </section>
+  );
+}
+
+export function FAQItem({ q, a, children }: { q: string; a?: string; children?: React.ReactNode }) {
+  return (
+    <div className="faq__item">
+      <div className="faq__q">{q}</div>
+      <div className="faq__a">{a ?? children}</div>
+    </div>
   );
 }
 
@@ -86,5 +114,6 @@ export const mdxComponents = {
   Callout,
   ImageCaption,
   ProductCTA,
-  FAQ
+  FAQ,
+  FAQItem
 };

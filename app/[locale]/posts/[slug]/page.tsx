@@ -124,6 +124,27 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
     { name: post.title, url }
   ]);
 
+  // Extract FAQ items from raw MDX <FAQItem q="..." a="..." /> for FAQPage JSON-LD.
+  // Self-contained regex; tolerates single/double quotes and escaped chars in attrs.
+  const faqRegex = /<FAQItem\s+q=(?:"([^"]+)"|'([^']+)')\s+a=(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)')\s*\/?>/g;
+  const faqItems: { q: string; a: string }[] = [];
+  for (const m of post.body.matchAll(faqRegex)) {
+    const q = (m[1] || m[2] || '').trim();
+    const a = (m[3] || m[4] || '').replace(/\\"/g, '"').replace(/\\\\/g, '\\').trim();
+    if (q && a) faqItems.push({ q, a });
+  }
+  const faqLd = faqItems.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((it) => ({
+          '@type': 'Question',
+          name: it.q,
+          acceptedAnswer: { '@type': 'Answer', text: it.a }
+        }))
+      }
+    : null;
+
   const formattedDate = new Date(post.date).toLocaleDateString(locale, {
     year: 'numeric',
     month: 'long',
@@ -138,6 +159,7 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
     <>
       <JsonLd data={blogPostingLd} />
       <JsonLd data={breadcrumb} />
+      {faqLd && <JsonLd data={faqLd} />}
 
       <div className="container article-hero">
         <div className="breadcrumbs">

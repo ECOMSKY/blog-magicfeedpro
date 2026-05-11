@@ -172,24 +172,12 @@ A 15-minute weekly audit:
 
 ## FAQ
 
-<FAQ items={[
-  {
-    q: "How long do feed changes take to show up on Google Shopping?",
-    a: "Feed fetch happens at the schedule you set (or on push). After fetch, Merchant Center reprocesses within 1–24 hours. The Shopping ranking itself usually reflects the change within 24–72 hours; impression volume re-stabilises in 5–10 days as Google relearns the relevance signal."
-  },
-  {
-    q: "Is it safe to use AI to rewrite my entire feed?",
-    a: "Yes, if the AI is category-aware, locks identifiers (brand, GTIN, model, color, size), and gives you a diff to review before publication. Generic ChatGPT prompts applied catalog-wide are not safe — they will hallucinate spec values and drop attributes."
-  },
-  {
-    q: "Should I use Performance Max or Standard Shopping?",
-    a: "Performance Max is the default in 2026 and the only path for most accounts. The exception is very large catalogs (10K+ SKUs) where Standard Shopping still gives you tighter query-level control. Most stores under 5K SKUs should run PMax with a strong feed and a tight asset group structure."
-  },
-  {
-    q: "How important is GTIN really?",
-    a: "Critical for branded products, optional but encouraged for private label. Branded products without GTIN systematically lose impression share to competitors who do supply it — Google uses GTIN as a strong de-duplication and ranking signal."
-  }
-]} />
+<FAQ>
+  <FAQItem q="How long do feed changes take to show up on Google Shopping?" a="Feed fetch happens at the schedule you set (or on push). After fetch, Merchant Center reprocesses within 1–24 hours. The Shopping ranking itself usually reflects the change within 24–72 hours; impression volume re-stabilises in 5–10 days as Google relearns the relevance signal." />
+  <FAQItem q="Is it safe to use AI to rewrite my entire feed?" a="Yes, if the AI is category-aware, locks identifiers (brand, GTIN, model, color, size), and gives you a diff to review before publication. Generic ChatGPT prompts applied catalog-wide are not safe — they will hallucinate spec values and drop attributes." />
+  <FAQItem q="Should I use Performance Max or Standard Shopping?" a="Performance Max is the default in 2026 and the only path for most accounts. The exception is very large catalogs (10K+ SKUs) where Standard Shopping still gives you tighter query-level control. Most stores under 5K SKUs should run PMax with a strong feed and a tight asset group structure." />
+  <FAQItem q="How important is GTIN really?" a="Critical for branded products, optional but encouraged for private label. Branded products without GTIN systematically lose impression share to competitors who do supply it — Google uses GTIN as a strong de-duplication and ranking signal." />
+</FAQ>
 
 ## What to do next
 

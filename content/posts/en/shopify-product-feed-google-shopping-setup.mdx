@@ -140,24 +140,12 @@ The Google channel auto-syncs roughly every 4 hours (Shopify side) and Merchant 
 
 ## Common Shopify-specific gotchas
 
-<FAQ items={[
-  {
-    q: "Why are some of my variants disapproved as duplicates?",
-    a: "Most often because they share the same `gtin` (Shopify lets you copy variants without changing barcode). Google enforces GTIN uniqueness — each variant needs its own. Either fix the barcodes or remove the GTIN on the duplicate variants entirely."
-  },
-  {
-    q: "Why does my product description appear truncated on Google?",
-    a: "Shopify product descriptions are often saved with HTML formatting. The Google channel strips most tags but leaves some artifacts. For best results, write a clean plain-text description in a metafield (google.description_override) and map it instead."
-  },
-  {
-    q: "Can I use Shopify Markets for multi-country Shopping?",
-    a: "Yes, and it's the cleanest way. Each Shopify Market becomes a separate feed in Merchant Center with localised pricing, currency, and tax. Combine with hreflang on PDPs and you have a clean multi-country setup."
-  },
-  {
-    q: "Should I use the Shopify channel or a third-party feed app?",
-    a: "Start with the Shopify channel because it's free and reliable for the connection itself. Once you're live, add a third-party feed app or a feed-optimisation tool on top — it's not either/or. The channel handles the plumbing; the feed app handles the optimisation."
-  }
-]} />
+<FAQ>
+  <FAQItem q="Why are some of my variants disapproved as duplicates?" a="Most often because they share the same `gtin` (Shopify lets you copy variants without changing barcode). Google enforces GTIN uniqueness — each variant needs its own. Either fix the barcodes or remove the GTIN on the duplicate variants entirely." />
+  <FAQItem q="Why does my product description appear truncated on Google?" a="Shopify product descriptions are often saved with HTML formatting. The Google channel strips most tags but leaves some artifacts. For best results, write a clean plain-text description in a metafield (google.description_override) and map it instead." />
+  <FAQItem q="Can I use Shopify Markets for multi-country Shopping?" a="Yes, and it's the cleanest way. Each Shopify Market becomes a separate feed in Merchant Center with localised pricing, currency, and tax. Combine with hreflang on PDPs and you have a clean multi-country setup." />
+  <FAQItem q="Should I use the Shopify channel or a third-party feed app?" a="Start with the Shopify channel because it's free and reliable for the connection itself. Once you're live, add a third-party feed app or a feed-optimisation tool on top — it's not either/or. The channel handles the plumbing; the feed app handles the optimisation." />
+</FAQ>
 
 ## What to do this week
 
