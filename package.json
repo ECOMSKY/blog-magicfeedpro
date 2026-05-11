@@ -1,0 +1,36 @@
+{
+  "name": "blog-magicfeedpro",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && pagefind --site .next/server/app && pagefind --site out 2>/dev/null || true",
+    "build:basic": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postbuild": "node scripts/postbuild.mjs"
+  },
+  "dependencies": {
+    "@next/mdx": "^15.0.3",
+    "gray-matter": "^4.0.3",
+    "next": "^15.0.3",
+    "next-intl": "^3.26.0",
+    "next-mdx-remote": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "reading-time": "^1.5.0",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-pretty-code": "^0.14.0",
+    "rehype-slug": "^6.0.0",
+    "remark-gfm": "^4.0.0",
+    "resend": "^4.0.1",
+    "shiki": "^1.22.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "pagefind": "^1.3.0",
+    "typescript": "^5.6.3"
+  }
+}

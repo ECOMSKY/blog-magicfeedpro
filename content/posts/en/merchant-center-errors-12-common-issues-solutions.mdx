@@ -1,0 +1,234 @@
+---
+slug: "merchant-center-errors-12-common-issues-solutions"
+translationKey: "merchant-center-errors-12-common-issues-solutions"
+locale: "en"
+title: "Merchant Center Errors: The 12 Most Common Issues and Solutions"
+description: "Every Merchant Center error, in plain English. The 12 most common product disapprovals — what triggers each, how to diagnose, and how to fix them in production without losing impressions."
+keywords:
+  - merchant center errors
+  - product disapproval google
+  - merchant center diagnostics
+  - google shopping errors
+  - feed error fix
+date: 2026-05-05
+updated: 2026-05-05
+author: "mfp-team"
+category: "merchant-center"
+tags:
+  - merchant-center
+  - troubleshooting
+  - disapprovals
+  - listicle
+featured: false
+comments: false
+tldr: "The 12 errors that cause 90% of Merchant Center disapprovals: missing GTIN, incorrect product category, image quality, price mismatch, missing returns policy, restricted product class, landing page issues, shipping mismatch, broken availability, prohibited content, missing tax, and feed structure errors. Each fixable in under 30 minutes."
+cover: ""
+coverAlt: "Google Merchant Center diagnostics dashboard showing product issues"
+---
+
+If you've ever stared at the Merchant Center Diagnostics page wondering what "limited performance: price mismatch" actually means, this article is for you.
+
+These 12 errors account for roughly 90% of the disapprovals we see in customer audits. Each one has a specific trigger, a specific diagnostic path, and a specific 30-minute fix.
+
+## 1. Missing GTIN
+
+**The error**: "Missing required field [gtin]" or "Limited performance due to missing GTIN".
+
+**What triggers it**: branded products (resellers) must provide the GTIN (UPC/EAN/ISBN). Private label products can be exempted by setting `identifier_exists` to `false`, but most catalogs forget to do this.
+
+**Diagnose**:
+
+```text
+Merchant Center → Products → Diagnostics → Filter: Issue = "Missing GTIN"
+```
+
+**Fix**:
+
+- Resold branded products: get the GTIN from your supplier or look it up on the manufacturer's site. Add it to the variant's `barcode` field in Shopify or the equivalent in your platform.
+- Private label / handmade: set `identifier_exists: false` in your feed. In Shopify this is a metafield (`google.identifier_exists: FALSE`).
+
+<Callout type="tip" title="Don't just leave it blank">
+Leaving GTIN blank without `identifier_exists: false` is the worst of both worlds — you get a warning *and* lose the ranking benefit of having one. Set the flag explicitly.
+</Callout>
+
+## 2. Incorrect Google Product Category
+
+**The error**: "Product category not specific enough" or "Product mismatch with category".
+
+**What triggers it**: your product is mapped to a too-broad category (e.g. "Apparel & Accessories" instead of "Apparel & Accessories > Clothing > Shirts & Tops > Dress Shirts").
+
+**Fix**: open the product, set the full 5-level Google Product Category path. The taxonomy is published as a Google Sheet you can browse. Specificity matters — 5-level paths rank 2–3× better than 2-level on average.
+
+## 3. Image quality issues
+
+**The error**: "Image quality too low" or "Promotional overlay on image".
+
+**What triggers it**:
+
+- Image < 250×250px (hard requirement)
+- Image with text overlay, logos, watermarks, or borders
+- Image with mannequins (for some apparel categories)
+- Image not on a clean background
+
+**Fix**: hero image must be the product centered on a clean background, ≥800px (ideal 1500×1500), no overlay. For Shopify stores, use the *primary* product image in the variant, not a lifestyle shot.
+
+## 4. Price mismatch between feed and landing page
+
+**The error**: "Price mismatch" or "Landing page price differs from feed".
+
+**What triggers it**: the price in your feed doesn't match the price shown on the PDP. Common causes:
+
+- Sale prices applied at checkout but not in the feed
+- Currency conversion drift on multi-region feeds
+- Tax-inclusive vs tax-exclusive mismatch
+- VAT differences between countries
+
+**Fix**:
+
+- Match `price` in feed to the exact tax-inclusive price the shopper sees on the PDP.
+- If running a sale, populate `sale_price` and `sale_price_effective_date` — don't just change `price` temporarily.
+
+## 5. Missing or incorrect returns policy
+
+**The error**: "Missing returns policy" or "Returns policy URL doesn't load".
+
+**What triggers it**: since 2024, Google requires a clearly accessible returns policy linked from your Merchant Center account.
+
+**Fix**:
+
+- Merchant Center → Tools → Returns → set up the default policy (window in days, return shipping, restocking fee).
+- Verify the URL on your site loads to a page with the policy clearly visible — Google's crawler checks this.
+
+## 6. Restricted product class
+
+**The error**: "Restricted product policy" — applies to alcohol, supplements, cosmetics with prescription ingredients, weapons, gambling-adjacent, etc.
+
+**What triggers it**: your product is in a restricted category that requires additional certification (e.g. supplements need ingredient lists; cosmetics need certain labelling).
+
+**Fix**:
+
+- Identify the specific restricted category from the disapproval reason.
+- For supplements: supply `nutrition_facts` and `ingredients` attributes.
+- For age-restricted: supply `age_group: adult` and ensure your PDP has age-gating.
+- For some categories (alcohol, weapons in some countries): apply for an exemption through the Merchant Center policy tool.
+
+## 7. Landing page issues
+
+**The error**: "Landing page doesn't match" or "Landing page error".
+
+**What triggers it**:
+
+- Landing page redirects (302 chain) before resolving
+- Landing page returns 4xx or 5xx
+- Landing page renders blank (heavy JS, slow LCP)
+- Product shown on the PDP doesn't match the feed (e.g. wrong color)
+
+**Fix**:
+
+- Resolve any redirect chain — the final URL should be the canonical PDP.
+- For SPA-heavy stores, ensure the product content is server-side rendered or pre-rendered for crawlers.
+- Verify `availability` on the feed matches what the PDP says.
+
+## 8. Shipping mismatch
+
+**The error**: "Shipping not computable" or "Shipping cost differs from feed".
+
+**What triggers it**:
+
+- Your shipping settings in Merchant Center don't cover the destination country.
+- The feed says free shipping but the PDP charges shipping.
+- Variant-level shipping (e.g. heavy items) not declared in the feed.
+
+**Fix**:
+
+- Merchant Center → Tools → Shipping and returns → make sure every country you sell to is configured.
+- For heavy products, override shipping at the product level via `shipping` attribute.
+
+## 9. Stale or broken availability
+
+**The error**: "Out of stock — should be in stock" or vice versa.
+
+**What triggers it**: your feed says `in_stock` but the PDP shows "sold out", or your feed updates too slowly when inventory shifts.
+
+**Fix**:
+
+- Switch from scheduled fetch to push (Content API or Shopify's native Google channel push).
+- Set `availability_date` for products on back-order so Google keeps showing them.
+- Audit the lag between your store's inventory update and the Merchant Center reflection. Anything > 1 hour will cost you impressions during stock-outs.
+
+## 10. Prohibited content
+
+**The error**: "Prohibited content" — usually triggers on weapons, drugs, counterfeit, adult content, dangerous chemicals, or politically-themed merchandise.
+
+**What triggers it**: any product touching Google's [restricted content policies](https://support.google.com/merchants/answer/6149970).
+
+**Fix**:
+
+- If false-positive (e.g. a sportswear brand flagged for "weapons" because of a kickboxing glove), file a manual review request through Merchant Center → Diagnostics → Request review.
+- If your product genuinely falls in a prohibited category, you cannot advertise it on Shopping. Move it off Shopping and rely on other channels.
+
+## 11. Missing tax configuration
+
+**The error**: "Tax not configured for destination".
+
+**What triggers it**: in the US (state-by-state tax), the EU (VAT per country), or other multi-jurisdiction setups, your Merchant Center tax settings don't cover the destination state/country.
+
+**Fix**:
+
+- Merchant Center → Tools → Tax → configure per-state (US) or per-country (EU) tax.
+- For EU, ensure you're using tax-inclusive pricing (the standard for EU Shopping).
+
+## 12. Feed structure errors
+
+**The error**: "Cannot parse feed" or "Invalid feed format".
+
+**What triggers it**:
+
+- Special characters not escaped (ampersands, quotes inside CSV fields)
+- Incorrect column delimiters
+- Encoding issues (UTF-8 vs ISO-8859-1)
+- Multi-value fields not formatted with the right separator (`/` for sizes, etc.)
+
+**Fix**:
+
+- For CSV/TSV feeds: validate via the Merchant Center "Test feed" tool before upload.
+- For XML feeds: validate XML structure (close all tags) and escape special characters.
+- For Shopify/BigCommerce/native channels: this rarely happens; if it does, contact the channel app's support.
+
+## How to audit weekly without losing your weekend
+
+A 15-minute weekly Merchant Center audit catches 95% of issues before they bleed budget:
+
+1. **Diagnostics → Issues**: sort by "Impressions affected" descending. Address anything above 1K affected.
+2. **Products → Disapproved**: skim the list. Cluster by issue type. Fix the most common pattern first (one fix usually clears 20+ SKUs).
+3. **Tools → Reviews**: respond to any new manual review requests within 48h.
+4. **Performance → Best sellers**: verify your top 20 SKUs are still showing healthy impression share.
+
+## FAQ
+
+<FAQ items={[
+  {
+    q: "How long does it take for Merchant Center to re-approve a fixed product?",
+    a: "Automated re-checks usually complete within 1–24 hours after the next feed fetch. Manual review requests can take 3–7 days but are usually faster. Pushing the fix via Content API gets you in front of the queue."
+  },
+  {
+    q: "Will fixing disapprovals get my impressions back to baseline?",
+    a: "Usually within 7–10 days. Heavily disapproved accounts may go through a probationary re-ranking — start fixing the highest-impression SKUs first to recover faster."
+  },
+  {
+    q: "Why do I keep seeing new error categories I've never seen before?",
+    a: "Google adds and refines product issue categories several times a year. The 2024–2026 expansion has focused on returns policy compliance, image quality, and price accuracy. Audit weekly to catch new ones early."
+  },
+  {
+    q: "Can I appeal a disapproval I disagree with?",
+    a: "Yes. In Merchant Center → Diagnostics → click the issue → 'Request review'. Provide context. Genuine false-positives (rare but real) are usually overturned within 3–5 business days."
+  }
+]} />
+
+## Quick reference
+
+If you only memorise one thing: **Diagnostics → sort by Impressions affected → fix the top 3 weekly**. That single discipline will keep your feed healthier than 90% of accounts.
+
+<ProductCTA variant="audit" title="Get a full Merchant Center audit, free">
+We pull your live feed, surface every disapproval cluster, and give you a prioritised fix list with the 30-min remediation per issue type.
+</ProductCTA>

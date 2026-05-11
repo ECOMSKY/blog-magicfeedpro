@@ -1,0 +1,169 @@
+---
+slug: "shopify-product-feed-google-shopping-setup"
+translationKey: "shopify-product-feed-google-shopping-setup"
+locale: "en"
+title: "Shopify Product Feed for Google Shopping: Step-by-Step Setup"
+description: "The 2026 step-by-step guide to setting up a Shopify product feed for Google Shopping that actually converts. Covers Google channel, custom feeds, metafields, variants, and the most common Shopify-specific gotchas."
+keywords:
+  - shopify google shopping
+  - shopify product feed
+  - google merchant center shopify
+  - shopify metafields google shopping
+date: 2026-05-07
+updated: 2026-05-07
+author: "mfp-team"
+category: "shopify"
+tags:
+  - shopify
+  - google-shopping
+  - merchant-center
+  - setup
+featured: false
+comments: false
+tldr: "Use the official Google & YouTube Shopify channel for the connection — it's free, push-based, and reliable. Then enrich what it sends with metafields (mapped to product_highlight, material, pattern, age_group, gender) because the default channel only ships ~60% of the attributes Google rewards in 2026. Test in a draft Merchant Center account before going live."
+cover: ""
+coverAlt: "Shopify admin showing Google channel installation and Merchant Center connection"
+---
+
+The Shopify → Google Shopping connection is one of those things that *looks* trivial — install an app, click a few buttons, done. Then six months in you wonder why your CTR is half of your competitor's.
+
+The truth is the official Google channel ships a minimal feed by default. To actually rank in 2026, you need to enrich the feed with the attributes Google's quality algorithm now expects. This guide walks the full setup, then the enrichment layer that most stores miss.
+
+## Step 1 — Prepare your Shopify store
+
+Before you touch Google, three things must be true in Shopify:
+
+1. **Product titles include the brand.** If your products are private label, use your own brand name. If you resell other brands, the title must include the brand. Open `Products → All products → bulk edit → Vendor` and verify the vendor field is populated on every SKU.
+2. **You have at least one image per product.** Square images (1:1) work best for Shopping. Minimum 800px; ideal 1500–2000px.
+3. **Your shipping rates are defined and live for the destination countries.** Google rejects products with no shipping computable to the destination.
+
+<Callout type="warning" title="Variants need their own GTIN">
+A common Shopify mistake: storing the GTIN on the parent product. Google reads GTIN per variant. Use the variant-level `barcode` field, not a top-level metafield.
+</Callout>
+
+## Step 2 — Install the Google & YouTube channel
+
+In Shopify admin → **Apps → Visit Shopify App Store** → search for "Google & YouTube". Install. This is the official Google-built channel; ignore the third-party feed apps that show up alongside it for now (we'll come back to them in Step 5 for enrichment).
+
+Connect your Google account, then your Merchant Center account. If you don't have one yet, the app creates one for you in the same flow.
+
+Verify:
+
+- The connection page shows "Connected" on both Google and Merchant Center.
+- Tax and shipping settings are mapped.
+
+## Step 3 — Configure category mapping
+
+The channel auto-suggests a Google Product Category for each product. Auto-suggestions are usually 60–80% accurate. Open the **Product Status** view and check a sample of 20 products.
+
+For products mapped to the wrong category, edit `Google product category` directly on the product page in Shopify, or batch-edit via CSV import. **Always pick the most specific (5th-level) category available** — `Apparel & Accessories > Clothing > Shirts & Tops > Dress Shirts` ranks dramatically better than `Apparel & Accessories > Clothing`.
+
+## Step 4 — Map the basic attributes
+
+In the Google channel settings, go to **Product feed → Attributes**. Map at minimum:
+
+| Google attribute | Shopify source |
+|---|---|
+| `title` | Product title |
+| `description` | Product description (rich HTML stripped) |
+| `link` | Product URL |
+| `image_link` | Main product image |
+| `availability` | Inventory > 0 → in_stock |
+| `price` | Variant price |
+| `brand` | Vendor |
+| `gtin` | Variant barcode |
+| `mpn` | Variant SKU |
+| `condition` | Defaults to "new"; override for refurbished |
+| `google_product_category` | Manual mapping |
+
+This is the bare minimum to pass Merchant Center validation. It is **not** enough to rank competitively.
+
+## Step 5 — Enrich with metafields
+
+This is where most Shopify stores leave money on the table. The default channel does not ship `product_highlight`, `material`, `pattern`, `age_group`, `gender`, `size_type`, or custom labels — all of which Google's 2026 quality scoring rewards.
+
+There are two ways to add them:
+
+### Option A — Native Shopify Markets Pro / Metafields
+
+Shopify added native Google Shopping metafield mappings in 2024. Settings → Custom data → Products → Add definition:
+
+- Namespace: `google`
+- Key: `product_highlights`
+- Type: List of single-line text (max 5)
+
+Then on each product, fill the 5 highlight slots. The Google channel will pick them up automatically.
+
+Repeat for `material`, `pattern`, `age_group`, `gender`, `custom_label_0` through `custom_label_4`.
+
+### Option B — Third-party feed app
+
+If you need finer control (transformation rules, multi-feed, separate feeds per country, dynamic title rewrites), use a dedicated feed app like Simprosys, DataFeedWatch, or our own [MagicFeedPro](https://magicfeedpro.com/) which adds AI rewrites on top of the enrichment.
+
+The trade-off: third-party apps cost $20–80/month but consistently lift CTR by 20–40% over the bare Shopify channel because the rewrites are query-aware.
+
+<ProductCTA variant="audit" title="Score your current Shopify feed">
+We'll pull your feed via the Merchant Center API and show you exactly which attributes are missing on your top 50 SKUs.
+</ProductCTA>
+
+## Step 6 — Handle variants correctly
+
+Shopify variants and Google variants do not map 1:1.
+
+**Rule**: each Shopify variant becomes a separate Google product with the same `item_group_id` (the parent product handle works well as the group ID). Each variant must have its own `color`, `size`, `image_link` if it differs, and ideally its own `gtin`.
+
+Common mistakes:
+
+- **All variants share the parent image.** Wrong — Google penalises this for fashion/color variants. Set per-variant images in Shopify (each variant → Images → assign).
+- **Stuffing variants into the title.** Wrong — `Cotton T-Shirt - Red, Blue, Green` should be 3 separate Shopping listings, not one.
+- **No `item_group_id`.** Wrong — without grouping, Google can't show variant carousels and you lose impression efficiency.
+
+## Step 7 — Test before going live
+
+Set up a **test Merchant Center account** (free) and point your feed at it first. Or use the production account but filter to a single product first via a Shopify collection.
+
+Run your top 5 SKUs through:
+
+1. **Merchant Center → Diagnostics** — must show 0 errors and ideally 0 warnings.
+2. **Rich Results Test** on the live PDP URL — verifies your structured data on the landing page matches the feed.
+3. **Pre-flight image check** — open each main image, verify clean background and no overlay text.
+
+Only enable the campaign once those 5 SKUs are clean.
+
+## Step 8 — Schedule and monitor
+
+The Google channel auto-syncs roughly every 4 hours (Shopify side) and Merchant Center re-fetches roughly every 24 hours. For tighter control, especially during inventory-tight launches:
+
+- Enable **Content API push** for availability changes (Settings → Inventory updates).
+- Set up a **Google Sheets-based supplemental feed** in Merchant Center for any attribute the channel can't supply.
+- Audit Merchant Center → Diagnostics **weekly**, not monthly.
+
+## Common Shopify-specific gotchas
+
+<FAQ items={[
+  {
+    q: "Why are some of my variants disapproved as duplicates?",
+    a: "Most often because they share the same `gtin` (Shopify lets you copy variants without changing barcode). Google enforces GTIN uniqueness — each variant needs its own. Either fix the barcodes or remove the GTIN on the duplicate variants entirely."
+  },
+  {
+    q: "Why does my product description appear truncated on Google?",
+    a: "Shopify product descriptions are often saved with HTML formatting. The Google channel strips most tags but leaves some artifacts. For best results, write a clean plain-text description in a metafield (google.description_override) and map it instead."
+  },
+  {
+    q: "Can I use Shopify Markets for multi-country Shopping?",
+    a: "Yes, and it's the cleanest way. Each Shopify Market becomes a separate feed in Merchant Center with localised pricing, currency, and tax. Combine with hreflang on PDPs and you have a clean multi-country setup."
+  },
+  {
+    q: "Should I use the Shopify channel or a third-party feed app?",
+    a: "Start with the Shopify channel because it's free and reliable for the connection itself. Once you're live, add a third-party feed app or a feed-optimisation tool on top — it's not either/or. The channel handles the plumbing; the feed app handles the optimisation."
+  }
+]} />
+
+## What to do this week
+
+1. Install the Google & YouTube channel if you haven't.
+2. Add the 5 metafields (`product_highlights`, `material`, `pattern`, `age_group`, `gender`) and backfill your top 50 SKUs.
+3. Audit your variant structure — make sure every variant has its own image and `gtin`.
+4. Schedule a weekly Merchant Center diagnostics review.
+
+That's the entire delta between an average Shopify Shopping setup and a high-performing one.

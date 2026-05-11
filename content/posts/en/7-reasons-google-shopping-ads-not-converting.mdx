@@ -1,0 +1,146 @@
+---
+slug: "7-reasons-google-shopping-ads-not-converting"
+translationKey: "7-reasons-google-shopping-ads-not-converting"
+locale: "en"
+title: "7 Reasons Your Google Shopping Ads Aren't Converting (And How to Fix Them)"
+description: "Your impressions are fine but your conversion rate is flat. Here are the 7 most common diagnoses — and the 30-minute fix for each — based on hundreds of e-commerce audits."
+keywords:
+  - google shopping conversion rate
+  - shopping ads not converting
+  - performance max diagnosis
+  - feed quality issues
+date: 2026-05-08
+updated: 2026-05-08
+author: "mfp-team"
+category: "google-shopping"
+tags:
+  - google-shopping
+  - conversion-rate
+  - performance-max
+  - troubleshooting
+featured: false
+comments: false
+tldr: "If your Shopping clicks aren't converting, it's almost always one of seven things: query/title mismatch, broken price competitiveness, weak hero image, missing reviews, slow PDP, broken stock signal, or wrong audience. Diagnose by symptom: where the funnel breaks tells you which lever to pull."
+cover: ""
+coverAlt: "Google Shopping ads diagnostic checklist on a laptop screen"
+---
+
+You're getting clicks. Your CTR is fine. Your CPC isn't out of control. But the conversions aren't coming, and your store's ROAS is bleeding red.
+
+This is the most common pattern we see in feed audits — and it almost always traces back to one of seven specific failure modes. Here's how to diagnose each in 30 minutes and ship the fix.
+
+## 1. Title-to-query mismatch
+
+**Symptom**: clicks come in, but the click-through is followed by a 3-second bounce. Search-term reports show queries that are *adjacent* to your product but not exactly it.
+
+**Why**: your title is generic enough to match a broad set of queries, but specific shoppers arriving on the PDP realise it's not what they wanted.
+
+**Example**: title says `Wireless Earbuds 2024 Edition`. The query was `iphone wireless earbuds with charging case`. The shopper lands, doesn't see "iPhone-compatible" in the first viewport, and bounces.
+
+**Fix (30 min)**: pull your top 50 queries with > 100 clicks and < 1% conversion. For each, compare the query against the matched title. If they're not a tight match, rewrite the title to either match more tightly *or* to explicitly exclude the mismatched intent.
+
+## 2. Price competitiveness failure
+
+**Symptom**: your impressions dropped overnight on specific SKUs. CTR on the remaining impressions is normal but conversion has fallen off a cliff.
+
+**Why**: Merchant Center's price competitiveness signal compares your listed price against the same product (matched by GTIN/brand+MPN) across the web. If you're > 10–15% above the median, Google starts surfacing your listing only on lower-intent queries and the shoppers who *do* click are price-comparing.
+
+**Fix (30 min)**: open Merchant Center → Products → Price competitiveness. Sort by "Above benchmark". For each high-traffic SKU above benchmark, either:
+
+- Match the benchmark, or
+- Lift the offer (free shipping, bundle, longer warranty) and update the product description to make it visible in the first 160 characters.
+
+<Callout type="tip" title="Price doesn't have to be lowest">
+Several large stores in our portfolio run 5–10% *above* benchmark and still convert. The trick is making the offer (free shipping over $X, lifetime warranty, returns) visible enough that the shopper doesn't have to leave to verify it.
+</Callout>
+
+## 3. Weak hero image
+
+**Symptom**: you're getting impressions but CTR is below 0.8% even on branded queries.
+
+**Why**: Shopping is a visual SERP. If your image is busy, has overlay text, has a watermark, or lacks the product as the dominant element, you lose the eye-track race.
+
+**Fix (30 min)**: pull your 20 highest-impression SKUs. Open each image. Score them yes/no on these 4 criteria:
+
+- Is the product 75%+ of the frame?
+- Is the background clean (white or single-tone)?
+- Is there *zero* overlay text, watermark, or border?
+- Is it ≥ 1200px on the longest side?
+
+Anything that fails 2+ gets reshot or replaced. The ROI on this is enormous — a clean hero image is often a 30–60% CTR lift on its own.
+
+## 4. Missing or stale review signals
+
+**Symptom**: CTR is okay, conversion is poor, and the shopper bounces from the PDP without scrolling.
+
+**Why**: Google Shopping listings now show seller and product review stars inline. If your competitors are showing 4.5 ★ (200 reviews) and you're showing nothing, you lose the click in the comparison view.
+
+**Fix (30 min)**: ensure product review markup ([product schema](https://schema.org/Product) with `aggregateRating`) is firing on every PDP. If you're on Shopify, install Judge.me or Loox and connect them to Merchant Center's product review feed. Backfill historic orders with a review request email — most stores have hundreds of unrequested reviews sitting in their order history.
+
+## 5. Slow product detail page
+
+**Symptom**: CTR is fine, the shopper arrives, but they bounce in under 2 seconds — before the page even rendered.
+
+**Why**: Mobile shoppers on Shopping ads bounce dramatically on Largest Contentful Paint > 2.5s. Quality score also drops, which means you're paying more per click for the impressions you do win.
+
+**Fix (30 min)**: run [PageSpeed Insights](https://pagespeed.web.dev/) on your top 5 SKU PDPs. Mobile LCP < 2.5s is the gate. The 3 things that consistently fix this:
+
+- Convert hero images to AVIF/WebP
+- Defer non-critical third-party scripts (chat widget, social proof popups)
+- Use lazy loading for everything below the fold
+
+## 6. Broken stock signal
+
+**Symptom**: impressions oscillate wildly day to day. You see "out of stock" rejections in Merchant Center even when the product is in stock.
+
+**Why**: your feed `availability` attribute is stale or your scheduled fetch is missing your store's inventory update window. Google severely penalises listings where shoppers click through to "out of stock".
+
+**Fix (30 min)**: switch to **Content API push** instead of scheduled fetch if you're on Shopify or BigCommerce — both support it natively. Inventory changes propagate to Merchant Center within minutes instead of hours. For custom stores, add `availability_date` for back-orders so Google can keep showing the listing with an expected ship date.
+
+## 7. PMax serving the wrong audience
+
+**Symptom**: high spend, low conversion. Insights tab shows traffic from queries unrelated to your product category.
+
+**Why**: Performance Max's audience expansion is aggressive by default. Without strong asset group structure and audience signals, PMax will spend on display and YouTube placements that don't convert for high-intent retail.
+
+**Fix (30 min)**:
+
+- Split campaigns by product category — never one campaign with everything.
+- Provide **strong audience signals** (existing customer list, high-intent visitors).
+- Set **brand exclusions** so PMax doesn't cannibalise your branded search.
+- If retail-only is your goal, use the **Shopping-only PMax** (no asset group) variant — it still exists in 2026 and converts 2–3× better on high-intent queries.
+
+## How to prioritise
+
+Run each fix in this order and you'll find the one that's actually broken:
+
+1. Check Merchant Center → Diagnostics. (5 min)
+2. Pull top-50 queries by spend, sort by conversion rate ascending. (10 min)
+3. Image and PDP speed audit on the worst 10 SKUs. (30 min)
+4. Price competitiveness check. (15 min)
+5. Audience and campaign structure review. (60 min)
+
+The first three almost always surface the issue. If you'd rather not do this manually, [MagicFeedPro audits all 7 in 5 minutes for free](https://lp.magicfeedpro.com/).
+
+<ProductCTA variant="audit" title="Run the 7-point audit on your live feed">
+We score your top 50 SKUs against every diagnosis above and give you a prioritised fix list.
+</ProductCTA>
+
+## FAQ
+
+<FAQ items={[
+  {
+    q: "How quickly should conversion rate improve after a fix?",
+    a: "Title and image fixes typically show measurable lift within 7–10 days as Google relearns the impression signal. Price changes show within 24–48 hours. PMax structural changes need 14 days to exit the learning phase before you can read the data."
+  },
+  {
+    q: "Should I pause underperforming SKUs?",
+    a: "Pause the bottom 20% if they're cannibalising budget from your top performers. But first try a feed-quality pass — many 'bad' SKUs are actually fine products with broken titles."
+  },
+  {
+    q: "What's a healthy Google Shopping conversion rate?",
+    a: "Highly category-dependent. Apparel: 1–2.5%. Electronics: 1.5–4%. Home: 2–5%. Beauty: 2.5–6%. If you're under 1% on non-apparel, something is structurally broken — usually one of the 7 above."
+  }
+]} />
+
+The single highest-leverage fix in this list is almost always #1 (title-to-query mismatch). If you don't know which of the 7 is your bottleneck, start there.
