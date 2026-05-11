@@ -1232,28 +1232,51 @@ p { margin: 0 0 var(--s-8); }
 .prose img { border-radius: var(--r-lg); margin: var(--s-12) 0; }
 
 .tldr {
-  background: var(--g-card);
-  border: 1px solid var(--brand-100);
-  border-left: 4px solid var(--brand-500);
-  border-radius: var(--r-md);
-  padding: var(--s-12) var(--s-12) var(--s-10);
-  margin-bottom: var(--s-16);
-  box-shadow: var(--sh-4);
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--s-16) var(--s-14) var(--s-12);
+  margin: 0 0 var(--s-16);
+  box-shadow: var(--sh-2);
+}
+/* Brand accent rail — flush with the rounded corners so the rounding
+   stays visually correct (border-left: 4px on a rounded element creates
+   a flat-left/round-right corner mismatch). */
+.tldr::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--brand-500);
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
 }
 .tldr__label {
-  display: inline-block;
-  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  font-family: var(--font-body);
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 1.2px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--brand-600);
   background: var(--brand-50);
-  padding: 3px 8px;
   border-radius: var(--r-pill);
-  margin-bottom: var(--s-6);
-  line-height: 1.4;
+  margin: 0 0 var(--s-8);
+  line-height: 1;
+  vertical-align: top;
 }
-.tldr__body { color: var(--ink-700); font-size: 15px; margin: 0; line-height: 1.6; }
+.tldr__body {
+  color: var(--ink-800);
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.6;
+}
 
 /* Callouts */
 .callout {
@@ -1314,30 +1337,78 @@ p { margin: 0 0 var(--s-8); }
 /* ----------------- Author card ----------------- */
 .author-card {
   display: flex;
+  align-items: flex-start; /* name aligns with TOP of the brand mark */
   gap: var(--s-12);
-  background: var(--g-card);
+  background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
-  padding: var(--s-12);
+  padding: var(--s-14) var(--s-16);
   margin: var(--s-16) 0;
+  box-shadow: var(--sh-2);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.author-card:hover {
   box-shadow: var(--sh-4);
+  border-color: var(--brand-100);
 }
 .author-card__avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: var(--g-brand);
-  display: flex;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-md);
+  background: var(--white);
+  border: 1px solid var(--line);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   font-weight: 800;
-  font-size: 22px;
+  font-size: 20px;
   flex-shrink: 0;
+  overflow: hidden;
+  /* When falling back to initials, fill with the brand gradient — the
+     border + radius keep the shape consistent with the brand-mark variant. */
 }
-.author-card__name { font-size: 16px; font-weight: 700; margin: 0; color: var(--ink-900); }
-.author-card__role { font-size: 12px; color: var(--brand-600); font-weight: 600; margin: 2px 0 var(--s-4); }
-.author-card__bio { font-size: 13.5px; color: var(--ink-500); margin: 0; }
+.author-card__avatar:not(:has(img)) {
+  background: var(--g-brand);
+  border-color: transparent;
+}
+.author-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+  display: block;
+}
+.author-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-top: 1px; /* optical alignment with the brand mark */
+}
+.author-card__name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--ink-900);
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+}
+.author-card__role {
+  font-size: 12px;
+  color: var(--brand-600);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0;
+}
+.author-card__bio {
+  font-size: 14px;
+  color: var(--ink-600);
+  margin: var(--s-3) 0 0;
+  line-height: 1.55;
+}
 
 /* ----------------- Share row ----------------- */
 .share-row {
