@@ -861,7 +861,7 @@ p { margin: 0 0 var(--s-8); }
 }
 .featured:hover { transform: translateY(-2px); box-shadow: var(--sh-7), var(--sh-6); text-decoration: none; }
 .featured__cover {
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 2;
   background: var(--bg-soft, #FAFAFB);
   position: relative;
   overflow: hidden;
@@ -997,11 +997,11 @@ p { margin: 0 0 var(--s-8); }
   }
 }
 .article-hero__cover {
-  /* Single source of truth for the hero cover. 16/6 ratio (~240px tall
-     at 1440px-wide containers) reads as "there's a cover" without
-     swallowing the whole fold or overshadowing the article body. */
-  aspect-ratio: 16 / 6;
-  max-height: 320px;
+  /* Single source of truth for the hero cover. 3/2 ratio (matches the
+     1536x1024 v3 cover assets) so the iconic central subject isn't
+     center-cropped by a wider slot. max-height caps the on-page height. */
+  aspect-ratio: 3 / 2;
+  max-height: 460px;
   background: var(--g-brand);
   border-radius: var(--r-xl);
   overflow: hidden;
