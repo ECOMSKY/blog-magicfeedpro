@@ -1,0 +1,157 @@
+---
+slug: "shopify-product-feed-google-shopping-setup"
+translationKey: "shopify-product-feed-google-shopping-setup"
+locale: "fr"
+title: "Flux de produits Shopify pour Google Shopping : Configuration étape par étape"
+description: "Le guide 2026 étape par étape pour configurer un flux de produits Shopify pour Google Shopping qui convertit réellement. Couvre le canal Google, les flux personnalisés, les metafields, les variantes et les pièges les plus courants spécifiques à Shopify."
+keywords:
+  - shopify google shopping
+  - flux produits shopify
+  - google merchant center shopify
+  - shopify metafields google shopping
+date: 2026-05-07
+updated: 2026-05-07
+author: "mfp-team"
+category: "shopify"
+tags:
+  - shopify
+  - google-shopping
+  - merchant-center
+  - setup
+featured: false
+comments: false
+tldr: "Utilisez le canal Shopify officiel Google & YouTube pour la connexion — il est gratuit, basé sur le push et fiable. Ensuite, enrichissez ce qu'il envoie avec des metafields (mappés vers product_highlight, material, pattern, age_group, gender) car le canal par défaut n'envoie que ~60% des attributs que Google récompense en 2026. Testez dans un compte Merchant Center brouillon avant de passer en production."
+cover: ""
+coverAlt: "Administration Shopify montrant l'installation du canal Google et la connexion à Merchant Center"
+---
+
+La connexion Shopify → Google Shopping est l'une de ces choses qui *paraît* triviale — installer une application, cliquer sur quelques boutons, terminé. Puis six mois plus tard, vous vous demandez pourquoi votre CTR est la moitié de celui de vos concurrents.
+
+La vérité est que le canal Google officiel envoie un flux minimal par défaut. Pour réellement se classer en 2026, vous devez enrichir le flux avec les attributs que l'algorithme de qualité de Google attend désormais. Ce guide parcourt la configuration complète, puis la couche d'enrichissement que la plupart des boutiques manquent.
+
+## Étape 1 — Préparez votre boutique Shopify
+
+Avant de toucher à Google, trois choses doivent être vraies dans Shopify :
+
+1. **Les titres de produits incluent la marque.** Si vos produits sont en marque privée, utilisez votre propre nom de marque. Si vous revendez d'autres marques, le titre doit inclure la marque. Ouvrez `Produits → Tous les produits → modification groupée → Fournisseur` et vérifiez que le champ fournisseur est rempli sur chaque SKU.
+2. **Vous avez au moins une image par produit.** Les images carrées (1:1) fonctionnent mieux pour Shopping. Minimum 800px ; idéal 1500–2000px.
+3. **Vos tarifs d'expédition sont définis et actifs pour les pays de destination.** Google rejette les produits sans frais d'expédition calculables vers la destination.
+
+<Callout type="warning" title="Les variantes ont besoin de leur propre GTIN">
+Une erreur Shopify courante : stocker le GTIN sur le produit parent. Google lit le GTIN par variante. Utilisez le champ `barcode` au niveau de la variante, pas un metafield de niveau supérieur.
+</Callout>
+
+## Étape 2 — Installez le canal Google & YouTube
+
+Dans l'admin Shopify → **Applications → Visiter la boutique d'applications Shopify** → recherchez "Google & YouTube". Installez. C'est le canal officiel créé par Google ; ignorez les applications de flux tierces qui apparaissent à côté pour l'instant (nous y reviendrons à l'étape 5 pour l'enrichissement).
+
+Connectez votre compte Google, puis votre compte Merchant Center. Si vous n'en avez pas encore, l'application en crée un pour vous dans le même flux.
+
+Vérifiez :
+
+- La page de connexion affiche "Connecté" sur Google et Merchant Center.
+- Les paramètres de taxe et d'expédition sont mappés.
+
+## Étape 3 — Configurez le mappage des catégories
+
+Le canal suggère automatiquement une catégorie de produit Google pour chaque produit. Les suggestions automatiques sont généralement précises à 60–80%. Ouvrez la vue **Statut du produit** et vérifiez un échantillon de 20 produits.
+
+Pour les produits mappés à la mauvaise catégorie, modifiez `Catégorie de produit Google` directement sur la page du produit dans Shopify, ou modifiez par lots via l'importation CSV. **Choisissez toujours la catégorie la plus spécifique (5e niveau) disponible** — `Vêtements et accessoires > Vêtements > Chemises et hauts > Chemises habillées` se classe considérablement mieux que `Vêtements et accessoires > Vêtements`.
+
+## Étape 4 — Mappez les attributs de base
+
+Dans les paramètres du canal Google, allez à **Flux de produits → Attributs**. Mappez au minimum :
+
+| Attribut Google | Source Shopify |
+|---|---|
+| `title` | Titre du produit |
+| `description` | Description du produit (HTML enrichi supprimé) |
+| `link` | URL du produit |
+| `image_link` | Image principale du produit |
+| `availability` | Inventaire > 0 → in_stock |
+| `price` | Prix de la variante |
+| `brand` | Fournisseur |
+| `gtin` | Code-barres de la variante |
+| `mpn` | SKU de la variante |
+| `condition` | Par défaut "new" ; remplacer pour reconditionné |
+| `google_product_category` | Mappage manuel |
+
+C'est le strict minimum pour passer la validation Merchant Center. Ce n'est **pas** suffisant pour se classer de manière compétitive.
+
+## Étape 5 — Enrichissez avec des metafields
+
+C'est ici que la plupart des boutiques Shopify laissent de l'argent sur la table. Le canal par défaut n'envoie pas `product_highlight`, `material`, `pattern`, `age_group`, `gender`, `size_type` ou les libellés personnalisés — tous des éléments que le scoring de qualité 2026 de Google récompense.
+
+Il y a deux façons de les ajouter :
+
+### Option A — Shopify Markets Pro natif / Metafields
+
+Shopify a ajouté des mappages de metafields Google Shopping natifs en 2024. Paramètres → Données personnalisées → Produits → Ajouter une définition :
+
+- Espace de noms : `google`
+- Clé : `product_highlights`
+- Type : Liste de texte à une ligne (max 5)
+
+Ensuite, sur chaque produit, remplissez les 5 emplacements de mise en avant. Le canal Google les récupérera automatiquement.
+
+Répétez pour `material`, `pattern`, `age_group`, `gender`, `custom_label_0` jusqu'à `custom_label_4`.
+
+### Option B — Application de flux tierce
+
+Si vous avez besoin d'un contrôle plus fin (règles de transformation, multi-flux, flux séparés par pays, réécritures de titre dynamiques), utilisez une application de flux dédiée comme Simprosys, DataFeedWatch, ou notre propre [MagicFeedPro](https://magicfeedpro.com/) qui ajoute des réécritures IA en plus de l'enrichissement.
+
+Le compromis : les applications tierces coûtent 20–80$/mois mais augmentent systématiquement le CTR de 20–40% par rapport au canal Shopify nu parce que les réécritures sont adaptées aux requêtes.
+
+<ProductCTA variant="audit" title="Évaluez votre flux Shopify actuel">
+Nous récupérerons votre flux via l'API Merchant Center et vous montrerons exactement quels attributs manquent sur vos 50 meilleurs SKU.
+</ProductCTA>
+
+## Étape 6 — Gérez les variantes correctement
+
+Les variantes Shopify et les variantes Google ne se mappent pas 1:1.
+
+**Règle** : chaque variante Shopify devient un produit Google séparé avec le même `item_group_id` (le handle du produit parent fonctionne bien comme ID de groupe). Chaque variante doit avoir sa propre `color`, `size`, `image_link` si elle diffère, et idéalement son propre `gtin`.
+
+Erreurs courantes :
+
+- **Toutes les variantes partagent l'image parent.** Faux — Google pénalise cela pour les variantes mode/couleur. Définissez des images par variante dans Shopify (chaque variante → Images → assigner).
+- **Bourrer les variantes dans le titre.** Faux — `T-Shirt en coton - Rouge, Bleu, Vert` devrait être 3 annonces Shopping séparées, pas une seule.
+- **Pas d'`item_group_id`.** Faux — sans regroupement, Google ne peut pas afficher les carrousels de variantes et vous perdez en efficacité d'impression.
+
+## Étape 7 — Testez avant de passer en production
+
+Configurez un **compte Merchant Center de test** (gratuit) et pointez d'abord votre flux vers celui-ci. Ou utilisez le compte de production mais filtrez d'abord sur un seul produit via une collection Shopify.
+
+Passez vos 5 meilleurs SKU à travers :
+
+1. **Merchant Center → Diagnostics** — doit afficher 0 erreur et idéalement 0 avertissement.
+2. **Test de résultats enrichis** sur l'URL PDP en direct — vérifie que vos données structurées sur la page de destination correspondent au flux.
+3. **Vérification préalable de l'image** — ouvrez chaque image principale, vérifiez l'arrière-plan propre et l'absence de texte superposé.
+
+N'activez la campagne qu'une fois ces 5 SKU propres.
+
+## Étape 8 — Planifiez et surveillez
+
+Le canal Google se synchronise automatiquement environ toutes les 4 heures (côté Shopify) et Merchant Center récupère à nouveau environ toutes les 24 heures. Pour un contrôle plus serré, en particulier lors de lancements avec inventaire limité :
+
+- Activez **le push de l'API Content** pour les changements de disponibilité (Paramètres → Mises à jour d'inventaire).
+- Configurez un **flux supplémentaire basé sur Google Sheets** dans Merchant Center pour tout attribut que le canal ne peut pas fournir.
+- Auditez Merchant Center → Diagnostics **hebdomadairement**, pas mensuellement.
+
+## Pièges courants spécifiques à Shopify
+
+<FAQ>
+  <FAQItem q="Pourquoi certaines de mes variantes sont-elles rejetées comme doublons ?" a="Le plus souvent parce qu'elles partagent le même `gtin` (Shopify vous permet de copier des variantes sans changer le code-barres). Google applique l'unicité du GTIN — chaque variante a besoin du sien. Soit corrigez les codes-barres, soit supprimez complètement le GTIN sur les variantes en double." />
+  <FAQItem q="Pourquoi la description de mon produit apparaît-elle tronquée sur Google ?" a="Les descriptions de produits Shopify sont souvent enregistrées avec formatage HTML. Le canal Google supprime la plupart des balises mais laisse quelques artefacts. Pour de meilleurs résultats, écrivez une description propre en texte brut dans un metafield (google.description_override) et mappez-le à la place." />
+  <FAQItem q="Puis-je utiliser Shopify Markets pour Shopping multi-pays ?" a="Oui, et c'est la façon la plus propre. Chaque Shopify Market devient un flux séparé dans Merchant Center avec prix, devise et taxe localisés. Combinez avec hreflang sur les PDP et vous avez une configuration multi-pays propre." />
+  <FAQItem q="Dois-je utiliser le canal Shopify ou une application de flux tierce ?" a="Commencez avec le canal Shopify car il est gratuit et fiable pour la connexion elle-même. Une fois en ligne, ajoutez une application de flux tierce ou un outil d'optimisation de flux par-dessus — ce n'est pas l'un ou l'autre. Le canal gère la plomberie ; l'application de flux gère l'optimisation." />
+</FAQ>
+
+## Ce qu'il faut faire cette semaine
+
+1. Installez le canal Google & YouTube si ce n'est pas déjà fait.
+2. Ajoutez les 5 metafields (`product_highlights`, `material`, `pattern`, `age_group`, `gender`) et complétez vos 50 meilleurs SKU.
+3. Auditez votre structure de variantes — assurez-vous que chaque variante a sa propre image et `gtin`.
+4. Planifiez une revue hebdomadaire des diagnostics Merchant Center.
+
+C'est tout le delta entre une configuration Shopping Shopify moyenne et une configuration performante.

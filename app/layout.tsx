@@ -7,6 +7,10 @@ import { SITE_URL, SITE_NAME, organizationJsonLd, websiteJsonLd } from '@/lib/se
 import JsonLd from '@/components/JsonLd';
 import './globals.css';
 
+// DESIGN.md §3 — Inter Display drives body copy. We load it via
+// next/font/google as `Inter` (the closest Google Fonts equivalent of
+// Inter Display) at the weights DESIGN.md uses (400 for buttons, 500
+// for body, 600/700 for emphasis).
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -40,7 +44,23 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} className={inter.variable}>
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        {/* DESIGN.md §3 — General Sans for headlines + UI logo. Served by
+            Fontshare (no Google Fonts equivalent). Preconnect cuts the DNS
+            cost; the 500-weight cut covers DESIGN.md's only headline weight. */}
+        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&display=swap"
+        />
+        {/* PNG favicon = exact 3-sparkle wordmark icon from
+            magicfeedpro.com (Framer asset sf6Kn271r5TcW6blgTKJyWSbc.png).
+            No SVG fallback — the old generic SVG was being preferred by
+            some browsers, ignoring the brand PNG. Single source of truth. */}
+        <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="alternate" type="application/rss+xml" title="MagicFeedPro Blog RSS" href="/rss.xml" />
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd(locale)} />

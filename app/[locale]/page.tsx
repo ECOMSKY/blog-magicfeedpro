@@ -5,7 +5,8 @@ import { locales } from '@/i18n/config';
 import { getPostsByLocale, getCategoriesByLocale } from '@/lib/content';
 import FeaturedCard from '@/components/FeaturedCard';
 import PostCard from '@/components/PostCard';
-import NewsletterCard from '@/components/NewsletterCard';
+// Newsletter card removed — the user opted to drop the sidebar capture in
+// favour of a cleaner two-column layout with just Categories on the side.
 import { localePath, absoluteUrl } from '@/lib/seo';
 import Link from 'next/link';
 
@@ -113,7 +114,6 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
             </div>
           </div>
           <div className="home-grid__side">
-            <NewsletterCard />
             <CategoriesSide categories={categories} locale={locale} title={t('categories')} />
           </div>
         </div>
