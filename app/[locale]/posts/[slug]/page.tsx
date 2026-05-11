@@ -20,7 +20,7 @@ import {
   getAllPosts
 } from '@/lib/content';
 import { localePath, absoluteUrl, breadcrumbJsonLd, ORG_NAME, ORG_URL, SITE_NAME } from '@/lib/seo';
-import { mdxComponents } from '@/components/MdxComponents';
+import { mdxComponents, makeProductCTA } from '@/components/MdxComponents';
 import TableOfContents from '@/components/TableOfContents';
 import ShareRow from '@/components/ShareRow';
 import PostCard from '@/components/PostCard';
@@ -228,7 +228,13 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
           )}
           <MDXRemote
             source={post.body}
-            components={mdxComponents}
+            components={{
+              ...mdxComponents,
+              // Inject locale-aware ProductCTA so MDX <ProductCTA />
+              // blocks render with the right language without each MDX
+              // file having to ship hardcoded title/body copy.
+              ProductCTA: makeProductCTA(locale as 'en' | 'fr' | 'es' | 'de' | 'it' | 'ja' | 'nl' | 'pl' | 'pt' | 'sv'),
+            }}
             options={{
               mdxOptions: {
                 remarkPlugins: [remarkGfm],
