@@ -1552,31 +1552,76 @@ p { margin: 0 0 var(--s-8); }
    electric-blue left rule + clean typography + black CTA button.
    No infinite shimmer animation (was distracting mid-article). */
 .product-cta {
+  /* In-article CTA — vibrant variant matching <AuditBanner /> so the
+     three audit touchpoints (article-end banner, sidebar promo, MDX
+     in-article box) read as the same product family. */
   position: relative;
-  background: var(--white);
+  background: linear-gradient(135deg, #F5F5FE 0%, #ECEBFE 60%, #FFFFFF 100%);
   border: 1px solid var(--line);
-  border-left: 3px solid var(--blue);
-  border-radius: var(--r-md);
+  border-radius: var(--r-xl);
   padding: 24px 28px;
   margin: 32px 0;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+  box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+.product-cta::before {
+  /* Decorative gradient blob in the top-right corner — same brand
+     palette as the CTA button, kept low-opacity so the body copy
+     stays readable. */
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(113, 111, 255, 0.18) 0%, rgba(113, 111, 255, 0) 70%);
+  pointer-events: none;
 }
 .product-cta__title {
   font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 600;
   color: var(--ink-900);
   margin: 0 0 8px;
-  letter-spacing: 0;
-  line-height: 1.3;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  position: relative;
 }
 .product-cta__lead {
-  color: var(--ink-600);
+  color: var(--ink-700);
   font-size: 15px;
   line-height: 1.55;
-  margin: 0 0 18px;
+  margin: 0 0 20px;
+  position: relative;
 }
-.product-cta a.btn { display: inline-flex; }
+.product-cta a.btn,
+.product-cta a.btn--primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  /* Override the global black .btn--primary so the in-article CTA
+     gets the brand gradient pill like the audit banner / sidebar. */
+  background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700, #0000C8) 100%) !important;
+  color: #FFFFFF !important;
+  font-family: var(--font-ui, var(--font-body));
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: var(--r-pill);
+  box-shadow: 0 6px 20px -4px rgba(0, 0, 238, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  text-decoration: none;
+  border-bottom: 0;
+}
+.product-cta a.btn:hover,
+.product-cta a.btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px -4px rgba(0, 0, 238, 0.5);
+  text-decoration: none;
+  border-bottom: 0;
+}
 
 /* ----------------- Author card -----------------
    Text-only variant: no avatar image, content distributed across the
