@@ -67,10 +67,12 @@ export function ProductCTA({
   );
 }
 
-export function FAQ({ items }: { items: { q: string; a: string }[] }) {
+export function FAQ({ items }: { items?: { q: string; a: string }[] }) {
+  const safe = Array.isArray(items) ? items : [];
+  if (!safe.length) return null;
   return (
     <section className="faq" aria-label="Frequently asked questions">
-      {items.map((it, i) => (
+      {safe.map((it, i) => (
         <div className="faq__item" key={i}>
           <div className="faq__q">{it.q}</div>
           <div className="faq__a">{it.a}</div>
