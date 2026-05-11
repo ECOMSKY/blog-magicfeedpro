@@ -464,18 +464,25 @@ button { font-family: inherit; cursor: pointer; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--charcoal);
-  color: var(--white);
+  gap: 8px;
+  /* Match the in-article ProductCTA and the AuditBanner — gradient pill,
+     consistent with the three other audit touchpoints. */
+  background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700, #0000C8) 100%);
+  color: #FFFFFF;
   font-weight: 600;
   font-size: 15px;
-  padding: 14px 22px;
-  border-radius: var(--r-md);
+  padding: 14px 26px;
+  border-radius: var(--r-pill);
   text-decoration: none;
-  box-shadow: var(--sh-small);
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  box-shadow: 0 6px 20px -4px rgba(0, 0, 238, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
-.exitpop__cta:hover { opacity: 0.92; text-decoration: none; }
-.exitpop__cta:active { transform: translateY(1px); }
+.exitpop__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px -4px rgba(0, 0, 238, 0.5);
+  text-decoration: none;
+}
+.exitpop__cta:active { transform: translateY(0); }
 .exitpop__meta {
   color: var(--ink-500);
   font-size: 12.5px;
@@ -781,11 +788,17 @@ p { margin: 0 0 var(--s-8); }
   text-decoration: none;
 }
 .card__cover {
+  /* No brand gradient as fallback background — when the real cover
+     image (3:2 or 16:9) doesn't perfectly match the slot ratio, the
+     gradient was bleeding through as a purple bar at the top. Neutral
+     off-white background means any minor letterboxing reads as page
+     surface, not a UI bug. */
   aspect-ratio: 16 / 9;
-  background: var(--g-brand);
+  background: var(--bg-soft, #FAFAFB);
   position: relative;
   overflow: hidden;
 }
+.card__cover img { display: block; }
 .card__cover img {
   width: 100%;
   height: 100%;
@@ -849,8 +862,9 @@ p { margin: 0 0 var(--s-8); }
 .featured:hover { transform: translateY(-2px); box-shadow: var(--sh-7), var(--sh-6); text-decoration: none; }
 .featured__cover {
   aspect-ratio: 16 / 9;
-  background: var(--g-brand);
+  background: var(--bg-soft, #FAFAFB);
   position: relative;
+  overflow: hidden;
 }
 .featured__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .featured__body {
@@ -995,7 +1009,7 @@ p { margin: 0 0 var(--s-8); }
   box-shadow: var(--sh-7);
   margin-top: var(--s-12);
 }
-.article-hero__cover img { width: 100%; height: 100%; object-fit: cover; }
+.article-hero__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .article-hero h1 {
   font-size: clamp(28px, 3.4vw, 44px);
   line-height: 1.15;
