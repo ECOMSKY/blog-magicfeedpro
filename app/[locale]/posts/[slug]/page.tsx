@@ -244,19 +244,14 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
 
           <ShareRow url={url} title={post.title} />
 
-          <div className="author-card">
-            <span className="author-card__avatar" aria-hidden="true">
-              {isMfpAuthor ? (
-                <Image src="/favicon.png" alt="" width={128} height={128} sizes="56px" />
-              ) : (
-                initials
-              )}
-            </span>
-            <div className="author-card__body">
-              <h3 className="author-card__name">{author.name}</h3>
-              <div className="author-card__role">{author.role}</div>
-              {author.bio && <p className="author-card__bio">{author.bio}</p>}
-            </div>
+          {/* Author card — text-only. The brand mark / initials avatar
+              ate horizontal real estate without earning it; the box
+              reads cleaner with name, role and bio distributed across
+              the full width. */}
+          <div className="author-card author-card--text">
+            <h3 className="author-card__name">{author.name}</h3>
+            <div className="author-card__role">{author.role}</div>
+            {author.bio && <p className="author-card__bio">{author.bio}</p>}
           </div>
 
           {/* Article-end CTA — animated gradient banner pushing toward the

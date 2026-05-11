@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from '@/i18n/config';
+import FeedScoringAnim from './FeedScoringAnim';
 
 /**
  * Article-bottom audit CTA — vibrant gradient variant.
@@ -56,61 +57,12 @@ export default async function AuditBanner({ locale, slug }: { locale: Locale; sl
           </div>
         </div>
 
-        {/* ── Right: feed-row score comparison ─────────────────────── */}
+        {/* ── Right: animated feed scoring illustration ────────────── */}
         <figure className="audit-cta__product" aria-hidden="true">
           <div className="audit-cta__score-label">{t('scoreLabel')}</div>
-          <FeedRow state="before" />
-          <FeedRow state="after" />
+          <FeedScoringAnim variant="banner" />
         </figure>
       </div>
     </aside>
-  );
-}
-
-/* ────────────────────────────────────────────────────────────────────
-   FeedRow — one product-feed row, two states stacked vertically.
-   Thumb is a CSS first-letter tile (brand "R") — cleaner than the old
-   generic-mask SVG, intentionally low-fi so it reads as a credibility
-   prop, not a polished mockup.
-   ───────────────────────────────────────────────────────────────── */
-function FeedRow({ state }: { state: 'before' | 'after' }) {
-  const isAfter = state === 'after';
-  return (
-    <div className={`audit-cta__row audit-cta__row--${state}`}>
-      <div
-        className={`audit-cta__row-thumb-letter audit-cta__row-thumb-letter--${state}`}
-        aria-hidden="true"
-      >
-        R
-      </div>
-
-      <div className="audit-cta__row-body">
-        <div
-          className={`audit-cta__row-title ${isAfter ? '' : 'audit-cta__row-title--dim'}`}
-        >
-          {isAfter
-            ? 'R-PUR Nano Light — Masque anti-pollution cycliste, filtre PM 0.1'
-            : 'Masque running'}
-        </div>
-        <div className="audit-cta__row-attrs">
-          {isAfter ? (
-            <>
-              <span className="audit-cta__chip">GTIN</span>
-              <span className="audit-cta__chip">Attributes</span>
-            </>
-          ) : (
-            <span className="audit-cta__chip audit-cta__chip--missing">— missing —</span>
-          )}
-        </div>
-      </div>
-
-      <div
-        className={`audit-cta__row-score audit-cta__row-score--${state}`}
-        aria-label={isAfter ? 'Quality score 94 of 100' : 'Quality score 42 of 100'}
-      >
-        <span className="audit-cta__row-score-num">{isAfter ? '94' : '42'}</span>
-        <span className="audit-cta__row-score-unit">/100</span>
-      </div>
-    </div>
   );
 }
