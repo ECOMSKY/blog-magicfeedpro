@@ -189,7 +189,7 @@ export default function RecentAuditToast() {
       </div>
       <div className="recent-audit-toast__body">{line}</div>
       <a
-        href={`https://lp.magicfeedpro.com/?utm_source=blog&utm_medium=social_proof_toast&lang=${locale}`}
+        href={`https://lp.magicfeedpro.com/${locale === 'en' ? '' : `${locale}/`}?utm_source=blog&utm_medium=social_proof_toast`}
         className="recent-audit-toast__cta"
         target="_blank"
         rel="noopener"

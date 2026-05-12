@@ -23,7 +23,7 @@ import FeedScoringAnim from './FeedScoringAnim';
  */
 export default async function AuditBanner({ locale, slug }: { locale: Locale; slug: string }) {
   const t = await getTranslations({ locale, namespace: 'auditBanner' });
-  const href = `https://lp.magicfeedpro.com/?utm_source=blog&utm_medium=article_banner&utm_campaign=audit&utm_content=${encodeURIComponent(slug)}&lang=${locale}`;
+  const href = `https://lp.magicfeedpro.com/${locale === 'en' ? '' : `${locale}/`}?utm_source=blog&utm_medium=article_banner&utm_campaign=audit&utm_content=${encodeURIComponent(slug)}`;
 
   return (
     <aside className="audit-cta" aria-label={t('aria')}>

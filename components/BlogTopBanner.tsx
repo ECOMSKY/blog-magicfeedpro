@@ -15,7 +15,10 @@ import type { Locale } from '@/i18n/config';
  */
 export default async function BlogTopBanner({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'topBanner' });
-  const url = `https://lp.magicfeedpro.com/?utm_source=blog&utm_medium=top_banner&utm_campaign=free_audit&lang=${locale}`;
+  // Send EN visitors to the canonical root, everyone else to /{locale}/
+  // (the LP now ships a fully translated page per locale).
+  const lpPath = locale === 'en' ? '' : `${locale}/`;
+  const url = `https://lp.magicfeedpro.com/${lpPath}?utm_source=blog&utm_medium=top_banner&utm_campaign=free_audit`;
   return (
     <div className="blog-top-banner" role="region" aria-label={t('aria')}>
       <div className="blog-top-banner__inner">

@@ -102,7 +102,7 @@ export default function ExitIntentPopup({
 
   if (!open) return null;
 
-  const auditUrl = `https://lp.magicfeedpro.com/?utm_source=blog&utm_medium=exit_popup&utm_campaign=audit&utm_content=${pathKind}&lang=${locale}`;
+  const auditUrl = `https://lp.magicfeedpro.com/${locale === 'en' ? '' : `${locale}/`}?utm_source=blog&utm_medium=exit_popup&utm_campaign=audit&utm_content=${pathKind}`;
   const dismiss = () => {
     setOpen(false);
     // No localStorage write — founder wants the popup to reappear on

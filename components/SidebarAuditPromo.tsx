@@ -14,7 +14,7 @@ import FeedScoringAnim from './FeedScoringAnim';
  */
 export default async function SidebarAuditPromo({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: 'auditPromo' });
-  const href = `https://lp.magicfeedpro.com/?utm_source=blog&utm_medium=sidebar&utm_campaign=audit_promo&locale=${locale}`;
+  const href = `https://lp.magicfeedpro.com/${locale === 'en' ? '' : `${locale}/`}?utm_source=blog&utm_medium=sidebar&utm_campaign=audit_promo`;
 
   return (
     <aside className="sidebar-audit-promo" aria-label={t('aria')}>
