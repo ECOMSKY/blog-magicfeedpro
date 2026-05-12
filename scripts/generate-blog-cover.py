@@ -121,11 +121,15 @@ def parse_frontmatter(text: str) -> Tuple[Dict[str, str], str]:
 
 def serialize_frontmatter(fm: Dict[str, str], body: str) -> str:
     # Preserve insertion order, dump key: "value" with double quotes.
+    # CRITICAL: backslash-escape any embedded " in the value, otherwise
+    # YAML parses the string as terminated mid-value and the next chars
+    # become an invalid block. (Real bug we shipped: Claude generated a
+    # coverAlt like '... like "1," "2,"...' and the blog build died.)
     lines = []
     for k, v in fm.items():
-        # Only quote string values (keep arrays/multilines as-is if any)
         if isinstance(v, str) and not (v.startswith('[') or v.startswith('{')):
-            lines.append(f'{k}: "{v}"')
+            safe = v.replace('\\', '\\\\').replace('"', '\\"')
+            lines.append(f'{k}: "{safe}"')
         else:
             lines.append(f'{k}: {v}')
     return '---\n' + '\n'.join(lines) + '\n---\n' + body
