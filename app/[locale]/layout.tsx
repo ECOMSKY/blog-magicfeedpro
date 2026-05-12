@@ -5,6 +5,7 @@ import SiteFooter from '@/components/SiteFooter';
 import MetaPixel from '@/components/MetaPixel';
 import GoogleAds from '@/components/GoogleAds';
 import RecentAuditToast from '@/components/RecentAuditToast';
+import BlogTopBanner from '@/components/BlogTopBanner';
 import { locales, type Locale } from '@/i18n/config';
 
 export function generateStaticParams() {
@@ -26,6 +27,7 @@ export default async function LocaleLayout({
     <>
       <MetaPixel />
       <GoogleAds />
+      <BlogTopBanner locale={locale as Locale} />
       <SiteHeader locale={locale as Locale} />
       <main id="main">{children}</main>
       <SiteFooter locale={locale as Locale} />
