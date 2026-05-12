@@ -23,8 +23,8 @@ const STORAGE_KEY = 'mfp_exit_popup_dismissed_at';
 const SUPPRESS_DAYS = 7;
 const SCROLL_THRESHOLD = 0.1;
 const SCROLL_BACK_PX = 200;
-const DWELL_ARM_MS = 15_000;       // arm after 15s on page
-const HARD_FIRE_MS = 60_000;       // force-fire after 60s if engaged but no exit signal
+const DWELL_ARM_MS = 10_000;       // arm exit triggers after 10s on page
+const HARD_FIRE_MS = 25_000;       // force-fire after 25s on ANY page, scroll or no scroll
 
 export default function ExitIntentPopup({
   pathKind,
@@ -48,12 +48,11 @@ export default function ExitIntentPopup({
       return;
     }
 
-    try {
-      const last = Number(localStorage.getItem(STORAGE_KEY) || '0');
-      if (last && Date.now() - last < SUPPRESS_DAYS * 86_400_000) return;
-    } catch {
-      /* localStorage unavailable — proceed */
-    }
+    // Suppression removed by founder decision (2026-05-12): the audit
+    // offer is the core conversion lever, so we want EVERY visit on
+    // EVERY page to see it once per session. The popup still self-
+    // dismisses on close (just doesn't persist across reloads).
+    // The ?nopopup=1 query escape stays as a manual override.
 
     let fired = false;
     let armed = false;
@@ -86,13 +85,11 @@ export default function ExitIntentPopup({
       lastY = y;
     };
     const dwellTimer = window.setTimeout(arm, DWELL_ARM_MS);
-    // Hard-fire fallback — if the visitor is still on the page after
-    // 60s but never produced a mouse-leave or scroll-back signal
-    // (common on mobile, common on long-form posts), show the offer
-    // anyway. Without this, ExitIntentPopup misses 80% of readers.
-    const hardFireTimer = window.setTimeout(() => {
-      if (!fired && maxScroll > SCROLL_THRESHOLD) fire();
-    }, HARD_FIRE_MS);
+    // Hard-fire fallback — show the offer after HARD_FIRE_MS no matter
+    // what (used to gate on scroll depth, but home/category pages are
+    // short and most visitors never scroll past the fold; the founder
+    // wants the offer in front of everyone).
+    const hardFireTimer = window.setTimeout(fire, HARD_FIRE_MS);
     document.addEventListener('mouseleave', onLeave);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
@@ -108,7 +105,9 @@ export default function ExitIntentPopup({
   const auditUrl = `https://lp.magicfeedpro.com/?utm_source=blog&utm_medium=exit_popup&utm_campaign=audit&utm_content=${pathKind}&lang=${locale}`;
   const dismiss = () => {
     setOpen(false);
-    try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch {}
+    // No localStorage write — founder wants the popup to reappear on
+    // every page load until the visitor either takes the CTA or
+    // permanently blocks it via ?nopopup=1.
   };
 
   return (
