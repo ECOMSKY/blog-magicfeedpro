@@ -131,44 +131,87 @@ html {
 }
 img { max-width: 100%; height: auto; display: block; }
 
-/* RecentAuditToast — bottom-left rolling social proof */
+/* RecentAuditToast — bottom-left rolling social proof.
+   Compact card (not a 1-line strip) so it actually catches the eye
+   against the blog content. The previous horizontal pill blended in
+   too well with the page background — high-intent visitors scrolled
+   right past it. Now stacks LIVE chip → sentence → CTA arrow. */
 .recent-audit-toast {
   position: fixed; left: 20px; bottom: 20px; z-index: 60;
-  display: inline-flex; align-items: center; gap: 10px;
-  max-width: calc(100vw - 40px);
-  background: #FFFFFF; border: 1px solid var(--line);
-  border-radius: var(--r-pill); padding: 10px 14px;
-  box-shadow: 0 12px 32px -12px rgba(15, 23, 42, 0.18), 0 1px 2px rgba(15, 23, 42, 0.04);
-  font-family: var(--font-body); font-size: 13px; color: var(--ink-800);
-  opacity: 0; transform: translateY(8px); pointer-events: none;
+  display: flex; flex-direction: column; gap: 8px;
+  width: 280px;
+  background: #FFFFFF;
+  border: 1px solid var(--brand-200, #d6d8ff);
+  border-radius: 14px;
+  padding: 14px 16px 14px 16px;
+  box-shadow:
+    0 20px 48px -16px rgba(15, 23, 42, 0.22),
+    0 4px 12px -2px rgba(15, 23, 42, 0.08),
+    0 0 0 1px rgba(0, 0, 238, 0.04);
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--ink-900);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
   transition: opacity 0.32s ease, transform 0.32s ease;
 }
-.recent-audit-toast[data-visible='true'] { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.recent-audit-toast[data-visible='true'] {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.recent-audit-toast__head {
+  display: inline-flex; align-items: center; gap: 7px;
+}
 .recent-audit-toast__pulse {
-  flex-shrink: 0; width: 9px; height: 9px; border-radius: 50%;
-  background: #45D27A; box-shadow: 0 0 0 0 rgba(69, 210, 122, 0.55);
+  flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%;
+  background: #45D27A;
+  box-shadow: 0 0 0 0 rgba(69, 210, 122, 0.55);
   animation: recentAuditPulse 1.6s ease-out infinite;
 }
-.recent-audit-toast__text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60vw; }
+.recent-audit-toast__live {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  color: #15803D; text-transform: uppercase;
+}
+.recent-audit-toast__body {
+  font-size: 13px; line-height: 1.4;
+  color: var(--ink-800);
+}
 .recent-audit-toast__cta {
-  flex-shrink: 0; font-weight: 600; font-size: 12px; color: var(--brand-600);
-  text-decoration: none; border-bottom: 1px solid transparent;
-  transition: border-color 0.15s ease;
+  align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-weight: 700; font-size: 12px;
+  color: #fff;
+  background: var(--brand-600, #0000EE);
+  padding: 7px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 238, 0.4);
 }
-.recent-audit-toast__cta:hover { border-bottom-color: var(--brand-600); }
+.recent-audit-toast__cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 16px -4px rgba(0, 0, 238, 0.5);
+}
 .recent-audit-toast__close {
-  flex-shrink: 0; background: transparent; border: 0; color: var(--ink-500);
-  font-size: 16px; line-height: 1; cursor: pointer; padding: 2px 4px; margin-left: 2px;
+  position: absolute; top: 6px; right: 6px;
+  background: transparent; border: 0; color: var(--ink-400, #94A3B8);
+  font-size: 16px; line-height: 1; cursor: pointer;
+  padding: 4px 6px; border-radius: 6px;
 }
-.recent-audit-toast__close:hover { color: var(--ink-900); }
+.recent-audit-toast__close:hover { color: var(--ink-900); background: #F1F5F9; }
 @keyframes recentAuditPulse {
   0%   { box-shadow: 0 0 0 0 rgba(69, 210, 122, 0.55); }
   70%  { box-shadow: 0 0 0 8px rgba(69, 210, 122, 0); }
   100% { box-shadow: 0 0 0 0 rgba(69, 210, 122, 0); }
 }
 @media (max-width: 480px) {
-  .recent-audit-toast { left: 10px; right: 10px; bottom: 10px; padding: 9px 12px; font-size: 12px; }
-  .recent-audit-toast__text { max-width: 100%; white-space: normal; }
+  .recent-audit-toast {
+    left: 12px; right: 12px; bottom: 12px;
+    width: auto; padding: 12px 14px;
+  }
 }
 
 body {

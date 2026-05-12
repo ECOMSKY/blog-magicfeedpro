@@ -175,16 +175,6 @@ export default function RecentAuditToast() {
       role="status"
       aria-live="polite"
     >
-      <span className="recent-audit-toast__pulse" aria-hidden="true" />
-      <span className="recent-audit-toast__text">{line}</span>
-      <a
-        href={`https://lp.magicfeedpro.com/?utm_source=blog&utm_medium=social_proof_toast&lang=${locale}`}
-        className="recent-audit-toast__cta"
-        target="_blank"
-        rel="noopener"
-      >
-        {t('cta')}
-      </a>
       <button
         type="button"
         aria-label="Dismiss"
@@ -193,6 +183,19 @@ export default function RecentAuditToast() {
       >
         ×
       </button>
+      <div className="recent-audit-toast__head">
+        <span className="recent-audit-toast__pulse" aria-hidden="true" />
+        <span className="recent-audit-toast__live">LIVE</span>
+      </div>
+      <div className="recent-audit-toast__body">{line}</div>
+      <a
+        href={`https://lp.magicfeedpro.com/?utm_source=blog&utm_medium=social_proof_toast&lang=${locale}`}
+        className="recent-audit-toast__cta"
+        target="_blank"
+        rel="noopener"
+      >
+        {t('cta')} →
+      </a>
     </div>
   );
 }
