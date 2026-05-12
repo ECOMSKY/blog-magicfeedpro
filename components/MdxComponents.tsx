@@ -154,10 +154,56 @@ export function FAQItem({ q, a, children }: { q: string; a?: string; children?: 
   );
 }
 
+/**
+ * YouTube embed component. The blog AI generation prompt asks the model
+ * to drop a <YouTubeEmbed /> when a topic deserves video reinforcement
+ * (e.g. tutorial-style sections), so the MDX needs to render it.
+ *
+ * Title attribute = accessibility label (the iframe needs one), not a
+ * caption — we don't show it visually to keep the player clean.
+ *
+ * Sandboxed via youtube-nocookie.com so the embed doesn't drop tracking
+ * cookies on the blog visitor before they've consented.
+ */
+export function YouTubeEmbed({ id, title }: { id: string; title?: string }) {
+  if (!id) return null;
+  return (
+    <div
+      className="youtube-embed"
+      style={{
+        position: 'relative',
+        paddingBottom: '56.25%',
+        height: 0,
+        overflow: 'hidden',
+        borderRadius: 'var(--r-lg, 12px)',
+        margin: 'var(--s-12, 32px) 0',
+        background: '#000',
+      }}
+    >
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`}
+        title={title || 'YouTube video'}
+        loading="lazy"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          border: 0,
+        }}
+      />
+    </div>
+  );
+}
+
 export const mdxComponents = {
   Callout,
   ImageCaption,
   ProductCTA,
   FAQ,
-  FAQItem
+  FAQItem,
+  YouTubeEmbed,
 };
