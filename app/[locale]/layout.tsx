@@ -4,6 +4,7 @@ import SiteHeader from '@/components/SiteHeader';
 import SiteFooter from '@/components/SiteFooter';
 import MetaPixel from '@/components/MetaPixel';
 import GoogleAds from '@/components/GoogleAds';
+import RecentAuditToast from '@/components/RecentAuditToast';
 import { locales, type Locale } from '@/i18n/config';
 
 export function generateStaticParams() {
@@ -28,6 +29,7 @@ export default async function LocaleLayout({
       <SiteHeader locale={locale as Locale} />
       <main id="main">{children}</main>
       <SiteFooter locale={locale as Locale} />
+      <RecentAuditToast />
     </>
   );
 }
