@@ -275,13 +275,14 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* ----------------- Top promo banner (free audit CTA) ----------------- */
-/* Sits above the sticky site-header so the offer is the first thing every
-   blog reader sees. We keep the banner non-sticky (it stays at the top of
-   the document, so only visible at the top of the article — which is the
-   moment the user's intent is highest). Header takes over on scroll. */
+/* Sticky above the sticky site-header so the offer stays pinned through
+   the whole article scroll. Banner z-index just above the header so the
+   header's box-shadow doesn't bleed through. Header's top offset is
+   bumped below to make room. */
 .blog-top-banner {
-  position: relative;
-  z-index: 99;
+  position: sticky;
+  top: 0;
+  z-index: 101;
   background: linear-gradient(90deg, #0000EE 0%, #4F46E5 50%, #7C3AED 100%);
   color: #FFFFFF;
 }
@@ -332,13 +333,20 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* ----------------- Header (§4 Navigation) ----------------- */
+/* `top` is offset by the promo-banner height so both stay pinned when
+   scrolling. Approximate measured banner heights: 36px desktop, 32px
+   mobile (paddings + 14px / 13px line). If you change the banner
+   padding/font-size, update these too. */
 .site-header {
   position: sticky;
-  top: 0;
+  top: 36px;
   z-index: 100;
   background: var(--white);
   border-bottom: 1px solid var(--line);
   box-shadow: var(--sh-subtle);
+}
+@media (max-width: 600px) {
+  .site-header { top: 32px; }
 }
 .site-header__inner {
   display: flex;
