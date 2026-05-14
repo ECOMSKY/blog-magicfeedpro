@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
@@ -65,6 +66,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd(locale)} />
         <script defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>
+        {/* Google Analytics 4 (gtag.js). Hardcoded measurement ID; the
+            inline init is a fixed string literal so there's no user
+            input flowing into a script body. */}
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-T5BGZMG8NT" strategy="afterInteractive" />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-T5BGZMG8NT');`}
+        </Script>
       </head>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
