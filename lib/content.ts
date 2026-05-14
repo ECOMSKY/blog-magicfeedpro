@@ -54,6 +54,15 @@ function safeReadDir(dir: string): string[] {
   try { return fs.readdirSync(dir); } catch { return []; }
 }
 
+function parseBool(v: unknown): boolean {
+  if (typeof v === "boolean") return v;
+  if (typeof v === "string") {
+    const t = v.trim().toLowerCase();
+    return t === "true" || t === "1" || t === "yes";
+  }
+  return !!v;
+}
+
 export function getAllPosts(): Post[] {
   const posts: Post[] = [];
   const locales = safeReadDir(POSTS_DIR);
@@ -82,9 +91,9 @@ export function getAllPosts(): Post[] {
         cover: data.cover,
         coverAlt: data.coverAlt,
         tldr: data.tldr,
-        noindex: !!data.noindex,
-        draft: !!data.draft,
-        featured: !!data.featured,
+        noindex: parseBool(data.noindex),
+        draft: parseBool(data.draft),
+        featured: parseBool(data.featured),
         comments: data.comments === true,
         body: content,
         readingMinutes: Math.max(1, Math.round(stat.minutes))
