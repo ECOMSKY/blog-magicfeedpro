@@ -22,8 +22,10 @@ const ROWS = [
 
 export default function FeedScoringAnim({
   variant = 'sidebar',
+  liveScoringText = 'Live scoring',
 }: {
   variant?: 'sidebar' | 'banner';
+  liveScoringText?: string;
 }) {
   return (
     <div className={`feed-anim feed-anim--${variant}`} aria-hidden="true">
@@ -72,7 +74,7 @@ export default function FeedScoringAnim({
       {variant === 'sidebar' && (
         <div className="feed-anim__footer">
           <span className="feed-anim__footer-pulse" />
-          <span className="feed-anim__footer-text">Live scoring</span>
+          <span className="feed-anim__footer-text">{liveScoringText}</span>
         </div>
       )}
     </div>

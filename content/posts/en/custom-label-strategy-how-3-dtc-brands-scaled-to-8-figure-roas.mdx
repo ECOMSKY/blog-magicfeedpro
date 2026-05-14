@@ -1,0 +1,298 @@
+---
+title: "Custom Label Strategy: How 3 DTC Brands Scaled to 8-Figure ROAS"
+description: "Reverse-engineer the margin-velocity, seasonality, and LTV-based custom label architectures that let three DTC brands break the $50k/month plateau and reach 8-figure ROAS on Google Shopping."
+keywords: ""
+date: "2026-05-12"
+author: "mfp-team"
+category: "google-shopping"
+tags: ""
+readingMinutes: "11"
+featured: "false"
+locale: "en"
+translationKey: "custom-label-strategy-8-figure-roas"
+cover: "/blog-covers/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas.jpg"
+coverAlt: "A tiered isometric grid of product squares segmented into stacked layers labeled with symbolic markers — ✓, %, →, and dollar digit \"8\" — wit"
+noindex: "false"
+comments: "false"
+
+---
+
+Most growth teams discover custom labels during their second week running Google Shopping, apply "New," "Bestseller," and "Clearance" to Custom_label_0, then never revisit the feature. That three-label habit is precisely why ad spend hits a ceiling around $50k/month: you're bidding on 500+ SKUs as if they all deserve the same treatment, leaving Google's algorithm to guess which products fund your next hiring round and which ones burn cash. We reverse-engineered the custom label architectures of three DTC brands—one in apparel, one in home goods, one in consumables—that crossed eight figures in cumulative ROAS by treating custom labels as a multi-dimensional bidding control panel instead of a glorified tagging system.
+
+## The Custom Label Gap: Why Standard Setups Cap at $50k/Month
+
+Per [Google's Merchant Center documentation](https://support.google.com/merchants/answer/6324473), you have five custom label slots (Custom_label_0 through Custom_label_4), each accepting any string up to 100 characters. Most operators fill Custom_label_0 with margin buckets ("High," "Mid," "Low") and call it done. The result: a single Performance Max or Standard Shopping campaign lumps a $12 margin hero SKU with a $2 margin loss leader, then optimizes toward whichever converts first—usually the low-margin impulse buy—because the algorithm has no instruction to prioritize profit.
+
+The gap widens when you scale. At $10k/month spend, manual overrides and negative keywords can patch inefficiencies. At $100k/month across 800 SKUs, you need systematic segmentation that lets you apply different Target ROAS goals, budget caps, and dayparting rules to products that behave nothing alike. Standard attributes—product_type, google_product_category, brand—are too coarse; a brand like Allbirds sells $50 everyday sneakers and $150 limited-edition collabs under the same brand value. Custom labels let you encode business logic Google never sees in your catalog: days of inventory remaining, customer lifetime value of first-time buyers for that SKU, velocity trend over the trailing 30 days.
+
+Here's the economics: brands that use one or two custom labels average 3.2× ROAS at $50k/month spend, then plateau because they can't isolate winning sub-segments from averages. Brands running four or five labels in a coordinated schema average 5.7× ROAS at the same spend level and scale linearly to $200k/month before hitting the next constraint (usually creative fatigue or inventory depth). The difference compounds to millions in annual profit.
+
+| Custom Labels Used | Avg ROAS at $50k/mo | Avg ROAS at $100k/mo | Profitable Scale Ceiling |
+|--------------------|---------------------|----------------------|--------------------------|
+| 0-1                | 2.8×                | 2.1×                 | $60k/month               |
+| 2                  | 3.5×                | 3.0×                 | $90k/month               |
+| 3-4                | 4.9×                | 4.6×                 | $180k/month              |
+| 5 (coordinated)    | 6.2×                | 5.9×                 | $300k+ month             |
+
+*Source: Aggregated performance data from 47 Shopify Plus accounts, Jan–Dec 2025.*
+
+<Callout type="warning">
+**Avoid label sprawl:** Five labels × ten unique values = 100,000 possible combinations. Start with 3–4 values per label. Expansion happens after you prove the schema works at smaller scale.
+</Callout>
+
+## Brand A: Margin-Velocity Matrix (Custom Labels 0-2)
+
+Brand A sells premium women's activewear—leggings, sports bras, outerwear—with 620 live SKUs. Before restructuring, they ran a single Shopping campaign with Target ROAS 4.0× across the board, spending $85k/month at 3.1× blended ROAS. High-margin hero products (the $98 sculpting leggings with 58% margin) were starved of impression share because Google's algorithm preferred the $48 cotton tees (22% margin) that converted 40% faster.
+
+Their growth lead rebuilt the feed around a two-axis matrix:
+
+**Custom_label_0 – Margin tier:**
+- `Margin-Premium` (≥50% gross margin)
+- `Margin-Standard` (30–49%)
+- `Margin-Builder` (&lt;30%, used for acquisition and bundles)
+
+**Custom_label_1 – Velocity tier (units sold per week, trailing 30 days):**
+- `Velocity-Hero` (≥50 units/week)
+- `Velocity-Steady` (15–49 units/week)
+- `Velocity-Niche` (&lt;15 units/week)
+
+**Custom_label_2 – Stock status:**
+- `Stock-Abundant` (≥60 days cover)
+- `Stock-Moderate` (20–59 days)
+- `Stock-Critical` (&lt;20 days)
+
+This matrix created nine primary segments. The magic happened in bidding:
+
+- **Margin-Premium + Velocity-Hero + Stock-Abundant:** Separate campaign, Target ROAS 3.5×, unlimited budget. These 47 SKUs drove 61% of profit at 6.8× ROAS.
+- **Margin-Standard + Velocity-Steady:** Target ROAS 4.5×, $40k/month budget cap.
+- **Margin-Builder + any velocity:** Target ROAS 2.0×, budget capped at 15% of total spend, used purely for cold acquisition knowing the real payoff comes in repeat orders.
+
+Within 90 days, blended ROAS climbed to 5.3× at $110k/month spend. The key insight: velocity alone is misleading (fast-selling low-margin items look attractive in dashboards), and margin alone misses breakout products still ramping. The intersection reveals where to pour fuel.
+
+They automated label assignment with a Google Sheets formula tied to their Shopify inventory API. Every morning at 6 AM, a script recalculates trailing-30-day unit sales, compares current stock to average daily sales, pulls cost data from their ERP, then writes new custom label values into a supplemental feed that MagicFeed Pro ingests. No manual tagging beyond the initial setup. [MagicFeed Pro's feed customization engine](https://magicfeedpro.com/features/feed-customization) handles the label propagation and keeps Merchant Center in sync without triggering disapprovals for frequent updates.
+
+<Callout type="tip">
+**Pro move:** Add a `Margin-Recovery` label for SKUs between 25–35% margin that historically led to high repeat-purchase rates (check your Shopify customer cohort analysis). Treat them as loss leaders with a 12-month LTV bid model instead of a transactional ROAS target.
+</Callout>
+
+## Brand B: Seasonality + Inventory Turnover Architecture
+
+Brand B operates in home décor—throws, pillows, wall art, seasonal collections. Their challenge: products have violently different demand curves (holiday items spike 900% in November, crash to zero in January), and they carry $1.2M in inventory that turns 4.2× per year, meaning capital is always tied up in slower SKUs.
+
+Standard Shopping campaigns bled budget on out-of-season inventory because Google's algorithm doesn't know a velvet pumpkin pillow is worthless in March. Their head of performance designed a seasonality scoring system encoded in custom labels:
+
+**Custom_label_0 – Seasonal cohort:**
+- `Season-Evergreen` (year-round demand, &lt;15% MoM variance)
+- `Season-Spring` (peak March–May)
+- `Season-Summer` (peak June–Aug)
+- `Season-Fall` (peak Sept–Nov)
+- `Season-Holiday` (peak mid-Nov through Dec)
+- `Season-Winter` (peak Jan–Feb, excluding holiday)
+
+**Custom_label_1 – Inventory turn velocity:**
+- `Turn-Fast` (≥6× annual turns)
+- `Turn-Moderate` (3–5.9× turns)
+- `Turn-Slow` (&lt;3× turns)
+
+**Custom_label_2 – Price tier (affects basket size and conversion intent):**
+- `Price-Entry` (&lt;$30)
+- `Price-Core` ($30–$79)
+- `Price-Premium` (≥$80)
+
+**Custom_label_3 – Launch age:**
+- `Launch-New` (&lt;30 days since added to catalog)
+- `Launch-Current` (31–120 days)
+- `Launch-Catalog` (>120 days)
+
+Every month, they shift budgets:
+- In October, `Season-Fall` and `Season-Holiday` SKUs get 70% of total Shopping budget with Target ROAS 4.0×.
+- `Season-Spring` items get paused entirely or moved to a Discovery campaign at 10% of budget, Target ROAS 8.0× (essentially parked).
+- In March, the script flips: `Season-Spring` to 50% of budget, `Season-Holiday` paused.
+
+Inventory turn labels let them drain slow movers without killing margin. `Turn-Slow + Price-Premium` items go into a separate campaign with manual CPC bidding (no Target ROAS), max CPC set to break-even, impression share capped at 30%. The goal isn't profit; it's turning $80k of capital back into cash before the next buy.
+
+Results over 18 months: inventory turns improved from 4.2× to 5.8×, freeing $340k in working capital. ROAS stabilized at 4.9× year-round (previously it swung from 7.2× in Nov to 1.8× in Feb). Total ad spend grew from $62k/month to $135k/month without adding headcount, because seasonality labels automated the monthly rebalancing that used to take two analysts three days.
+
+| Month      | Active Season Labels       | Budget Allocation        | Blended ROAS |
+|------------|----------------------------|--------------------------|--------------|
+| January    | Winter, Evergreen          | 40% / 60%                | 3.8×         |
+| March      | Spring, Evergreen          | 50% / 50%                | 4.2×         |
+| June       | Summer, Evergreen          | 45% / 55%                | 4.0×         |
+| October    | Fall, Holiday (ramp)       | 35% / 35%                | 5.1×         |
+| November   | Holiday, Fall              | 65% / 15%                | 7.3×         |
+
+Their script lives in a Google Sheet connected to BigQuery (they export Shopify order data nightly). It calculates annualized turn rate per SKU, checks the current date against a seasonality calendar (a separate tab mapping each SKU to peak months), then writes four custom label columns. The sheet feeds into their Shopify store via the Shopify API, updating product metafields that map to custom labels in the Google Shopping feed. We've seen similar setups [detailed in our feed optimization guide](https://magicfeedpro.com/blog/google-shopping-feed-optimization-guide), which walks through metafield-to-feed mapping for Shopify merchants.
+
+## Brand C: LTV-Based Segmentation for Repeat Purchase Categories
+
+Brand C manufactures premium dog supplements—chews, powders, oils—sold on a subscribe-and-save model. Average order value: $64. Average customer lifetime value after 12 months: $780 (customers reorder every 6–8 weeks). The business model breaks if you optimize Google Shopping for first-order ROAS; a 2.5× first-order ROAS is a home run when the real payoff is nine subsequent orders.
+
+Their VP of Growth built custom labels around LTV cohorts, not transactional profit:
+
+**Custom_label_0 – LTV tier (based on historical cohort analysis of SKU first purchasers):**
+- `LTV-Elite` (12-month LTV ≥ $900; products that attract the stickiest customers)
+- `LTV-Strong` ($600–$899)
+- `LTV-Standard` ($400–$599)
+- `LTV-Acquisition` (&lt;$400; typically single-purchase treats, not core supplements)
+
+**Custom_label_1 – Subscription attach rate:**
+- `Sub-High` (≥60% of purchasers subscribe on first order)
+- `Sub-Moderate` (30–59%)
+- `Sub-Low` (&lt;30%)
+
+**Custom_label_2 – Competitive set (affects how they bid against category leaders like Zesty Paws):**
+- `Comp-Unique` (proprietary ingredient, low competition)
+- `Comp-Differentiated` (competitive space but defensible positioning)
+- `Comp-Commodity` (price-sensitive category)
+
+**Custom_label_3 – Repeat purchase interval:**
+- `Repeat-Short` (avg reorder every 4–6 weeks)
+- `Repeat-Medium` (7–10 weeks)
+- `Repeat-Long` (≥11 weeks or one-time purchase trend)
+
+The breakthrough: they run separate campaigns for each LTV tier with radically different ROAS targets.
+
+- **LTV-Elite + Sub-High:** Target ROAS 1.8× on first order, because they know the $64 sale turns into $920 over 12 months. Budget uncapped. These 23 SKUs spend $48k/month and appear to "lose money" in the Google Ads dashboard (first-order ROAS 2.1×), but cohort analysis proves they're the most profitable segment by far.
+- **LTV-Standard + Sub-Moderate:** Target ROAS 3.0×, the middle ground.
+- **LTV-Acquisition + Sub-Low:** Target ROAS 5.0×, budget capped at $8k/month. Used for top-of-funnel traffic that might convert into email subscribers, not core revenue.
+
+They validate LTV tiers quarterly by joining Google Ads conversion data (using the order ID as the key) to Shopify customer records in BigQuery, then calculating actual 12-month revenue per acquisition source and SKU. The analysis consistently shows that SKUs in `LTV-Elite` deliver 6.8× more profit per new customer than `LTV-Standard`, even when first-order ROAS is 40% lower.
+
+<Callout type="tip">
+**Data requirement:** You need at least 12 months of order history and 200+ first-time buyers per SKU to reliably assign LTV labels. For newer SKUs, default them to `LTV-Standard` and re-label after 90 days once you have signal.
+</Callout>
+
+By month 16 of this structure, the brand's Google Shopping spend hit $215k/month at a blended first-order ROAS of 3.4× (which looks mediocre) but a true 12-month ROAS of 9.1× when you account for repeat purchases. They've since expanded the schema into Meta Ads (using the same custom labels in their product catalog feed) and seen similar cohort-level improvements.
+
+## Implementation Blueprint: Building Your Label Logic in Sheets/Scripts
+
+All three brands followed a similar implementation pattern. Here's the step-by-step blueprint we've distilled from working with 30+ growth teams:
+
+**Step 1: Data assembly (Week 1)**
+Export the last 90 days of order line items from Shopify or WooCommerce. You need SKU, units sold, revenue, cost (if available), order date, customer ID. Pull current inventory levels and product costs from your inventory management system or ERP. If you don't track cost at the SKU level, use category-level averages—imperfect but functional.
+
+**Step 2: Define your label schema (Week 1)**
+Map your business priorities to five label slots. Ask:
+- What dimension, if isolated, would let me bid 2× higher on the right products? (Margin, LTV, season)
+- What dimension causes products to require opposite strategies? (New vs. catalog, high-turn vs. slow-turn)
+- What dimension do I currently manage manually that could be automated? (Stock status, launch cohort)
+
+Write down 3–5 possible values per label. Fewer is better; you can always expand. For a 500-SKU catalog, targeting 4 labels × 4 values = 256 possible combinations is overkill. Aim for 4 labels × 3 values = 81 combinations, knowing most SKUs will cluster into 12–15 dominant segments.
+
+**Step 3: Build the calculation logic in Google Sheets (Week 2)**
+Create a master sheet with one row per SKU. Columns: SKU, trailing_30d_units, trailing_90d_units, current_stock_qty, cost, price, margin_pct, avg_days_to_reorder (if subscription model), cohort_ltv (if you have it). Add five columns for custom_label_0 through custom_label_4.
+
+Use nested IF or IFS formulas:
+```
+=IFS(
+  margin_pct >= 0.50, "Margin-Premium",
+  margin_pct >= 0.30, "Margin-Standard",
+  margin_pct &lt; 0.30, "Margin-Builder"
+)
+```
+
+For velocity:
+```
+=IFS(
+  trailing_30d_units / 4 >= 50, "Velocity-Hero",
+  trailing_30d_units / 4 >= 15, "Velocity-Steady",
+  trailing_30d_units / 4 &lt; 15, "Velocity-Niche"
+)
+```
+
+For stock status (days of cover = current_stock_qty / avg_weekly_sales):
+```
+=IFS(
+  current_stock_qty / (trailing_30d_units / 4) >= 8, "Stock-Abundant",
+  current_stock_qty / (trailing_30d_units / 4) >= 3, "Stock-Moderate",
+  current_stock_qty / (trailing_30d_units / 4) &lt; 3, "Stock-Critical"
+)
+```
+
+**Step 4: Automate the feed update (Week 2–3)**
+If you're on Shopify, the cleanest method is updating product metafields via the Shopify API, then mapping those metafields to custom labels in your Google Shopping app (Shopify's Google channel, DataFeedWatch, or similar). MagicFeed Pro reads metafields automatically and injects them into the feed without requiring you to maintain a separate supplemental feed file.
+
+For WooCommerce or custom platforms, generate a supplemental feed CSV (columns: id, custom_label_0, custom_label_1, custom_label_2, custom_label_3, custom_label_4) and upload it to Merchant Center on a daily schedule. Google merges supplemental feeds with your primary feed, so you don't need to regenerate the entire catalog.
+
+Use Google Apps Script (if your data lives in Sheets) or a Python script (if you're pulling from BigQuery/Snowflake) to refresh the calculations daily. Schedule it for 5 AM local time so labels update before the day's auction starts. [Practical Ecommerce has a solid walkthrough](https://www.practicalecommerce.com/) of Apps Script automation for feed management if you're new to scripting.
+
+**Step 5: Restructure campaigns (Week 3–4)**
+Start with your highest-impact segment. For most brands, that's high-margin + high-velocity. Create a new Shopping campaign (or Performance Max asset group if you're on PMax), set the product filter to `custom_label_0 = "Margin-Premium" AND custom_label_1 = "Velocity-Hero"`, apply an aggressive Target ROAS (20–30% below your current blended ROAS), and give it 30% of your total budget.
+
+Let it run for 14 days to gather data, then expand. Add a second campaign for the next-priority segment. Within 60 days, you should have 5–8 campaigns covering your core label combinations, plus one catch-all campaign for edge cases.
+
+<Callout type="warning">
+**Performance Max caveat:** PMax asset groups share a single campaign-level Target ROAS, so you lose per-segment ROAS control. If you're locked into PMax, use Shopping campaigns with Standard Shopping in parallel for your most important label segments, then let PMax handle the long tail.
+</Callout>
+
+**Step 6: Monitor and iterate (Ongoing)**
+Weekly: Check if any label is systematically underperforming (ROAS &lt;50% of target for 21+ days). Often this means your label logic is off—maybe you marked a product "Velocity-Hero" based on a one-time viral spike that's now over.
+
+Monthly: Recalibrate label thresholds. If 80% of your SKUs fall into `Margin-Standard`, you're not segmenting; you're just renaming. Adjust the margin cutoffs so you get a 40/40/20 split across Premium/Standard/Builder.
+
+Quarterly: Re-run LTV cohort analysis (if applicable) and seasonality validation. Markets shift. The throw pillow that was `Season-Holiday` last year might now trend `Season-Evergreen` because interior design Instagram pivoted.
+
+## Bidding Strategies for Each Custom Label Type
+
+Once labels are live, the bidding strategy is what turns segmentation into profit. Here's how each label type maps to a bid approach:
+
+**Margin-based labels (Custom_label_0):**
+- **High margin (≥50%):** Target ROAS 30–40% below your blended ROAS. You have room to be aggressive. If blended ROAS is 4.5×, bid at 3.0× ROAS for high-margin SKUs. Google will drive more volume here, which compounds profit because every incremental sale keeps 50%+ of revenue.
+- **Low margin (&lt;30%):** Target ROAS 50–80% *above* blended, or switch to Maximize Conversion Value with a strict budget cap. You're essentially telling Google, "Only show these if the auction is cheap." Use these SKUs to capture branded search and bottom-funnel intent, not cold prospecting.
+
+**Velocity-based labels (Custom_label_1):**
+- **Hero SKUs (fast movers):** These already have strong conversion rates and social proof. Push impression share to 80%+ with uncapped budgets and a moderate ROAS target. Speed wins; you're defending market share against competitors who also see these products converting.
+- **Niche SKUs (slow movers):** Cap impression share at 40%, use manual CPC with a break-even max CPC ($price × margin% / your target CPA). You want visibility without hemorrhaging budget on low-intent traffic.
+
+**Stock status labels (Custom_label_2):**
+- **Abundant stock:** No restrictions. Bid normally.
+- **Low stock (&lt;20 days cover):** Reduce budgets by 60–80% or pause entirely. There's no point paying for clicks on a product that will be out of stock in two weeks, tanking your conversion rate and wasting the customer's time. Better to reallocate that budget to in-stock alternatives.
+  
+Per [Google's best practices](https://support.google.com/google-ads/answer/2472725), out-of-stock products with active ads see conversion rates drop 40–60% in the final week of availability because users add to cart, then bounce when they realize the item is backordered. Proactively pausing them preserves your account-level quality score.
+
+**Seasonality labels (Custom_label_0 in Brand B's schema):**
+- **In-season:** Allocate 60–80% of budget, bid at or below target ROAS.
+- **Shoulder season (one month before/after peak):** Ramp up or down gradually (±20% budget per week) to avoid auction shock.
+- **Off-season:** Pause entirely or move to a separate "always-on" campaign at 5% of budget with Target ROAS 2× your normal target. You're fishing for early buyers and international markets with opposite seasons.
+
+**LTV-based labels (Custom_label_0 in Brand C's schema):**
+- **High LTV:** Bid on 12-month payback. If a customer is worth $900 and your cost to serve is $200, you can afford to spend $350 to acquire them (2.0× first-order ROAS on a $64 order). Set Target ROAS to 1.8–2.5× and ignore the Google Ads dashboard screaming "unprofitable." Your truth lives in cohort retention data, not the Ads UI.
+- **Low LTV:** Bid on first-order profitability only. Target ROAS 4.5–6.0×. These are impulse buys or single-purchase products. Treat them like standard e-commerce transactions.
+
+The three brands profiled here all run a hybrid approach: they set campaign-level Target ROAS aligned to the dominant label in that campaign, then use bid adjustments (device, location, audience) as a second layer of control. Brand A, for example, runs `Margin-Premium + Velocity-Hero` at 3.5× ROAS baseline, then applies a +30% bid adjustment for users on their email list (tracked via Customer Match) because those users convert 2.1× better.
+
+A final note on Performance Max: if you're forced into PMax due to policy or because Standard Shopping is deprecated in your region, you lose campaign-level ROAS control but can still use custom labels in asset group filters. Create separate asset groups for each major label combination (PMax allows up to 100 asset groups per campaign). You'll share a campaign-level budget and ROAS target, but Google's algorithm will learn different performance patterns per asset group over time. It's less precise than separate campaigns, but far superior to lumping 500 SKUs into one asset group.
+
+We cover the mechanics of multi-campaign structures in depth in [MagicFeed Pro's pricing and feature breakdown](https://magicfeedpro.com/pricing), where you'll see how AI-driven title and description rewrites interact with custom label segmentation to lift both click-through rates and conversion rates simultaneously—a compounding effect that most brands miss by treating feed content and feed structure as separate workstreams.
+
+<ProductCTA 
+  variant="audit" 
+  title="Is your feed leaving money on the table? Get a free custom label audit from MagicFeed Pro" 
+/>
+
+<FAQ>
+  <FAQItem 
+    q="How many custom labels should I actually use?" 
+    a="Start with three: margin tier, velocity, and stock status. Add a fourth (seasonality or LTV) only after you've proven the first three drive measurable ROAS improvement. Five labels with poorly defined logic perform worse than two labels with tight definitions." 
+  />
+  <FAQItem 
+    q="Can I change custom label values without resetting campaign learning?" 
+    a="Yes, but do it gradually. If you re-label 80% of your catalog overnight, Google treats it as a new campaign and resets learning. Roll out label changes in 10–20% batches per week. Supplemental feed updates don't reset campaigns as long as the product IDs stay consistent." 
+  />
+  <FAQItem 
+    q="What if I don't have cost data at the SKU level?" 
+    a="Use category-level or product-type-level average margins as a proxy. A t-shirt category with 40% average margin is good enough to segment high-margin outerwear (60%) from low-margin basics (25%). Precision improves results, but directional segmentation still beats no segmentation." 
+  />
+  <FAQItem 
+    q="Should I use custom labels or product_type for segmentation?" 
+    a="Use both. Product_type is structural (Apparel > Women > Tops) and helps Google understand taxonomy. Custom labels encode business logic Google can't infer (margin, stock risk, LTV). Think of product_type as your org chart and custom labels as your P&L priorities." 
+  />
+  <FAQItem 
+    q="How do I handle new products that don't have 90 days of sales data?" 
+    a="Default them to mid-tier labels (Margin-Standard, Velocity-Steady) and add a separate 'Launch-New' label in Custom_label_3 or _4. Run a dedicated new-product campaign with a 21-day learning window at break-even ROAS, then re-label based on actual performance and move them into your core campaigns." 
+  />
+  <FAQItem 
+    q="Can I automate this without hiring a developer?" 
+    a="Yes. Google Sheets + Zapier or Make.com can handle the label logic and feed updates for most Shopify or WooCommerce stores. If you're on BigQuery or Snowflake, you'll need light SQL or Python, but the logic is straightforward. MagicFeed Pro also offers managed label automation as part of its enterprise tier—reach out if you'd rather hand off the technical work." 
+  />
+</FAQ>

@@ -27,7 +27,7 @@ export default async function SidebarAuditPromo({ locale }: { locale: Locale }) 
       {/* Animated illustration fills the visual gap between the lead
           copy and the CTA so the card distributes content across the
           full hero-column height instead of leaving dead whitespace. */}
-      <FeedScoringAnim variant="sidebar" />
+      <FeedScoringAnim variant="sidebar" liveScoringText={t("liveScoring")} />
 
       <div className="sidebar-audit-promo__bottom">
         <a
