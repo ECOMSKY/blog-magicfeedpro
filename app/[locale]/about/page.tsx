@@ -1,13 +1,34 @@
-import { setRequestLocale } from 'next-intl/server';
+import { setRequestLocale, getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
+import type { Locale } from '@/i18n/config';
 import { locales } from '@/i18n/config';
+import { absoluteUrl, localePath } from '@/lib/seo';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export const metadata = {
-  title: 'About the MagicFeedPro Blog'
-};
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: localeRaw } = await params;
+  const locale = localeRaw as Locale;
+  const t = await getTranslations({ locale, namespace: 'seo' });
+  const title = t('aboutTitle');
+  const description = t('aboutDescription');
+  return {
+    title,
+    description,
+    alternates: { canonical: localePath(locale, '/about') },
+    openGraph: {
+      title,
+      description,
+      url: absoluteUrl(locale, '/about')
+    }
+  };
+}
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

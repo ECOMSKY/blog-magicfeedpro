@@ -1,0 +1,189 @@
+---
+locale: "nl"
+title: "Google Shopping feed-optimalisatie: gids 2026"
+slug: "google-shopping-feed-optimalisatie-gids-2026"
+translationKey: "google-shopping-feed-optimization-2026-guide"
+description: "Praktijkgetest 2026-playbook voor ranking en conversie op Google Shopping: feedkwaliteit, AI-herschrijvingen, Merchant Center en wat dit jaar écht werkt."
+keywords:
+  - google shopping feed optimalisatie
+  - google shopping 2026
+  - productfeed seo
+  - merchant center
+  - ai herschrijvingen
+date: 2026-05-09
+updated: 2026-05-09
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+  - google-shopping
+  - feed
+  - merchant-center
+  - ai-rewrites
+  - pillar
+featured: true
+comments: false
+cover: "/blog-covers/google-shopping-feed-optimization-2026-guide.jpg"
+coverAlt: "Schematic of a product feed flowing through optimization stages, from raw data on the left to structured product cards on the right"
+---
+
+Google Shopping in 2026 lijkt in niets op Google Shopping in 2020. De migratie naar Performance Max is voltooid, AI Overviews routeren high-intent shopping queries via samengevatte carrousels, en de kwaliteitsbeoordeling van Merchant Center is dramatisch agressiever geworden over gedeeltelijke data.
+
+Het goede nieuws: de hefbomen die prestaties beïnvloeden zijn nog steeds dezelfde drie als altijd — je **feed**, je **biedstrategie** en je **landingspagina's**. De feed is de hefboom waar je de meeste controle over hebt, en degene met de hoogste leverage. Een verbetering van 10 punten in feedkwaliteit levert doorgaans 20–40% CTR-verbetering en 10–20% conversieratio-verbetering op bij dezelfde impressies.
+
+Deze gids is het handboek dat we aan nieuwe e-commerce teams geven. Het is georganiseerd in de volgorde waarin je het probleem moet aanpakken: diagnosticeer, fix titels, fix beschrijvingen, vul attributen in, automatiseer vervolgens.
+
+## Wat "feedkwaliteit" in 2026 werkelijk betekent
+
+Google's Merchant Center heeft een privé kwaliteitsscore per product, maar je zult deze nooit zien. Wat je *wel* kunt zien zijn de proxysignalen die het oplevert:
+
+- **Productafkeuringen** in Merchant Center → Diagnostics
+- **Productissueclusters** ("missing brand", "image quality", "policy violation")
+- **De kolom Performance** op het tabblad Products, met impressie- en klikaantallen
+- **Het rapport "Best sellers"** en **indicatoren voor "Price competitiveness"**
+
+Wat deze proxies voorspelt, op volgorde van belang:
+
+1. **Titelkwaliteit** — bevat het het merk, producttype, belangrijkste onderscheidende attributen (kleur, maat, materiaal) en een duidelijke identificator?
+2. **Beschrijvingskwaliteit** — klinkt het alsof het voor een shopper is geschreven (niet voor een zoekmachine, en zeker niet met een 2015 SEO-tool)?
+3. **Afbeeldingskwaliteit** — nette witte achtergrond of lifestyle, ≥800px, geen overlaytekst, geen watermerk
+4. **Volledigheid identificators** — GTIN, MPN, merk allemaal ingevuld
+5. **Variantstructuur** — unieke `item_group_id` voor elke kleur/maat variant, niet één SKU met opties in de titel gepropt
+6. **Categorisering** — volledige Google Product Category (5-niveau pad, niet alleen het topniveau)
+7. **Attribuutvolledigheid** — maat, kleur, age_group, gender, material, pattern, alle 5 product_highlight slots gevuld
+
+Alles wat je niet aanlevert, moet Google raden. En in 2026 betekent "raden" dat je impressie naar een minder competitieve query wordt gerouteerd — het goedkope, low-intent spul dat niet converteert.
+
+## Stap 1 — Voer de diagnose uit
+
+Voordat je één veld aanraakt, heb je een baseline nodig. Besteed een uur aan het ophalen van deze vier cijfers voor je laatste 30 dagen:
+
+| Metric | Waar te vinden |
+|---|---|
+| Impressies op top 20 SKU's | Merchant Center → Products → Performance |
+| CTR op top 20 SKU's | Zelfde weergave |
+| Afkeuringen per issue | Merchant Center → Diagnostics |
+| Top 50 queries op kliks | Google Ads → Insights → Search terms (PMax) |
+
+Kies nu de 20 SKU's die 80% van je omzet genereren. **Dit zijn de enige producten die ertoe doen voor de eerste sprint.** Al het andere is afrondingsfout.
+
+<Callout type="tip" title="Optimaliseer niet alles tegelijk">
+Teams die hun hele catalogus op dag één herschrijven, breken bijna altijd iets. Begin met de top 20 SKU's, meet de verbetering over 14 dagen, en schaal daarna het patroon op.
+</Callout>
+
+## Stap 2 — Fix titels
+
+Een titel in 2026 heeft vier taken:
+
+1. Match de hoofdterm die de shopper typte
+2. Onderscheid van vergelijkbare producten (kleur, maat, capaciteit)
+3. Signaleer autoriteit (merk, modelnummer)
+4. Blijf onder Google's 150-teken weergavelimiet
+
+De structuur die consistent wint in onze casestudy's:
+
+```
+[Merk] [Producttype] [Hoofdattribuut 1] [Hoofdattribuut 2] [Model/Variant] [Onderscheidend kenmerk]
+```
+
+Echt voorbeeld — een draadloze koptelefoon:
+
+- **Voor** (fabrikantenfeed): `H850 Bluetooth Headphone`
+- **Na** (herschreven): `Sony WH-CH720N Draadloze Noise Cancelling Koptelefoon, Bluetooth 5.2, 35 Uur Batterij, Zwart`
+
+De "na"-versie bevat 9 query-matchende tokens. De "voor"-versie bevat 2. Bij identieke biedingen en identieke landingspagina krijgt de herschreven titel **3–5× meer impressies** omdat het nu matcht met de long-tail queries die daadwerkelijk converteren.
+
+### Vuistregels voor titels
+
+- **70–150 tekens.** Onder de 70 laat je querydekking liggen. Boven 150 kapt Google af en stopt met het scoren van de rest.
+- **Merk eerst** tenzij het merk onbekend is (bijv. private label) — plaats dan het producttype eerst.
+- **Getallen als cijfers**, niet als woorden. "32GB" wint van "tweeëndertig gigabyte".
+- **Drop marketinggebral.** "Premium", "Best", "Geweldig" — Google weet sinds 2018 dat dit ruis is.
+- **Eén producttype per titel.** "Schoenen" of "Sneakers", kies één. "Schoenen Sneakers Trainers" ziet er spammy uit.
+- **Kleur als laatste** bij mode. De shopper filtert afzonderlijk op kleur.
+
+## Stap 3 — Herschrijf beschrijvingen
+
+Beschrijvingen zijn dramatisch ondergeoptimaliseerd in de hele sector. De meeste winkels doen ofwel:
+
+- De PDF-specificatiesheet van de fabrikant plakken (250 woorden aan opsommingstekenfragmenten), of
+- Dezelfde generieke copy op elke SKU gebruiken ("Dit is een hoogwaardig product gemaakt door experts...")
+
+Geen van beide helpt je. Google leest de eerste 160 tekens het zwaarst, en AI Overviews tillen specifiek die 160 tekens op als kandidaat-citatietekst. Maak ze waardevol.
+
+De structuur die werkt:
+
+1. **Zin 1**: Wat het product *is*, waarbij de belangrijkste attributen van de titel natuurlijk worden herhaald.
+2. **Zin 2**: De ene shoppervraag die het beantwoordt (batterijduur? pasvorm? maatcompatibiliteit?).
+3. **Zin 3**: Het onderscheidende kenmerk (waterdichtheidsrating, eco-gecertificeerd, made in EU, etc.).
+4. **Daarna** de specificatielijst.
+
+Echt voorbeeld voor dezelfde koptelefoon:
+
+> De Sony WH-CH720N levert actieve noise cancellation en 35 uur Bluetooth 5.2 afspeeltijd op één lading — gebouwd voor dagelijkse forensen die stilte zonder bulk nodig hebben. Met 192g is hij 38% lichter dan de WH-1000XM5, met dezelfde dual-mic NC-engine.
+
+Die enkele paragraaf bevat 11 query-matchende attributen en één expliciete competitieve vergelijking. Het zal zowel ranken voor de hoofdterm als worden geciteerd in AI Overviews wanneer iemand vraagt "is de WH-CH720N lichter dan de XM5?".
+
+## Stap 4 — Vul elk attribuut in
+
+De 12 attributen die prestaties het meest beïnvloeden, op volgorde:
+
+1. `gtin` — UPC/EAN/ISBN. Als je het hebt, lever het aan.
+2. `mpn` — fabrikant artikelnummer
+3. `brand`
+4. `google_product_category` — volledig 5-niveau pad
+5. `product_type` — je *eigen* taxonomie
+6. `color` — enkele primaire kleur
+7. `size`
+8. `age_group` — adult / kids / toddler / infant / newborn
+9. `gender` — male / female / unisex
+10. `material`
+11. `pattern`
+12. `product_highlight` — tot 5 korte bullets; deze renderen nu direct in de Shopping listing
+
+<Callout type="warning" title="Product highlights zijn niet optioneel in 2026">
+Sinds het Q3 2024 listing-redesign renderen product highlights visueel in het Shopping resultaat. Listings zonder zien er meetbaar minder betrouwbaar uit. Vul alle 5 slots, begin met de specificatie die de shopper het waarschijnlijkst zal verifiëren voor aankoop.
+</Callout>
+
+## Stap 5 — Gebruik AI-herschrijvingen op de juiste manier
+
+AI-herschrijving is de hoogste-leverage automatisering die je in 2026 op een feed kunt toepassen — en de makkelijkste om te breken. De teams die het goed doen delen drie gewoontes:
+
+1. **Categorie-specifieke prompts.** Een koptelefoon heeft andere attribuutslots nodig dan een keukenmes. Generieke prompts produceren generieke output. Train één prompttemplate per Google Product Category topniveau.
+2. **Behoud altijd identificators.** Merk, modelnummer, GTIN, kleur, maat — dit zijn geen "marketing copy", het zijn attributen. Je AI-prompt moet ze vergrendelen.
+3. **Diff elke wijziging.** Voordat je naar Merchant Center pusht, wacht een diff die de oude titel vs nieuwe titel toont en markeer elke herschrijving die een numeriek attribuut dropt of merk wijzigt. Wijs deze af.
+
+Dit is precies wat [MagicFeedPro](https://magicfeedpro.com/) end-to-end doet — categorie-bewuste prompts, attribuutvergrendeling en een review queue. Als je dit liever niet zelf bouwt, voer een gratis audit uit en zie je voor-en-na in 5 minuten.
+
+<ProductCTA variant="audit" />
+
+## Stap 6 — Controleer Merchant Center wekelijks
+
+In 2026 rolt Merchant Center stil meerdere keren per jaar nieuwe productissuecategorieën uit. Elk kan stilletjes tientallen SKU's naar "limited" of "disapproved" status laten zakken. De teams die niet wekelijks controleren komen er meestal 30 dagen later achter, nadat ze het verkeer al verloren hebben.
+
+Een 15-minuten wekelijkse audit:
+
+- Diagnostics → Issues: scroll door de volledige lijst (niet alleen de top 5)
+- Sorteer op "Impressions affected" aflopend
+- Voor elke nieuwe issuecategorie, klik in 3 getroffen SKU's en verifieer of Google's klacht echt is
+- Plan een fix in je feedpipeline
+
+## FAQ
+
+<FAQ>
+  <FAQItem q="Hoe lang duren feedwijzigingen voordat ze op Google Shopping verschijnen?" a="Feed fetch gebeurt volgens het schema dat je instelt (of bij push). Na fetch verwerkt Merchant Center binnen 1–24 uur. De Shopping ranking zelf weerspiegelt de wijziging meestal binnen 24–72 uur; impressievolume stabiliseert opnieuw in 5–10 dagen terwijl Google het relevantiesignaal opnieuw leert." />
+  <FAQItem q="Is het veilig om AI te gebruiken om mijn hele feed te herschrijven?" a="Ja, als de AI categorie-bewust is, identificators vergrendelt (merk, GTIN, model, kleur, maat) en je een diff geeft om te reviewen voor publicatie. Generieke ChatGPT-prompts toegepast op de hele catalogus zijn niet veilig — ze zullen specificatiewaarden hallucineren en attributen droppen." />
+  <FAQItem q="Moet ik Performance Max of Standard Shopping gebruiken?" a="Performance Max is de standaard in 2026 en het enige pad voor de meeste accounts. De uitzondering zijn zeer grote catalogi (10K+ SKU's) waar Standard Shopping nog steeds nauwere query-level controle geeft. De meeste winkels onder 5K SKU's moeten PMax draaien met een sterke feed en een strakke asset group structuur." />
+  <FAQItem q="Hoe belangrijk is GTIN echt?" a="Cruciaal voor merkproducten, optioneel maar aangemoedigd voor private label. Merkproducten zonder GTIN verliezen systematisch impression share aan concurrenten die het wel leveren — Google gebruikt GTIN als sterk deduplicatie- en rankingsignaal." />
+</FAQ>
+
+## Wat nu te doen
+
+Als je maar drie dingen uit dit artikel doet:
+
+1. Kies je top 20 SKU's op omzet. Herschrijf hun titels naar de 70–150 teken structuur hierboven.
+2. Herschrijf de eerste 160 tekens van elke beschrijving om de ene vraag te beantwoorden die shoppers daadwerkelijk stellen.
+3. Vul alle 5 `product_highlight` slots op die 20 SKU's.
+
+Je zult de impact binnen 14 dagen zien. Zodra je de verbetering hebt gevalideerd, schaal het patroon op naar je top 200, daarna je volledige catalogus.
+
+En als je het hele proces liever automatiseert — [we bouwden MagicFeedPro precies daarvoor](https://magicfeedpro.com/).

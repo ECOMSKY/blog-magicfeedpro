@@ -91,6 +91,9 @@ export function getAllPosts(): Post[] {
         cover: data.cover,
         coverAlt: data.coverAlt,
         tldr: data.tldr,
+        // YAML can yield strings ("false") that are truthy in JS; coerce
+        // any string explicitly. !!data.x was emitting noindex tags on
+        // articles whose AI generator quoted the boolean.
         noindex: parseBool(data.noindex),
         draft: parseBool(data.draft),
         featured: parseBool(data.featured),

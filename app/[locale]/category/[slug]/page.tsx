@@ -25,10 +25,18 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const locale = localeRaw as Locale;
   const cat = getCategory(locale, slug);
   if (!cat) return {};
+  const t = await getTranslations({ locale, namespace: 'seo' });
+  const title = t('categoryTitle', { name: cat.name });
+  const description = t('categoryDescription', { description: cat.description });
   return {
-    title: cat.name,
-    description: cat.description,
-    alternates: { canonical: localePath(locale, `/category/${cat.slug}`) }
+    title,
+    description,
+    alternates: { canonical: localePath(locale, `/category/${cat.slug}`) },
+    openGraph: {
+      title,
+      description,
+      url: absoluteUrl(locale, `/category/${cat.slug}`)
+    }
   };
 }
 

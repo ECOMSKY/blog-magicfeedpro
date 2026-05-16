@@ -1,6 +1,6 @@
 ---
-title: "Multi-Currency Feed Ops: Scaling Google Shopping to 12+ Markets"
-description: "Technical playbook for managing localized Google Shopping feeds at scale—currency conversion timing, regional title variations, and avoiding policy violations across GEOs."
+title: "Multi-Currency Feed Ops: Google Shopping in 12+ Markets"
+description: "Technical playbook to scale localized Google Shopping feeds: currency conversion timing, regional title variants, and avoiding policy violations across markets."
 keywords:
   - multi country google shopping feeds
   - international shopping feed management
@@ -79,7 +79,7 @@ The "2% buffer" means you price your feed 2% higher than your internal cost-plus
 **Pro Tip**: Use supplemental feeds in Merchant Center to update only the `price` and `availability` attributes at high frequency (hourly), while your primary feed with titles, descriptions, and images updates daily. This reduces processing load and minimizes the risk of validation errors blocking your entire catalog during a full feed refresh.
 </Callout>
 
-We've integrated [MagicFeed Pro's bulk feed editing](https://magicfeedpro.com/features/bulk-feed-editing) workflows with clients' ERP systems to automate currency recalculation triggers based on treasury-set thresholds, keeping feeds in sync without manual babysitting.
+We've integrated MagicFeed Pro's bulk feed editing workflows with clients' ERP systems to automate currency recalculation triggers based on treasury-set thresholds, keeping feeds in sync without manual babysitting.
 
 ## Title Localization Beyond Translation: UK vs. AU vs. CA English
 
@@ -128,7 +128,7 @@ Practically, this means your feed generation logic needs a lookup table:
 Germany's taxonomy diverges most from the US/UK structure, especially in fashion and electronics. France and Spain typically align with broader EU conventions. Australia and Canada mostly mirror US IDs but have unique categories for region-specific products (outdoor gear, seasonal apparel).
 
 <Callout type="tip">
-**Efficiency Hack**: Use the `product_type` attribute (your custom taxonomy) consistently across all GEOs, then map `google_product_category` per region. This lets you maintain one source of truth internally while serving localized category IDs to Google. Tools like [MagicFeed Pro's integrations](https://magicfeedpro.com/integrations) can automate this mapping layer so your e-commerce platform only manages one taxonomy.
+**Efficiency Hack**: Use the `product_type` attribute (your custom taxonomy) consistently across all GEOs, then map `google_product_category` per region. This lets you maintain one source of truth internally while serving localized category IDs to Google. Tools like MagicFeed Pro's integrations can automate this mapping layer so your e-commerce platform only manages one taxonomy.
 </Callout>
 
 We've also seen brands successfully use supplemental feeds to override `google_product_category` per country without duplicating their entire primary feed. This works well if your core product data (titles, images, descriptions) is identical across markets and only taxonomy + pricing varies.
@@ -158,7 +158,7 @@ Most enterprise e-commerce platforms (Shopify Plus, BigCommerce Enterprise, Adob
 
 A fashion brand running limited-edition releases in 8 markets implemented this approach in February 2026: they generate base feeds at optimal local times, then use the Content API to push `availability:out_of_stock` updates the moment an SKU sells out in a given warehouse. Result: 94% reduction in unavailable-product clicks, saving $11K/month in wasted spend and improving their Merchant Center account health score from "needs attention" to "excellent."
 
-For teams managing this at scale, [MagicFeed Pro's feed audit](https://magicfeedpro.com/feed-audit) tool can surface time-zone misalignment issues by correlating your feed update timestamps with traffic patterns and out-of-stock click rates per GEO, giving you a data-driven view of where your cadence is costing you money.
+For teams managing this at scale, MagicFeed Pro's feed audit tool can surface time-zone misalignment issues by correlating your feed update timestamps with traffic patterns and out-of-stock click rates per GEO, giving you a data-driven view of where your cadence is costing you money.
 
 ## Avoiding the Cross-Border Policy Traps (Shipping, GTIN, Tax)
 

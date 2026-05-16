@@ -19,10 +19,12 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'home' });
+  const t = await getTranslations({ locale, namespace: 'seo' });
+  const title = t('homeTitle');
+  const description = t('homeDescription');
   return {
-    title: t('title'),
-    description: t('lead'),
+    title,
+    description,
     alternates: {
       canonical: localePath(locale as Locale, '/'),
       languages: {
@@ -33,8 +35,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       }
     },
     openGraph: {
-      title: t('title'),
-      description: t('lead'),
+      title,
+      description,
       url: absoluteUrl(locale as Locale, '/')
     }
   };
@@ -46,7 +48,12 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
   const locale = localeRaw as Locale;
   const t = await getTranslations({ locale, namespace: 'home' });
   const posts = getPostsByLocale(locale);
-  const featured = posts.find((p) => p.featured) || posts[0];
+  // Featured slot = newest article by date (date-desc already applied in
+  // getPostsByLocale). The previous `posts.find(p => p.featured) || posts[0]`
+  // pinned the FIRST article we ever flagged featured=true (the May-09
+  // optimization guide) and never rotated even as fresher articles
+  // shipped. Behavior changed 2026-05-16.
+  const featured = posts[0];
   const rest = posts.filter((p) => p.slug !== featured?.slug).slice(0, 8);
   const categories = getCategoriesByLocale(locale);
 

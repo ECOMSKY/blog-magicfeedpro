@@ -1,17 +1,36 @@
 import Link from 'next/link';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
 import type { Locale } from '@/i18n/config';
 import { locales } from '@/i18n/config';
 import { getCategoriesByLocale, getPostsByLocale } from '@/lib/content';
-import { localePath } from '@/lib/seo';
+import { absoluteUrl, localePath } from '@/lib/seo';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export const metadata = {
-  title: 'All categories'
-};
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: localeRaw } = await params;
+  const locale = localeRaw as Locale;
+  const t = await getTranslations({ locale, namespace: 'seo' });
+  const title = t('categoriesTitle');
+  const description = t('categoriesDescription');
+  return {
+    title,
+    description,
+    alternates: { canonical: localePath(locale, '/categories') },
+    openGraph: {
+      title,
+      description,
+      url: absoluteUrl(locale, '/categories')
+    }
+  };
+}
 
 export default async function CategoriesIndex({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: localeRaw } = await params;

@@ -19,10 +19,23 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale: localeRaw } = await params;
+  const locale = localeRaw as Locale;
   const author = getAuthor(slug);
   if (!author) return {};
-  return { title: author.name, description: author.bio };
+  const t = await getTranslations({ locale, namespace: 'seo' });
+  const title = t('authorTitle', { name: author.name });
+  const description = t('authorDescription', { bio: author.bio });
+  return {
+    title,
+    description,
+    alternates: { canonical: absoluteUrl(locale, `/author/${author.slug}`) },
+    openGraph: {
+      title,
+      description,
+      url: absoluteUrl(locale, `/author/${author.slug}`)
+    }
+  };
 }
 
 export default async function AuthorPage({ params }: { params: Promise<Params> }) {

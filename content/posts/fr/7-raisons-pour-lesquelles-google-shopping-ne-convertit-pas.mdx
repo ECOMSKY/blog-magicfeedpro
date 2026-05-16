@@ -1,0 +1,134 @@
+---
+locale: "fr"
+title: "7 raisons pour lesquelles Google Shopping ne convertit pas"
+slug: "7-raisons-annonces-google-shopping-ne-convertissent-pas"
+translationKey: "7-reasons-google-shopping-ads-not-converting"
+description: "Vos impressions sont bonnes mais les conversions stagnent ? Voici les 7 causes les plus fréquentes et un correctif rapide pour chacune, issus de vrais audits."
+keywords:
+  - taux de conversion google shopping
+  - annonces shopping ne convertissent pas
+  - diagnostic performance max
+  - problèmes de qualité de flux
+date: 2026-05-08
+updated: 2026-05-08
+author: "mfp-team"
+category: "google-shopping"
+tags:
+  - google-shopping
+  - conversion-rate
+  - performance-max
+  - troubleshooting
+featured: false
+comments: false
+cover: "/blog-covers/7-reasons-google-shopping-ads-not-converting.jpg"
+coverAlt: "Isometric magnifying glass over a grid of product cards with red and green status dots, diagnosing Google Shopping feed issues"
+---
+
+Vous obtenez des clics. Votre CTR est correct. Votre CPC n'est pas démesuré. Mais les conversions ne viennent pas, et le ROAS de votre boutique saigne en rouge.
+
+C'est le schéma le plus courant que nous observons dans les audits de flux — et il remonte presque toujours à l'un des sept modes de défaillance spécifiques. Voici comment diagnostiquer chacun en 30 minutes et déployer la correction.
+
+## 1. Décalage titre-requête
+
+**Symptôme** : les clics arrivent, mais le clic est suivi d'un rebond de 3 secondes. Les rapports de termes de recherche montrent des requêtes *adjacentes* à votre produit mais pas exactement celui-ci.
+
+**Pourquoi** : votre titre est suffisamment générique pour correspondre à un large ensemble de requêtes, mais les acheteurs spécifiques arrivant sur la PDP réalisent que ce n'est pas ce qu'ils voulaient.
+
+**Exemple** : le titre dit `Écouteurs sans fil Édition 2024`. La requête était `écouteurs sans fil iphone avec étui de charge`. L'acheteur arrive, ne voit pas « compatible iPhone » dans la première fenêtre d'affichage, et rebondit.
+
+**Solution (30 min)** : extrayez vos 50 premières requêtes avec > 100 clics et \< 1 % de conversion. Pour chacune, comparez la requête au titre correspondant. Si elles ne correspondent pas étroitement, réécrivez le titre pour soit correspondre plus étroitement *soit* exclure explicitement l'intention non correspondante.
+
+## 2. Échec de compétitivité prix
+
+**Symptôme** : vos impressions ont chuté du jour au lendemain sur des SKU spécifiques. Le CTR sur les impressions restantes est normal mais la conversion a chuté brutalement.
+
+**Pourquoi** : le signal de compétitivité prix de Merchant Center compare votre prix affiché au même produit (identifié par GTIN/marque+MPN) sur le web. Si vous êtes > 10-15 % au-dessus de la médiane, Google commence à afficher votre annonce uniquement sur des requêtes à faible intention et les acheteurs qui *cliquent* comparent les prix.
+
+**Solution (30 min)** : ouvrez Merchant Center → Produits → Compétitivité des prix. Triez par « Au-dessus du benchmark ». Pour chaque SKU à fort trafic au-dessus du benchmark, soit :
+
+- Égalez le benchmark, ou
+- Améliorez l'offre (livraison gratuite, pack, garantie prolongée) et mettez à jour la description du produit pour la rendre visible dans les premiers 160 caractères.
+
+<Callout type="tip" title="Le prix n'a pas besoin d'être le plus bas">
+Plusieurs grandes boutiques de notre portefeuille fonctionnent 5 à 10 % *au-dessus* du benchmark et convertissent toujours. L'astuce consiste à rendre l'offre (livraison gratuite au-delà de X €, garantie à vie, retours) suffisamment visible pour que l'acheteur n'ait pas à partir pour la vérifier.
+</Callout>
+
+## 3. Image principale faible
+
+**Symptôme** : vous obtenez des impressions mais le CTR est inférieur à 0,8 % même sur des requêtes de marque.
+
+**Pourquoi** : Shopping est une SERP visuelle. Si votre image est chargée, contient du texte superposé, un filigrane, ou manque du produit comme élément dominant, vous perdez la course du suivi oculaire.
+
+**Solution (30 min)** : extrayez vos 20 SKU avec le plus d'impressions. Ouvrez chaque image. Notez-les oui/non sur ces 4 critères :
+
+- Le produit représente-t-il 75 %+ du cadre ?
+- L'arrière-plan est-il propre (blanc ou monochrome) ?
+- Y a-t-il *zéro* texte superposé, filigrane ou bordure ?
+- Fait-elle ≥ 1200px sur le côté le plus long ?
+
+Tout ce qui échoue à 2+ critères doit être rephotographié ou remplacé. Le ROI sur ceci est énorme — une image principale propre représente souvent une augmentation de CTR de 30 à 60 % à elle seule.
+
+## 4. Signaux d'avis manquants ou obsolètes
+
+**Symptôme** : le CTR est correct, la conversion est faible, et l'acheteur rebondit de la PDP sans faire défiler.
+
+**Pourquoi** : les annonces Google Shopping affichent désormais les étoiles d'avis vendeur et produit en ligne. Si vos concurrents affichent 4,5 ★ (200 avis) et vous n'affichez rien, vous perdez le clic dans la vue de comparaison.
+
+**Solution (30 min)** : assurez-vous que le balisage d'avis produit ([schéma produit](https://schema.org/Product) avec `aggregateRating`) est actif sur chaque PDP. Si vous êtes sur Shopify, installez Judge.me ou Loox et connectez-les au flux d'avis produit de Merchant Center. Remplissez rétroactivement les commandes historiques avec un e-mail de demande d'avis — la plupart des boutiques ont des centaines d'avis non demandés dans leur historique de commandes.
+
+## 5. Page de détail produit lente
+
+**Symptôme** : le CTR est correct, l'acheteur arrive, mais il rebondit en moins de 2 secondes — avant même que la page ne s'affiche.
+
+**Pourquoi** : les acheteurs mobiles sur les annonces Shopping rebondissent massivement sur un Largest Contentful Paint > 2,5s. Le score de qualité chute également, ce qui signifie que vous payez plus par clic pour les impressions que vous gagnez.
+
+**Solution (30 min)** : lancez [PageSpeed Insights](https://pagespeed.web.dev/) sur vos 5 principales PDP de SKU. LCP mobile \< 2,5s est le seuil. Les 3 choses qui corrigent systématiquement cela :
+
+- Convertir les images principales en AVIF/WebP
+- Différer les scripts tiers non critiques (widget de chat, popups de preuve sociale)
+- Utiliser le chargement différé pour tout ce qui est en dessous de la ligne de flottaison
+
+## 6. Signal de stock défaillant
+
+**Symptôme** : les impressions oscillent énormément d'un jour à l'autre. Vous voyez des rejets « rupture de stock » dans Merchant Center même lorsque le produit est en stock.
+
+**Pourquoi** : l'attribut `availability` de votre flux est obsolète ou votre récupération planifiée manque la fenêtre de mise à jour d'inventaire de votre boutique. Google pénalise sévèrement les annonces où les acheteurs cliquent vers « rupture de stock ».
+
+**Solution (30 min)** : passez à **l'envoi API Content** au lieu de la récupération planifiée si vous êtes sur Shopify ou BigCommerce — les deux le prennent en charge nativement. Les changements d'inventaire se propagent à Merchant Center en quelques minutes au lieu d'heures. Pour les boutiques personnalisées, ajoutez `availability_date` pour les commandes en attente afin que Google puisse continuer à afficher l'annonce avec une date d'expédition prévue.
+
+## 7. PMax servant la mauvaise audience
+
+**Symptôme** : dépenses élevées, faible conversion. L'onglet Insights montre du trafic provenant de requêtes sans rapport avec votre catégorie de produits.
+
+**Pourquoi** : l'expansion d'audience de Performance Max est agressive par défaut. Sans structure de groupe d'éléments solide et signaux d'audience, PMax dépensera sur des placements display et YouTube qui ne convertissent pas pour le retail à forte intention.
+
+**Solution (30 min)** :
+
+- Divisez les campagnes par catégorie de produits — jamais une campagne avec tout.
+- Fournissez **des signaux d'audience solides** (liste de clients existants, visiteurs à forte intention).
+- Définissez **des exclusions de marque** pour que PMax ne cannibalise pas votre recherche de marque.
+- Si le retail uniquement est votre objectif, utilisez la variante **PMax shopping uniquement** (sans groupe d'éléments) — elle existe toujours en 2026 et convertit 2 à 3× mieux sur les requêtes à forte intention.
+
+## Comment prioriser
+
+Exécutez chaque correction dans cet ordre et vous trouverez celle qui est réellement cassée :
+
+1. Vérifiez Merchant Center → Diagnostics. (5 min)
+2. Extrayez les 50 premières requêtes par dépense, triez par taux de conversion croissant. (10 min)
+3. Audit d'image et de vitesse PDP sur les 10 pires SKU. (30 min)
+4. Vérification de la compétitivité des prix. (15 min)
+5. Examen de l'audience et de la structure de campagne. (60 min)
+
+Les trois premiers révèlent presque toujours le problème. Si vous préférez ne pas le faire manuellement, MagicFeedPro audite les 7 en 5 minutes gratuitement.
+
+<ProductCTA variant="audit" />
+
+## FAQ
+
+<FAQ>
+  <FAQItem q="À quelle vitesse le taux de conversion devrait-il s'améliorer après une correction ?" a="Les corrections de titre et d'image montrent généralement une amélioration mesurable dans les 7 à 10 jours pendant que Google réapprend le signal d'impression. Les changements de prix apparaissent en 24 à 48 heures. Les changements structurels de PMax nécessitent 14 jours pour sortir de la phase d'apprentissage avant que vous puissiez lire les données." />
+  <FAQItem q="Dois-je mettre en pause les SKU sous-performants ?" a="Mettez en pause les 20 % les plus bas s'ils cannibalisent le budget de vos meilleurs performeurs. Mais essayez d'abord une passe de qualité de flux — de nombreux « mauvais » SKU sont en réalité de bons produits avec des titres défaillants." />
+  <FAQItem q="Quel est un taux de conversion Google Shopping sain ?" a="Très dépendant de la catégorie. Habillement : 1-2,5 %. Électronique : 1,5-4 %. Maison : 2-5 %. Beauté : 2,5-6 %. Si vous êtes en dessous de 1 % sur du non-habillement, quelque chose est structurellement cassé — généralement l'un des 7 ci-dessus." />
+</FAQ>
+
+La correction à plus fort effet de levier dans cette liste est presque toujours la n°1 (décalage titre-requête). Si vous ne savez pas lequel des 7 est votre goulot d'étranglement, commencez par là.

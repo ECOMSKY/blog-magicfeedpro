@@ -1,0 +1,134 @@
+---
+locale: "pt"
+title: "7 razões pelas quais o Google Shopping não converte"
+slug: "7-razoes-anuncios-google-shopping-nao-convertem"
+translationKey: "7-reasons-google-shopping-ads-not-converting"
+description: "Impressões boas mas conversões empacam? As 7 causas mais comuns e uma correção de 30 minutos para cada uma, com base em centenas de auditorias e-commerce."
+keywords:
+  - taxa de conversão google shopping
+  - anúncios shopping não convertem
+  - diagnóstico performance max
+  - problemas de qualidade do feed
+date: 2026-05-08
+updated: 2026-05-08
+author: "mfp-team"
+category: "google-shopping"
+tags:
+  - google-shopping
+  - conversion-rate
+  - performance-max
+  - troubleshooting
+featured: false
+comments: false
+cover: "/blog-covers/7-reasons-google-shopping-ads-not-converting.jpg"
+coverAlt: "Isometric magnifying glass over a grid of product cards with red and green status dots, diagnosing Google Shopping feed issues"
+---
+
+Você está recebendo cliques. Seu CTR está bom. Seu CPC não está fora de controle. Mas as conversões não vêm, e o ROAS da sua loja está sangrando no vermelho.
+
+Este é o padrão mais comum que vemos em auditorias de feed — e quase sempre remonta a um de sete modos de falha específicos. Aqui está como diagnosticar cada um em 30 minutos e implementar a correção.
+
+## 1. Incompatibilidade título-query
+
+**Sintoma**: os cliques chegam, mas o click-through é seguido de um bounce de 3 segundos. Relatórios de termos de pesquisa mostram queries *adjacentes* ao seu produto, mas não exatamente ele.
+
+**Por quê**: seu título é genérico o suficiente para corresponder a um amplo conjunto de queries, mas compradores específicos que chegam na PDP percebem que não é o que queriam.
+
+**Exemplo**: o título diz `Fones de Ouvido Sem Fio Edição 2024`. A query era `fones de ouvido sem fio iphone com case de carregamento`. O comprador chega, não vê "compatível com iPhone" na primeira dobra, e sai.
+
+**Correção (30 min)**: extraia suas 50 principais queries com > 100 cliques e \< 1% de conversão. Para cada uma, compare a query com o título correspondente. Se não houver correspondência estreita, reescreva o título para corresponder mais precisamente *ou* para excluir explicitamente a intenção incompatível.
+
+## 2. Falha de competitividade de preço
+
+**Sintoma**: suas impressões caíram da noite para o dia em SKUs específicos. CTR nas impressões restantes é normal, mas a conversão despencou.
+
+**Por quê**: o sinal de competitividade de preço do Merchant Center compara seu preço listado contra o mesmo produto (correspondido por GTIN/marca+MPN) em toda a web. Se você está > 10–15% acima da mediana, o Google começa a exibir sua listagem apenas em queries de menor intenção e os compradores que *clicam* estão comparando preços.
+
+**Correção (30 min)**: abra Merchant Center → Produtos → Competitividade de preço. Ordene por "Acima do benchmark". Para cada SKU de alto tráfego acima do benchmark, ou:
+
+- Iguale o benchmark, ou
+- Aprimore a oferta (frete grátis, pacote, garantia estendida) e atualize a descrição do produto para torná-la visível nos primeiros 160 caracteres.
+
+<Callout type="tip" title="Preço não precisa ser o mais baixo">
+Várias lojas grandes em nosso portfólio operam 5–10% *acima* do benchmark e ainda convertem. O truque é tornar a oferta (frete grátis acima de R$X, garantia vitalícia, devoluções) visível o suficiente para que o comprador não precise sair para verificá-la.
+</Callout>
+
+## 3. Imagem principal fraca
+
+**Sintoma**: você está recebendo impressões, mas CTR está abaixo de 0.8%, mesmo em queries de marca.
+
+**Por quê**: Shopping é uma SERP visual. Se sua imagem está ocupada, tem texto sobreposto, marca d'água ou não tem o produto como elemento dominante, você perde a corrida do eye-tracking.
+
+**Correção (30 min)**: extraia seus 20 SKUs de maior impressão. Abra cada imagem. Pontue-as sim/não nestes 4 critérios:
+
+- O produto ocupa 75%+ do quadro?
+- O fundo é limpo (branco ou tom único)?
+- Há *zero* texto sobreposto, marca d'água ou borda?
+- Tem ≥ 1200px no lado mais longo?
+
+Qualquer coisa que falhe em 2+ precisa ser fotografada novamente ou substituída. O ROI disso é enorme — uma imagem principal limpa frequentemente gera um aumento de CTR de 30–60% por si só.
+
+## 4. Sinais de avaliação ausentes ou desatualizados
+
+**Sintoma**: CTR está ok, conversão é fraca, e o comprador sai da PDP sem rolar a página.
+
+**Por quê**: listagens do Google Shopping agora mostram estrelas de avaliação de vendedor e produto inline. Se seus concorrentes mostram 4.5 ★ (200 avaliações) e você não mostra nada, você perde o clique na visualização de comparação.
+
+**Correção (30 min)**: garanta que a marcação de avaliação de produto ([schema de produto](https://schema.org/Product) com `aggregateRating`) esteja funcionando em todas as PDPs. Se você está no Shopify, instale Judge.me ou Loox e conecte-os ao feed de avaliação de produtos do Merchant Center. Preencha pedidos históricos com um email de solicitação de avaliação — a maioria das lojas tem centenas de avaliações não solicitadas em seu histórico de pedidos.
+
+## 5. Página de detalhes do produto lenta
+
+**Sintoma**: CTR está bom, o comprador chega, mas eles saem em menos de 2 segundos — antes mesmo da página renderizar.
+
+**Por quê**: compradores mobile em anúncios Shopping saem dramaticamente em Largest Contentful Paint > 2.5s. Quality score também cai, o que significa que você paga mais por clique pelas impressões que conquista.
+
+**Correção (30 min)**: execute [PageSpeed Insights](https://pagespeed.web.dev/) nas PDPs dos seus 5 principais SKUs. LCP mobile \< 2.5s é o limite. As 3 coisas que consistentemente corrigem isso:
+
+- Converta imagens principais para AVIF/WebP
+- Adie scripts de terceiros não críticos (widget de chat, popups de prova social)
+- Use lazy loading para tudo abaixo da dobra
+
+## 6. Sinal de estoque quebrado
+
+**Sintoma**: impressões oscilam drasticamente dia a dia. Você vê rejeições de "fora de estoque" no Merchant Center mesmo quando o produto está em estoque.
+
+**Por quê**: o atributo `availability` do seu feed está desatualizado ou sua busca programada está perdendo a janela de atualização de inventário da sua loja. Google penaliza severamente listagens onde compradores clicam e encontram "fora de estoque".
+
+**Correção (30 min)**: mude para **push de Content API** em vez de busca programada se você está no Shopify ou BigCommerce — ambos suportam nativamente. Mudanças de inventário propagam para o Merchant Center em minutos em vez de horas. Para lojas customizadas, adicione `availability_date` para back-orders para que o Google possa continuar mostrando a listagem com uma data esperada de envio.
+
+## 7. PMax servindo o público errado
+
+**Sintoma**: alto gasto, baixa conversão. Aba Insights mostra tráfego de queries não relacionadas à sua categoria de produto.
+
+**Por quê**: a expansão de público do Performance Max é agressiva por padrão. Sem estrutura forte de grupo de ativos e sinais de público, PMax gastará em posicionamentos de display e YouTube que não convertem para varejo de alta intenção.
+
+**Correção (30 min)**:
+
+- Divida campanhas por categoria de produto — nunca uma campanha com tudo.
+- Forneça **sinais de público fortes** (lista de clientes existentes, visitantes de alta intenção).
+- Configure **exclusões de marca** para que PMax não canibalize sua busca de marca.
+- Se varejo-apenas é seu objetivo, use a variante **PMax somente Shopping** (sem grupo de ativos) — ainda existe em 2026 e converte 2–3× melhor em queries de alta intenção.
+
+## Como priorizar
+
+Execute cada correção nesta ordem e você encontrará a que realmente está quebrada:
+
+1. Verifique Merchant Center → Diagnósticos. (5 min)
+2. Extraia as 50 principais queries por gasto, ordene por taxa de conversão crescente. (10 min)
+3. Auditoria de imagem e velocidade de PDP nos 10 piores SKUs. (30 min)
+4. Verificação de competitividade de preço. (15 min)
+5. Revisão de público e estrutura de campanha. (60 min)
+
+Os três primeiros quase sempre revelam o problema. Se você prefere não fazer isso manualmente, MagicFeedPro audita todos os 7 em 5 minutos gratuitamente.
+
+<ProductCTA variant="audit" />
+
+## FAQ
+
+<FAQ>
+  <FAQItem q="Quão rápido a taxa de conversão deve melhorar após uma correção?" a="Correções de título e imagem tipicamente mostram aumento mensurável em 7–10 dias conforme o Google reaprende o sinal de impressão. Mudanças de preço aparecem em 24–48 horas. Mudanças estruturais no PMax precisam de 14 dias para sair da fase de aprendizado antes que você possa interpretar os dados." />
+  <FAQItem q="Devo pausar SKUs com baixo desempenho?" a="Pause os 20% inferiores se estiverem canibalizando orçamento dos seus principais performers. Mas primeiro tente uma passada de qualidade no feed — muitos SKUs 'ruins' são na verdade produtos bons com títulos quebrados." />
+  <FAQItem q="Qual é uma taxa de conversão saudável para Google Shopping?" a="Altamente dependente da categoria. Vestuário: 1–2.5%. Eletrônicos: 1.5–4%. Casa: 2–5%. Beleza: 2.5–6%. Se você está abaixo de 1% em não-vestuário, algo está estruturalmente quebrado — geralmente um dos 7 acima." />
+</FAQ>
+
+A correção de maior alavancagem nesta lista é quase sempre a #1 (incompatibilidade título-query). Se você não sabe qual dos 7 é seu gargalo, comece por aí.

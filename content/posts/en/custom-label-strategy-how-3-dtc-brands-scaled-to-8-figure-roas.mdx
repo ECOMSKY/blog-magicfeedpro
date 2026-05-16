@@ -1,6 +1,6 @@
 ---
-title: "Custom Label Strategy: How 3 DTC Brands Scaled to 8-Figure ROAS"
-description: "Reverse-engineer the margin-velocity, seasonality, and LTV-based custom label architectures that let three DTC brands break the $50k/month plateau and reach 8-figure ROAS on Google Shopping."
+title: "Custom Labels: How 3 DTC Brands Hit 8-Figure ROAS"
+description: "The margin-velocity, seasonality and LTV custom label setups that let 3 DTC brands break $50k/month and reach 8-figure ROAS on Google Shopping."
 keywords: ""
 date: "2026-05-12"
 author: "mfp-team"
@@ -68,7 +68,7 @@ This matrix created nine primary segments. The magic happened in bidding:
 
 Within 90 days, blended ROAS climbed to 5.3× at $110k/month spend. The key insight: velocity alone is misleading (fast-selling low-margin items look attractive in dashboards), and margin alone misses breakout products still ramping. The intersection reveals where to pour fuel.
 
-They automated label assignment with a Google Sheets formula tied to their Shopify inventory API. Every morning at 6 AM, a script recalculates trailing-30-day unit sales, compares current stock to average daily sales, pulls cost data from their ERP, then writes new custom label values into a supplemental feed that MagicFeed Pro ingests. No manual tagging beyond the initial setup. [MagicFeed Pro's feed customization engine](https://magicfeedpro.com/features/feed-customization) handles the label propagation and keeps Merchant Center in sync without triggering disapprovals for frequent updates.
+They automated label assignment with a Google Sheets formula tied to their Shopify inventory API. Every morning at 6 AM, a script recalculates trailing-30-day unit sales, compares current stock to average daily sales, pulls cost data from their ERP, then writes new custom label values into a supplemental feed that MagicFeed Pro ingests. No manual tagging beyond the initial setup. MagicFeed Pro's feed customization engine handles the label propagation and keeps Merchant Center in sync without triggering disapprovals for frequent updates.
 
 <Callout type="tip">
 **Pro move:** Add a `Margin-Recovery` label for SKUs between 25–35% margin that historically led to high repeat-purchase rates (check your Shopify customer cohort analysis). Treat them as loss leaders with a 12-month LTV bid model instead of a transactional ROAS target.
@@ -120,7 +120,7 @@ Results over 18 months: inventory turns improved from 4.2× to 5.8×, freeing $3
 | October    | Fall, Holiday (ramp)       | 35% / 35%                | 5.1×         |
 | November   | Holiday, Fall              | 65% / 15%                | 7.3×         |
 
-Their script lives in a Google Sheet connected to BigQuery (they export Shopify order data nightly). It calculates annualized turn rate per SKU, checks the current date against a seasonality calendar (a separate tab mapping each SKU to peak months), then writes four custom label columns. The sheet feeds into their Shopify store via the Shopify API, updating product metafields that map to custom labels in the Google Shopping feed. We've seen similar setups [detailed in our feed optimization guide](https://magicfeedpro.com/blog/google-shopping-feed-optimization-guide), which walks through metafield-to-feed mapping for Shopify merchants.
+Their script lives in a Google Sheet connected to BigQuery (they export Shopify order data nightly). It calculates annualized turn rate per SKU, checks the current date against a seasonality calendar (a separate tab mapping each SKU to peak months), then writes four custom label columns. The sheet feeds into their Shopify store via the Shopify API, updating product metafields that map to custom labels in the Google Shopping feed. We've seen similar setups detailed in our feed optimization guide, which walks through metafield-to-feed mapping for Shopify merchants.
 
 ## Brand C: LTV-Based Segmentation for Repeat Purchase Categories
 
@@ -262,7 +262,7 @@ The three brands profiled here all run a hybrid approach: they set campaign-leve
 
 A final note on Performance Max: if you're forced into PMax due to policy or because Standard Shopping is deprecated in your region, you lose campaign-level ROAS control but can still use custom labels in asset group filters. Create separate asset groups for each major label combination (PMax allows up to 100 asset groups per campaign). You'll share a campaign-level budget and ROAS target, but Google's algorithm will learn different performance patterns per asset group over time. It's less precise than separate campaigns, but far superior to lumping 500 SKUs into one asset group.
 
-We cover the mechanics of multi-campaign structures in depth in [MagicFeed Pro's pricing and feature breakdown](https://magicfeedpro.com/pricing), where you'll see how AI-driven title and description rewrites interact with custom label segmentation to lift both click-through rates and conversion rates simultaneously—a compounding effect that most brands miss by treating feed content and feed structure as separate workstreams.
+We cover the mechanics of multi-campaign structures in depth in MagicFeed Pro's pricing and feature breakdown, where you'll see how AI-driven title and description rewrites interact with custom label segmentation to lift both click-through rates and conversion rates simultaneously—a compounding effect that most brands miss by treating feed content and feed structure as separate workstreams.
 
 <ProductCTA 
   variant="audit" 

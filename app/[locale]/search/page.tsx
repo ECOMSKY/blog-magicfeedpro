@@ -1,16 +1,37 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
 import type { Locale } from '@/i18n/config';
 import { locales } from '@/i18n/config';
 import { getPostsByLocale } from '@/lib/content';
 import PostCard from '@/components/PostCard';
+import { absoluteUrl, localePath } from '@/lib/seo';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export const metadata = {
-  title: 'Search'
-};
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: localeRaw } = await params;
+  const locale = localeRaw as Locale;
+  const t = await getTranslations({ locale, namespace: 'seo' });
+  const title = t('searchTitle');
+  const description = t('searchDescription');
+  return {
+    title,
+    description,
+    alternates: { canonical: localePath(locale, '/search') },
+    openGraph: {
+      title,
+      description,
+      url: absoluteUrl(locale, '/search')
+    },
+    robots: { index: false, follow: true }
+  };
+}
 
 export default async function SearchPage({
   params,

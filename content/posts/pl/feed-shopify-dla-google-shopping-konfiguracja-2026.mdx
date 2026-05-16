@@ -1,0 +1,154 @@
+---
+locale: "pl"
+title: "Feed Shopify dla Google Shopping: konfiguracja 2026"
+slug: "feed-produktow-shopify-google-shopping-konfiguracja"
+translationKey: "shopify-product-feed-google-shopping-setup"
+description: "Przewodnik krok po kroku 2026 po konfiguracji feedu produktów Shopify dla Google Shopping: kanał Google, feedy niestandardowe, metafield, warianty i pułapki."
+keywords:
+  - shopify google shopping
+  - shopify product feed
+  - google merchant center shopify
+  - shopify metafields google shopping
+date: 2026-05-07
+updated: 2026-05-07
+author: "mfp-team"
+category: "shopify"
+tags:
+  - shopify
+  - google-shopping
+  - merchant-center
+  - setup
+featured: false
+comments: false
+cover: "/blog-covers/shopify-product-feed-google-shopping-setup.jpg"
+coverAlt: "Isometric Shopify product card connected by an arrow to a Google Shopping product card, with a toolbox icon between them"
+---
+
+Połączenie Shopify → Google Shopping to jedna z tych rzeczy, które *wyglądają* trywialnie — zainstaluj aplikację, kliknij kilka przycisków, gotowe. Później, po sześciu miesiącach, zastanawiasz się, dlaczego Twój CTR wynosi połowę tego, co ma konkurencja.
+
+Prawda jest taka, że oficjalny kanał Google domyślnie dostarcza minimalny feed. Aby faktycznie rankować w 2026 roku, musisz wzbogacić feed o atrybuty, których oczekuje teraz algorytm jakości Google. Ten przewodnik prowadzi przez pełną konfigurację, a następnie warstwę wzbogacania, którą większość sklepów pomija.
+
+## Krok 1 — Przygotuj swój sklep Shopify
+
+Zanim dotkniesz Google, trzy rzeczy muszą być prawdziwe w Shopify:
+
+1. **Tytuły produktów zawierają markę.** Jeśli Twoje produkty to private label, użyj własnej nazwy marki. Jeśli odsprzedajesz inne marki, tytuł musi zawierać markę. Otwórz `Produkty → Wszystkie produkty → edycja zbiorcza → Dostawca` i sprawdź, czy pole dostawcy jest wypełnione dla każdego SKU.
+2. **Masz co najmniej jeden obraz na produkt.** Kwadratowe obrazy (1:1) działają najlepiej dla Shopping. Minimum 800px; idealnie 1500–2000px.
+3. **Twoje stawki wysyłki są zdefiniowane i aktywne dla krajów docelowych.** Google odrzuca produkty, dla których nie można obliczyć kosztów wysyłki do miejsca docelowego.
+
+<Callout type="warning" title="Warianty potrzebują własnego GTIN">
+Częsty błąd w Shopify: przechowywanie GTIN na produkcie nadrzędnym. Google odczytuje GTIN na poziomie wariantu. Użyj pola `barcode` na poziomie wariantu, nie metafield na najwyższym poziomie.
+</Callout>
+
+## Krok 2 — Zainstaluj kanał Google i YouTube
+
+W panelu administracyjnym Shopify → **Aplikacje → Odwiedź sklep z aplikacjami Shopify** → wyszukaj "Google & YouTube". Zainstaluj. To oficjalny kanał zbudowany przez Google; na razie zignoruj aplikacje feedów zewnętrznych, które pojawiają się obok (wrócimy do nich w kroku 5 dla wzbogacania).
+
+Połącz swoje konto Google, a następnie konto Merchant Center. Jeśli jeszcze go nie masz, aplikacja utworzy je dla Ciebie w tym samym przepływie.
+
+Sprawdź:
+
+- Strona połączenia pokazuje "Połączono" zarówno dla Google, jak i Merchant Center.
+- Ustawienia podatków i wysyłki są zmapowane.
+
+## Krok 3 — Skonfiguruj mapowanie kategorii
+
+Kanał automatycznie sugeruje kategorię produktu Google dla każdego produktu. Automatyczne sugestie są zazwyczaj w 60–80% dokładne. Otwórz widok **Status produktu** i sprawdź próbkę 20 produktów.
+
+Dla produktów zmapowanych do niewłaściwej kategorii edytuj `Kategorię produktu Google` bezpośrednio na stronie produktu w Shopify lub edytuj zbiorczo przez import CSV. **Zawsze wybieraj najbardziej szczegółową (5. poziomu) dostępną kategorię** — `Apparel & Accessories > Clothing > Shirts & Tops > Dress Shirts` rankuje znacznie lepiej niż `Apparel & Accessories > Clothing`.
+
+## Krok 4 — Zmapuj podstawowe atrybuty
+
+W ustawieniach kanału Google przejdź do **Feed produktów → Atrybuty**. Zmapuj co najmniej:
+
+| Atrybut Google | Źródło Shopify |
+|---|---|
+| `title` | Tytuł produktu |
+| `description` | Opis produktu (HTML usunięty) |
+| `link` | URL produktu |
+| `image_link` | Główny obraz produktu |
+| `availability` | Zapas > 0 → in_stock |
+| `price` | Cena wariantu |
+| `brand` | Dostawca |
+| `gtin` | Kod kreskowy wariantu |
+| `mpn` | SKU wariantu |
+| `condition` | Domyślnie "new"; nadpisz dla odnowionych |
+| `google_product_category` | Mapowanie ręczne |
+
+To jest absolutne minimum do przejścia walidacji Merchant Center. To **nie** wystarczy do konkurencyjnego rankingu.
+
+## Krok 5 — Wzbogać o metafield
+
+To tutaj większość sklepów Shopify traci pieniądze. Domyślny kanał nie wysyła `product_highlight`, `material`, `pattern`, `age_group`, `gender`, `size_type` ani niestandardowych etykiet — a wszystkie te elementy są nagradzane przez system punktacji jakości Google w 2026 roku.
+
+Są dwa sposoby, aby je dodać:
+
+### Opcja A — Natywne Shopify Markets Pro / Metafields
+
+Shopify dodał natywne mapowania metafield Google Shopping w 2024 roku. Ustawienia → Dane niestandardowe → Produkty → Dodaj definicję:
+
+- Przestrzeń nazw: `google`
+- Klucz: `product_highlights`
+- Typ: Lista tekstu jednowierszowego (maks. 5)
+
+Następnie dla każdego produktu wypełnij 5 slotów z podkreśleniami. Kanał Google odbierze je automatycznie.
+
+Powtórz dla `material`, `pattern`, `age_group`, `gender`, `custom_label_0` do `custom_label_4`.
+
+### Opcja B — Aplikacja feedu zewnętrznego
+
+Jeśli potrzebujesz dokładniejszej kontroli (reguły transformacji, multi-feed, osobne feedy na kraj, dynamiczne przepisywanie tytułów), użyj dedykowanej aplikacji feedowej, takiej jak Simprosys, DataFeedWatch lub nasz własny [MagicFeedPro](https://magicfeedpro.com/), który dodaje przepisywanie AI na wierzchu wzbogacania.
+
+Kompromis: aplikacje zewnętrzne kosztują 20–80 USD miesięcznie, ale konsekwentnie zwiększają CTR o 20–40% w porównaniu z gołym kanałem Shopify, ponieważ przepisywania są świadome zapytań.
+
+<ProductCTA variant="audit" />
+
+## Krok 6 — Prawidłowo obsługuj warianty
+
+Warianty Shopify i warianty Google nie mapują się 1:1.
+
+**Zasada**: każdy wariant Shopify staje się osobnym produktem Google z tym samym `item_group_id` (uchwyt produktu nadrzędnego dobrze działa jako ID grupy). Każdy wariant musi mieć własny `color`, `size`, `image_link`, jeśli się różni, i najlepiej własny `gtin`.
+
+Częste błędy:
+
+- **Wszystkie warianty dzielą obraz nadrzędny.** Źle — Google penalizuje to dla wariantów mody/koloru. Ustaw obrazy na poziomie wariantu w Shopify (każdy wariant → Obrazy → przypisz).
+- **Pakowanie wariantów do tytułu.** Źle — `Koszulka bawełniana - Czerwona, Niebieska, Zielona` powinny być 3 osobnymi listingami Shopping, nie jednym.
+- **Brak `item_group_id`.** Źle — bez grupowania Google nie może pokazywać karuzel wariantów i tracisz efektywność wyświetleń.
+
+## Krok 7 — Przetestuj przed uruchomieniem na żywo
+
+Ustaw **testowe konto Merchant Center** (darmowe) i skieruj swój feed najpierw tam. Lub użyj konta produkcyjnego, ale przefiltruj najpierw do pojedynczego produktu przez kolekcję Shopify.
+
+Przepuść swoje 5 najlepszych SKU przez:
+
+1. **Merchant Center → Diagnostyka** — musi pokazywać 0 błędów i najlepiej 0 ostrzeżeń.
+2. **Test wyników rozszerzonych** na URL PDP na żywo — weryfikuje, czy Twoje dane strukturalne na stronie docelowej pasują do feedu.
+3. **Sprawdzenie obrazu przed lotem** — otwórz każdy główny obraz, sprawdź czyste tło i brak nakładanego tekstu.
+
+Włącz kampanię dopiero, gdy te 5 SKU jest czystych.
+
+## Krok 8 — Zaplanuj i monitoruj
+
+Kanał Google synchronizuje się automatycznie mniej więcej co 4 godziny (strona Shopify), a Merchant Center pobiera ponownie mniej więcej co 24 godziny. Dla ściślejszej kontroli, szczególnie podczas premier z napięciem magazynowym:
+
+- Włącz **push Content API** dla zmian dostępności (Ustawienia → Aktualizacje zapasów).
+- Skonfiguruj **dodatkowy feed oparty na Google Sheets** w Merchant Center dla dowolnego atrybutu, którego kanał nie może dostarczyć.
+- Audytuj Merchant Center → Diagnostyka **tygodniowo**, nie miesięcznie.
+
+## Częste pułapki specyficzne dla Shopify
+
+<FAQ>
+  <FAQItem q="Dlaczego niektóre z moich wariantów są odrzucane jako duplikaty?" a="Najczęściej dlatego, że dzielą ten sam `gtin` (Shopify pozwala kopiować warianty bez zmiany kodu kreskowego). Google wymusza unikalność GTIN — każdy wariant potrzebuje własnego. Albo napraw kody kreskowe, albo całkowicie usuń GTIN na duplikatowych wariantach." />
+  <FAQItem q="Dlaczego opis mojego produktu pojawia się obcięty w Google?" a="Opisy produktów Shopify są często zapisywane z formatowaniem HTML. Kanał Google usuwa większość tagów, ale pozostawia pewne artefakty. Dla najlepszych rezultatów napisz czysty opis w formacie plain-text w metafield (google.description_override) i zmapuj go zamiast tego." />
+  <FAQItem q="Czy mogę użyć Shopify Markets dla Shopping dla wielu krajów?" a="Tak, i to najczystszy sposób. Każdy Shopify Market staje się osobnym feedem w Merchant Center z zlokalizowanymi cenami, walutą i podatkiem. Połącz z hreflang na PDP, a masz czystą konfigurację wielokrajową." />
+  <FAQItem q="Czy powinienem używać kanału Shopify czy aplikacji feedu zewnętrznego?" a="Zacznij od kanału Shopify, ponieważ jest darmowy i niezawodny dla samego połączenia. Gdy już działasz na żywo, dodaj aplikację feedu zewnętrznego lub narzędzie do optymalizacji feedu na wierzchu — to nie jest albo-albo. Kanał obsługuje infrastrukturę; aplikacja feedu obsługuje optymalizację." />
+</FAQ>
+
+## Co zrobić w tym tygodniu
+
+1. Zainstaluj kanał Google i YouTube, jeśli jeszcze tego nie zrobiłeś.
+2. Dodaj 5 metafield (`product_highlights`, `material`, `pattern`, `age_group`, `gender`) i wypełnij wstecz swoje 50 najlepszych SKU.
+3. Sprawdź strukturę wariantów — upewnij się, że każdy wariant ma własny obraz i `gtin`.
+4. Zaplanuj cotygodniowy przegląd diagnostyczny Merchant Center.
+
+To cała różnica między przeciętną konfiguracją Shopify Shopping a wysokowydajną.

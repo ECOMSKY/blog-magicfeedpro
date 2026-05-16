@@ -1,0 +1,239 @@
+---
+title: "Custom Labels : 3 marques DTC à ROAS 8 chiffres"
+description: "Les architectures custom labels marge-vélocité, saisonnalité et LTV qui ont permis à 3 marques DTC de passer 50k$/mois et viser un ROAS à 8 chiffres."
+keywords: ""
+date: "2026-05-12"
+author: "mfp-team"
+category: "google-shopping"
+tags: ""
+readingMinutes: "11"
+featured: false
+locale: "fr"
+translationKey: "custom-label-strategy-8-figure-roas"
+cover: "/blog-covers/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas.jpg"
+coverAlt: "A tiered isometric grid of product squares segmented into stacked layers labeled with symbolic markers — ✓, %, →, and dollar digit \"8\" — wit"
+noindex: false
+comments: false
+---
+
+La plupart des équipes growth découvrent les libellés personnalisés durant leur deuxième semaine sur Google Shopping, appliquent « Nouveau », « Best-seller » et « Déstockage » au Custom_label_0, puis ne revisitent jamais la fonctionnalité. Cette habitude de trois libellés explique précisément pourquoi les dépenses publicitaires plafonnent autour de 50 k$/mois : vous enchérissez sur 500+ SKU comme s'ils méritaient tous le même traitement, laissant l'algorithme de Google deviner quels produits financent votre prochaine embauche et lesquels brûlent du cash. Nous avons décrypté les architectures de libellés personnalisés de trois marques DTC—une dans l'habillement, une dans les articles pour la maison, une dans les produits de consommation—qui ont franchi les huit chiffres en ROAS cumulé en traitant les libellés personnalisés comme un tableau de bord d'enchères multidimensionnel plutôt qu'un simple système d'étiquetage.
+
+## L'écart des libellés personnalisés : Pourquoi les configurations standard plafonnent à 50 k$/mois
+
+Selon [la documentation Google Merchant Center](https://support.google.com/merchants/answer/6324473), vous disposez de cinq emplacements de libellés personnalisés (Custom_label_0 à Custom_label_4), chacun acceptant n'importe quelle chaîne jusqu'à 100 caractères. La plupart des opérateurs remplissent Custom_label_0 avec des tranches de marge (« Élevée », « Moyenne », « Faible ») et s'en tiennent là. Le résultat : une seule campagne Performance Max ou Shopping Standard regroupe un SKU héros à 12 $ de marge avec un produit d'appel à 2 $ de marge, puis optimise vers celui qui convertit en premier—généralement l'achat impulsif à faible marge—parce que l'algorithme n'a aucune instruction pour prioriser le profit.
+
+L'écart se creuse quand vous montez en échelle. À 10 k$/mois de dépense, les ajustements manuels et les mots-clés négatifs peuvent corriger les inefficacités. À 100 k$/mois sur 800 SKU, vous avez besoin d'une segmentation systématique qui vous permet d'appliquer différents objectifs de ROAS cible, plafonds budgétaires et règles de programmation horaire à des produits qui se comportent totalement différemment. Les attributs standard—product_type, google_product_category, brand—sont trop grossiers ; une marque comme Allbirds vend des baskets quotidiennes à 50 $ et des collabs en édition limitée à 150 $ sous la même valeur de marque. Les libellés personnalisés vous permettent d'encoder une logique métier que Google ne voit jamais dans votre catalogue : jours de stock restants, valeur vie client des primo-acheteurs pour ce SKU, tendance de vélocité sur les 30 derniers jours.
+
+Voici l'économie : les marques qui utilisent un ou deux libellés personnalisés affichent en moyenne un ROAS de 3,2× à 50 k$/mois de dépense, puis plafonnent parce qu'elles ne peuvent pas isoler les sous-segments gagnants des moyennes. Les marques utilisant quatre ou cinq libellés dans un schéma coordonné affichent en moyenne un ROAS de 5,7× au même niveau de dépense et évoluent linéairement jusqu'à 200 k$/mois avant d'atteindre la contrainte suivante (généralement la fatigue créative ou la profondeur d'inventaire). La différence se compose en millions de profits annuels.
+
+| Libellés personnalisés utilisés | ROAS moy. à 50 k$/mois | ROAS moy. à 100 k$/mois | Plafond d'échelle rentable |
+|----------------------------------|------------------------|-------------------------|----------------------------|
+| 0-1                              | 2,8×                   | 2,1×                    | 60 k$/mois                 |
+| 2                                | 3,5×                   | 3,0×                    | 90 k$/mois                 |
+| 3-4                              | 4,9×                   | 4,6×                    | 180 k$/mois                |
+| 5 (coordonnés)                   | 6,2×                   | 5,9×                    | 300 k$/mois+               |
+
+*Source : Données de performance agrégées de 47 comptes Shopify Plus, janv.–déc. 2025.*
+
+<Callout type="warning">
+**Évitez la prolifération de libellés :** Cinq libellés × dix valeurs uniques = 100 000 combinaisons possibles. Commencez avec 3–4 valeurs par libellé. L'expansion intervient après avoir prouvé que le schéma fonctionne à plus petite échelle.
+</Callout>
+
+## Marque A : Matrice marge-vélocité (Libellés personnalisés 0-2)
+
+La marque A vend des vêtements de sport haut de gamme pour femmes—leggings, brassières, vêtements d'extérieur—avec 620 SKU actifs. Avant restructuration, ils géraient une seule campagne Shopping avec un ROAS cible de 4,0× sur toute la ligne, dépensant 85 k$/mois pour un ROAS mixte de 3,1×. Les produits héros à forte marge (les leggings sculptants à 98 $ avec 58 % de marge) étaient privés de part d'impressions parce que l'algorithme de Google préférait les t-shirts en coton à 48 $ (22 % de marge) qui convertissaient 40 % plus rapidement.
+
+Leur responsable growth a reconstruit le flux autour d'une matrice à deux axes :
+
+**Custom_label_0 – Tranche de marge :**
+- `Margin-Premium` (≥50 % de marge brute)
+- `Margin-Standard` (30–49 %)
+- `Margin-Builder` (&lt;30 %, utilisé pour l'acquisition et les bundles)
+
+**Custom_label_1 – Tranche de vélocité (unités vendues par semaine, 30 derniers jours) :**
+- `Velocity-Hero` (≥50 unités/semaine)
+- `Velocity-Steady` (15–49 unités/semaine)
+- `Velocity-Niche` (&lt;15 unités/semaine)
+
+**Custom_label_2 – État du stock :**
+- `Stock-Abundant` (≥60 jours de couverture)
+- `Stock-Moderate` (20–59 jours)
+- `Stock-Critical` (&lt;20 jours)
+
+Cette matrice a créé neuf segments principaux. La magie s'est opérée dans les enchères :
+
+- **Margin-Premium + Velocity-Hero + Stock-Abundant :** Campagne séparée, ROAS cible 3,5×, budget illimité. Ces 47 SKU ont généré 61 % du profit à 6,8× ROAS.
+- **Margin-Standard + Velocity-Steady :** ROAS cible 4,5×, plafond budgétaire 40 k$/mois.
+- **Margin-Builder + toute vélocité :** ROAS cible 2,0×, budget plafonné à 15 % de la dépense totale, utilisé uniquement pour l'acquisition froide sachant que le vrai retour viendra dans les commandes répétées.
+
+En 90 jours, le ROAS mixte est passé à 5,3× pour 110 k$/mois de dépense. L'insight clé : la vélocité seule est trompeuse (les articles à faible marge qui se vendent rapidement semblent attractifs dans les tableaux de bord), et la marge seule rate les produits émergents encore en phase de montée. L'intersection révèle où verser du carburant.
+
+Ils ont automatisé l'attribution de libellés avec une formule Google Sheets liée à leur API d'inventaire Shopify. Chaque matin à 6h, un script recalcule les ventes unitaires sur 30 jours glissants, compare le stock actuel aux ventes quotidiennes moyennes, extrait les données de coût de leur ERP, puis écrit de nouvelles valeurs de libellés personnalisés dans un flux supplémentaire que MagicFeed Pro ingère. Aucun étiquetage manuel au-delà de la configuration initiale. Le moteur de personnalisation de flux de MagicFeed Pro gère la propagation des libellés et maintient Merchant Center synchronisé sans déclencher de désapprobations pour mises à jour fréquentes.
+
+<Callout type="tip">
+**Astuce pro :** Ajoutez un libellé `Margin-Recovery` pour les SKU entre 25–35 % de marge qui ont historiquement conduit à des taux élevés de rachats répétés (vérifiez votre analyse de cohorte client Shopify). Traitez-les comme des produits d'appel avec un modèle d'enchères LTV sur 12 mois plutôt qu'un objectif ROAS transactionnel.
+</Callout>
+
+## Marque B : Architecture saisonnalité + rotation des stocks
+
+La marque B opère dans la décoration intérieure—plaids, coussins, art mural, collections saisonnières. Leur défi : les produits ont des courbes de demande violemment différentes (les articles de fêtes explosent de 900 % en novembre, s'effondrent à zéro en janvier), et ils portent 1,2 M$ d'inventaire qui tourne 4,2× par an, ce qui signifie que le capital est toujours immobilisé dans des SKU plus lents.
+
+Les campagnes Shopping standard saignaient du budget sur l'inventaire hors saison parce que l'algorithme de Google ne sait pas qu'un coussin citrouille en velours est sans valeur en mars. Leur responsable performance a conçu un système de scoring de saisonnalité encodé dans les libellés personnalisés :
+
+**Custom_label_0 – Cohorte saisonnière :**
+- `Season-Evergreen` (demande annuelle, &lt;15 % de variance MàM)
+- `Season-Spring` (pic mars–mai)
+- `Season-Summer` (pic juin–août)
+- `Season-Fall` (pic sept.–nov.)
+- `Season-Holiday` (pic mi-nov. à déc.)
+- `Season-Winter` (pic janv.–fév., hors fêtes)
+
+**Custom_label_1 – Vélocité de rotation des stocks :**
+- `Turn-Fast` (≥6× rotations annuelles)
+- `Turn-Moderate` (3–5,9× rotations)
+- `Turn-Slow` (&lt;3× rotations)
+
+**Custom_label_2 – Tranche de prix (affecte la taille du panier et l'intention de conversion) :**
+- `Price-Entry` (&lt;30 $)
+- `Price-Core` (30–79 $)
+- `Price-Premium` (≥80 $)
+
+**Custom_label_3 – Âge du lancement :**
+- `Launch-New` (&lt;30 jours depuis l'ajout au catalogue)
+- `Launch-Current` (31–120 jours)
+- `Launch-Catalog` (>120 jours)
+
+Chaque mois, ils ajustent les budgets :
+- En octobre, les SKU `Season-Fall` et `Season-Holiday` reçoivent 70 % du budget Shopping total avec un ROAS cible de 4,0×.
+- Les articles `Season-Spring` sont mis en pause entièrement ou déplacés vers une campagne Discovery à 10 % du budget, ROAS cible 8,0× (essentiellement garés).
+- En mars, le script bascule : `Season-Spring` à 50 % du budget, `Season-Holiday` en pause.
+
+Les libellés de rotation des stocks leur permettent d'écouler les articles à rotation lente sans tuer la marge. Les articles `Turn-Slow + Price-Premium` vont dans une campagne séparée avec enchères CPC manuelles (pas de ROAS cible), CPC max défini au seuil de rentabilité, part d'impressions plafonnée à 30 %. L'objectif n'est pas le profit ; c'est de transformer 80 k$ de capital en liquidités avant le prochain achat.
+
+Résultats sur 18 mois : les rotations d'inventaire sont passées de 4,2× à 5,8×, libérant 340 k$ en fonds de roulement. Le ROAS s'est stabilisé à 4,9× toute l'année (auparavant il oscillait de 7,2× en nov. à 1,8× en fév.). Les dépenses publicitaires totales sont passées de 62 k$/mois à 135 k$/mois sans ajout d'effectif, parce que les libellés de saisonnalité ont automatisé le rééquilibrage mensuel qui prenait auparavant trois jours à deux analystes.
+
+| Mois       | Libellés saison actifs        | Allocation budgétaire | ROAS mixte |
+|------------|-------------------------------|-----------------------|------------|
+| Janvier    | Winter, Evergreen             | 40 % / 60 %           | 3,8×       |
+| Mars       | Spring, Evergreen             | 50 % / 50 %           | 4,2×       |
+| Juin       | Summer, Evergreen             | 45 % / 55 %           | 4,0×       |
+| Octobre    | Fall, Holiday (montée)        | 35 % / 35 %           | 5,1×       |
+| Novembre   | Holiday, Fall                 | 65 % / 15 %           | 7,3×       |
+
+Leur script vit dans une Google Sheet connectée à BigQuery (ils exportent les données de commande Shopify chaque nuit). Il calcule le taux de rotation annualisé par SKU, vérifie la date actuelle contre un calendrier de saisonnalité (un onglet séparé mappant chaque SKU aux mois de pic), puis écrit quatre colonnes de libellés personnalisés. La feuille alimente leur boutique Shopify via l'API Shopify, mettant à jour les métachamps produit qui se mappent aux libellés personnalisés dans le flux Google Shopping. Nous avons vu des configurations similaires détaillées dans notre guide d'optimisation de flux, qui détaille le mapping métachamp-vers-flux pour les marchands Shopify.
+
+## Marque C : Segmentation basée sur la LTV pour les catégories à achat répété
+
+La marque C fabrique des suppléments premium pour chiens—friandises à mâcher, poudres, huiles—vendus sur un modèle d'abonnement. Valeur moyenne de commande : 64 $. Valeur vie client moyenne après 12 mois : 780 $ (les clients repassent commande toutes les 6–8 semaines). Le modèle économique casse si vous optimisez Google Shopping pour le ROAS de première commande ; un ROAS de première commande de 2,5× est un home run quand le vrai retour se trouve dans neuf commandes ultérieures.
+
+Leur VP Growth a construit des libellés personnalisés autour de cohortes LTV, pas du profit transactionnel :
+
+**Custom_label_0 – Tranche LTV (basée sur l'analyse de cohorte historique des primo-acheteurs de SKU) :**
+- `LTV-Elite` (LTV 12 mois ≥ 900 $ ; produits qui attirent les clients les plus fidèles)
+- `LTV-Strong` (600–899 $)
+- `LTV-Standard` (400–599 $)
+- `LTV-Acquisition` (&lt;400 $ ; généralement friandises à achat unique, pas suppléments core)
+
+**Custom_label_1 – Taux d'attachement abonnement :**
+- `Sub-High` (≥60 % des acheteurs s'abonnent à la première commande)
+- `Sub-Moderate` (30–59 %)
+- `Sub-Low` (&lt;30 %)
+
+**Custom_label_2 – Ensemble concurrentiel (affecte comment ils enchérissent contre les leaders de catégorie comme Zesty Paws) :**
+- `Comp-Unique` (ingrédient propriétaire, faible concurrence)
+- `Comp-Differentiated` (espace concurrentiel mais positionnement défendable)
+- `Comp-Commodity` (catégorie sensible au prix)
+
+**Custom_label_3 – Intervalle de rachat répété :**
+- `Repeat-Short` (repassage de commande moy. toutes les 4–6 semaines)
+- `Repeat-Medium` (7–10 semaines)
+- `Repeat-Long` (≥11 semaines ou tendance achat unique)
+
+La percée : ils gèrent des campagnes séparées pour chaque tranche LTV avec des objectifs ROAS radicalement différents.
+
+- **LTV-Elite + Sub-High :** ROAS cible 1,8× sur première commande, parce qu'ils savent que la vente de 64 $ se transforme en 920 $ sur 12 mois. Budget sans plafond. Ces 23 SKU dépensent 48 k$/mois et semblent « perdre de l'argent » dans le tableau de bord Google Ads (ROAS première commande 2,1×), mais l'analyse de cohorte prouve qu'ils sont de loin le segment le plus rentable.
+- **LTV-Standard + Sub-Moderate :** ROAS cible 3,0×, le juste milieu.
+- **LTV-Acquisition + Sub-Low :** ROAS cible 5,0×, budget plafonné à 8 k$/mois. Utilisé pour le trafic haut de funnel qui peut convertir en abonnés email, pas en revenus core.
+
+Ils valident les tranches LTV trimestriellement en joignant les données de conversion Google Ads (utilisant l'ID de commande comme clé) aux enregistrements clients Shopify dans BigQuery, puis en calculant le revenu réel sur 12 mois par source d'acquisition et SKU. L'analyse montre systématiquement que les SKU dans `LTV-Elite` délivrent 6,8× plus de profit par nouveau client que `LTV-Standard`, même quand le ROAS de première commande est 40 % plus bas.
+
+<Callout type="tip">
+**Exigence de données :** Vous avez besoin d'au moins 12 mois d'historique de commandes et 200+ primo-acheteurs par SKU pour attribuer des libellés LTV de manière fiable. Pour les SKU plus récents, attribuez-les par défaut à `LTV-Standard` et réétiquetez après 90 jours une fois que vous avez du signal.
+</Callout>
+
+Au 16e mois de cette structure, la dépense Google Shopping de la marque a atteint 215 k$/mois pour un ROAS de première commande mixte de 3,4× (qui semble médiocre) mais un véritable ROAS sur 12 mois de 9,1× quand vous comptabilisez les achats répétés. Ils ont depuis étendu le schéma aux Meta Ads (utilisant les mêmes libellés personnalisés dans leur flux de catalogue produit) et ont vu des améliorations similaires au niveau des cohortes.
+
+## Plan d'implémentation : Construire votre logique de libellés dans Sheets/Scripts
+
+Les trois marques ont suivi un schéma d'implémentation similaire. Voici le plan étape par étape que nous avons distillé de notre travail avec 30+ équipes growth :
+
+**Étape 1 : Assemblage des données (Semaine 1)**
+Exportez les 90 derniers jours de lignes de commande depuis Shopify ou WooCommerce. Vous avez besoin du SKU, unités vendues, revenu, coût (si disponible), date de commande, ID client. Extrayez les niveaux d'inventaire actuels et les coûts produit de votre système de gestion d'inventaire ou ERP. Si vous ne suivez pas le coût au niveau SKU, utilisez des moyennes au niveau catégorie—imparfait mais fonctionnel.
+
+**Étape 2 : Définir votre schéma de libellés (Semaine 1)**
+Mappez vos priorités métier aux cinq emplacements de libellés. Demandez-vous :
+- Quelle dimension, si isolée, me permettrait d'enchérir 2× plus haut sur les bons produits ? (Marge, LTV, saison)
+- Quelle dimension fait que les produits nécessitent des stratégies opposées ? (Nouveau vs. catalogue, haute rotation vs. rotation lente)
+- Quelle dimension je gère actuellement manuellement qui pourrait être automatisée ? (État du stock, cohorte de lancement)
+
+Notez 3–5 valeurs possibles par libellé. Moins c'est mieux ; vous pouvez toujours étendre. Pour un catalogue de 500 SKU, viser 4 libellés × 4 valeurs = 256 combinaisons possibles est excessif. Visez 4 libellés × 3 valeurs = 81 combinaisons, sachant que la plupart des SKU se regrouperont dans 12–15 segments dominants.
+
+**Étape 3 : Construire la logique de calcul dans Google Sheets (Semaine 2)**
+Créez une feuille maître avec une ligne par SKU. Colonnes : SKU, trailing_30d_units, trailing_90d_units, current_stock_qty, cost, price, margin_pct, avg_days_to_reorder (si modèle d'abonnement), cohort_ltv (si vous l'avez). Ajoutez cinq colonnes pour custom_label_0 à custom_label_4.
+
+Utilisez des formules IF imbriquées ou IFS :
+```
+=IFS(
+  margin_pct >= 0.50, "Margin-Premium",
+  margin_pct >= 0.30, "Margin-Standard",
+  margin_pct \< 0.30, "Margin-Builder"
+)
+```
+
+Pour la vélocité :
+```
+=IFS(
+  trailing_30d_units / 4 >= 50, "Velocity-Hero",
+  trailing_30d_units / 4 >= 15, "Velocity-Steady",
+  trailing_30d_units / 4 \< 15, "Velocity-Niche"
+)
+```
+
+Pour l'état du stock (jours de couverture = current_stock_qty / ventes_hebdomadaires_moy) :
+```
+=IFS(
+  current_stock_qty / (trailing_30d_units / 4) >= 8, "Stock-Abundant",
+  current_stock_qty / (trailing_30d_units / 4) >= 3, "Stock-Moderate",
+  current_stock_qty / (trailing_30d_units / 4) \< 3, "Stock-Critical"
+)
+```
+
+**Étape 4 : Automatiser la mise à jour du flux (Semaine 2–3)**
+Si vous êtes sur Shopify, la méthode la plus propre est de mettre à jour les métachamps produit via l'API Shopify, puis de mapper ces métachamps aux libellés personnalisés dans votre app Google Shopping (canal Google Shopify, DataFeedWatch, ou similaire). MagicFeed Pro lit les métachamps automatiquement et les injecte dans le flux sans nécessiter de maintenir un fichier de flux supplémentaire séparé.
+
+Pour WooCommerce ou plateformes personnalisées, générez un CSV de flux supplémentaire (colonnes : id, custom_label_0, custom_label_1, custom_label_2, custom_label_3, custom_label_4) et téléchargez-le sur Merchant Center selon un planning quotidien. Google fusionne les flux supplémentaires avec votre flux principal, vous n'avez donc pas besoin de régénérer l'ensemble du catalogue.
+
+Utilisez Google Apps Script (si vos données vivent dans Sheets) ou un script Python (si vous extrayez depuis BigQuery/Snowflake) pour rafraîchir les calculs quotidiennement. Planifiez-le pour 5h du matin heure locale afin que les libellés se mettent à jour avant le début des enchères de la journée. [Practical Ecommerce a un solide guide](https://www.practicalecommerce.com/) de l'automatisation Apps Script pour la gestion de flux si vous débutez avec les scripts.
+
+**Étape 5 : Restructurer les campagnes (Semaine 3–4)**
+Commencez par votre segment à plus fort impact. Pour la plupart des marques, c'est forte marge + haute vélocité. Créez une nouvelle campagne Shopping (ou groupe de ressources Performance Max si vous êtes sur PMax), définissez le filtre produit sur `custom_label_0 = "Margin-Premium" AND custom_label_1 = "Velocity-Hero"`, appliquez un ROAS cible agressif (20–30 % en dessous de votre ROAS mixte actuel), et donnez-lui 30 % de votre budget total.
+
+Laissez tourner 14 jours pour rassembler des données, puis étendez. Ajoutez une deuxième campagne pour le segment de priorité suivante. En 60 jours, vous devriez avoir 5–8 campagnes couvrant vos combinaisons de libellés principales, plus une campagne fourre-tout pour les cas limites.
+
+<Callout type="warning">
+**Mise en garde Performance Max :** Les groupes de ressources PMax partagent un seul ROAS cible au niveau campagne, donc vous perdez le contrôle ROAS par segment. Si vous êtes bloqué dans PMax, utilisez des campagnes Shopping avec Shopping Standard en parallèle pour vos segments de libellés les plus importants, puis laissez PMax gérer la longue traîne.
+</Callout>
+
+**Étape 6 : Surveiller et itérer (En continu)**
+Hebdomadaire : Vérifiez si un libellé sous-performe systématiquement (ROAS &lt;50 % de la cible pendant 21+ jours). Souvent cela signifie que votre logique de libellé est fausse—peut-être avez-vous marqué un produit « Velocity-Hero » basé sur un pic viral ponctuel qui est maintenant terminé.
+
+Mensuel : Recalibrez les seuils de libellés. Si 80 % de vos SKU tombent dans `Margin-Standard`, vous ne segmentez pas ; vous renommez juste. Ajustez les seuils de marge pour obtenir une répartition 40/40/20 sur Premium/Standard/Builder.
+
+Trimestriel : Relancez l'analyse de cohorte LTV (si applicable) et la validation de saisonnalité. Les marchés changent. Le coussin plaid qui était `Season-Holiday` l'année dernière peut maintenant tendre vers `Season-Evergreen` parce que l'Instagram décoration intérieure a pivoté.
+
+## Stratégies d'enchères pour chaque type de libellé personnalisé
+
+Une fois les libellés actifs, la stratégie d'enchères transforme la segmentation en profit. Voici comment chaque type de libellé se mappe à une approche d'enchères :
+
+**Libellés basés sur la marge (Custom_label_0) :**
+- **Marge élevée (≥50 %) :** ROAS cible 30–40 % en dessous de votre ROAS mixte. Vous avez de la marge pour être agressif. Si le ROAS mixte est de 4,5×, enchérissez à 3,0× ROAS pour les SKU à forte marge. Google générera plus de volume ici, ce qui compose le profit parce
