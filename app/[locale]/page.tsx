@@ -120,6 +120,13 @@ export default async function HomePage({ params }: { params: Promise<Params> }) 
                 <PostCard key={p.slug} post={p} locale={locale} />
               ))}
             </div>
+            {posts.length > rest.length + (featured ? 1 : 0) && (
+              <div style={{ textAlign: 'center', marginTop: 'var(--s-12)' }}>
+                <Link href={localePath(locale, '/posts')} className="pill" style={{ padding: '10px 20px', fontWeight: 600 }}>
+                  {t('viewAll')} →
+                </Link>
+              </div>
+            )}
           </div>
           <div className="home-grid__side">
             <CategoriesSide categories={categories} locale={locale} title={t('categories')} />

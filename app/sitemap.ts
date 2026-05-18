@@ -39,6 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
     out.push({ url: url(locale, '/about'), changeFrequency: 'monthly', priority: 0.5 });
     out.push({ url: url(locale, '/categories'), changeFrequency: 'weekly', priority: 0.7 });
+    out.push({ url: url(locale, '/posts'), changeFrequency: 'daily', priority: 0.8 });
 
     for (const c of getCategoriesByLocale(locale)) {
       out.push({
