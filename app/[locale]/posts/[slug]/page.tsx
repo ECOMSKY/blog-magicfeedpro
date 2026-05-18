@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import SafeMdxBody from '@/components/SafeMdxBody';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -32,14 +33,13 @@ import ExitIntentPopup from '@/components/ExitIntentPopup';
 
 type Params = { locale: string; slug: string };
 
+// Dynamic SSR per request.
+// Build stays fast (~60s, no article prerender) and bad MDX doesn't crash build.
+// Caching is handled at the route-segment level once next-intl + ISR are aligned.
+export const dynamic = 'force-dynamic';
+
 export function generateStaticParams() {
-  const out: Params[] = [];
-  for (const locale of locales) {
-    for (const p of getAllPosts().filter((q) => q.locale === locale)) {
-      out.push({ locale, slug: p.slug });
-    }
-  }
-  return out;
+  return [];
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
@@ -226,7 +226,8 @@ export default async function PostPage({ params }: { params: Promise<Params> }) 
               <p className="tldr__body">{post.tldr}</p>
             </div>
           )}
-          <MDXRemote
+          <SafeMdxBody
+            slug={post.slug}
             source={post.body}
             components={{
               ...mdxComponents,
