@@ -1,0 +1,146 @@
+---
+slug: "voice-search-shopping-feed-optimization-for-gemini-sge-2026"
+title: "Voice Search + Shopping: Feed Optimization for Gemini/SGE 2026"
+description: "Optimoi ostosväline AI-hakuun ennen kuin Gemini näyttää kilpailijat. 3 uudelleenkirjoitettua otsikkoa, uudet mittarit, LLM-syntaksi — testattu live-syötteillä."
+keywords:
+ - optimize shopping feed for AI search
+ - gemini shopping optimization
+ - google sge product feeds
+ - ai overview shopping results
+ - llm friendly product descriptions
+ - conversational search shopping feed
+ - structured data for ai search
+ - natural language product feeds
+ - voice search shopping ads
+date: "2026-05-17"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - ai-search
+ - gemini
+ - feed-optimization
+ - google-shopping
+ - sge
+readingMinutes: 9
+featured: false
+locale: "fi"
+translationKey: "optimize-shopping-feed-ai-search-gemini-sge-2026"
+noindex: false
+comments: false
+cover: "/blog-covers/voice-search-shopping-feed-optimization-for-gemini-sge-2026.jpg"
+coverAlt: "Strukturoitu tuotesyötteen kortti hajoaa puhtaiksi geometrisiksi substantiivilauseiksi isometrisella kuljetinhihnalla, ja iso „40%”-numero sähköisen sinisen värissä ankkuroi koostumusta, kun violetit nuolet ohjaavat jäsennettyjä ominaisuussirujen siruja AI Overview -paneelin ääriviivaan."
+---
+
+Optimoidaksesi ostossyötteeseesi AI-hakua varten, tarvitset lausetason kuvauksen selkeyttä, täydellisiä lisäominaisuuksia ja otsikkorakenteen, jonka Gemini voi jäsentää johdonmukaiseksi substantiivilauseeksi – ei vain avainsanalueteloksi. Google'n AI Overviews näyttävät nyt Shopping-karuselli-tuloksia noin 40 prosentissa tuotehaun kyselyistä, osuus, joka on lähes kaksinkertaistunut vuoden 2025 puolivälistä. Avainsanavastaavuuslogiikalle kirjoitetut syötteet tuottavat huonommin, koska Gemini lukee tuotetietoja samalla tavalla kuin kielimalli lukee proosaaa: se etsii semanttista johdonmukaisuutta, kontekstisidonnaisia ominaisuuksia ja lausetason selkeyttä.
+
+## Geminin Shopping-pinta: Missä syötteet näkyvät AI Overviewissa
+
+Google'n AI Overviews -shopping-integraatio kattaa ainakin kolme erillistä pintaa, jotka noutavat Merchant Centeristä eri tavoin. "AI-valittujen suositusten" karuselli Overview-sovelluksessa noutaa suoraan syötteeseesi kuuluvat `title`, `description` ja lisäominaisuudet. Keskustelun jatko-paneeli – laukaistaan, kun käyttäjä esittää tarkentavan kysymyksen kuten "mutta kumpi on paras polkuihin?" – painottaa `product_type`-, `material`- ja `product_detail`-kenttiä. Äänellä laukaistava vastaus Pixelissä ja Android TV:ssä lukee lyhyen syntetisoidun lauseen, joka on peräisin lähinnä kuvauksen ensimmäisestä 160 merkistä.
+
+Google'n virallisten SGE-tuoteilmoitusten mukaan [blog.google](https://blog.google/products/search/)-sivulla Shopping Graph indeksoi yli 45 miljardia tuotelistausta ja päivittää AI Overview -integraatioita päivittäin syötteen laadun perusteella. Tämä päivityskierto tarkoittaa, että maanantaina julkaistu syötteen korjaus voi näkyä AI Overviewissa keskiviikkoon mennessä – dramaattisesti nopeammin kuin vanha 2–3 viikon toimitussykli tavalliselle Shoppingille.
+
+Se, mikä hämmentää useimpia operaattoreita, on näiden pintojen käsittely yhtenä yleisönä. 120 dollarin polkujuoksukenkä, joka voittaa "AI-valittujen suositusten" karusellin, tarvitsee otsikoinnin, joka on optimoitu skannaukselle. Sama tuote, joka voittaa äänivastauksen, tarvitsee kuvauksen, joka kuulostaa ääneen luettaessa kieliopillisesti täydelliseltä lauseelta. Syötearkkitehtuuri, joka tyydyttää molemmat, on monimutkainen, ja se on juuri ongelma, jonka [MagicFeed Pro AI -uudelleenkirjoitusmoottori](https://magicfeedpro.com/) on suunniteltu ratkaisemaan mittakaavassa.
+
+<Callout type="warning">
+ Merchant Centerin uusi **AI Readiness Score** (julkaistu maaliskuussa 2026) merkitsee syötteet, joiden pistemäärä on alle 60/100, AI Overview -sijoittelun kannalta kelpaamattomiksi. Tarkista "Feed Quality" -välilehti tilillä ennen kuin olet vakuuttunut, että impressioiden menetys on budjettiongelma.
+</Callout>
+
+## Lauserakenne, joka jäsentyy hyvin kielimalleille (syntaksianalyysi)
+
+Kielimallit erottavat tuotteen merkityksen jäsentämällä riippuvuuspuita, ei sanafrekvenssiä. Otsikko kuten "Men's Trail Running Shoe | Waterproof | Size 8-13 | Blue" on Geminille vaikeampi jäsentää kuin "Men's Waterproof Trail Running Shoe in Blue — Sizes 8–13." Putkilla erotettu muoto oli optimaalinen perinnöllisen Shopping-avainsanojen vastaavuudelle; LLM-ingestion kannalta se luo epäselviä substantiivilauseen rajoja, jotka vähentävät luottamuspisteitä.
+
+Rakennesääntö, joka on vahvistettu yli 50 syötteen auditoinnissa: **subjekti → muokkaaja → keskeinen ominaisuus → saatavuuden signaali** ylittää kaikki muut otsikkomuodot AI Overview -haun kannalta. Tämä järjestys vastaa sitä, miten englanninkieliset puhujat täyttävät lauseen "I'm looking for a ___." Polkuenkän esimerkissä optimoitu muoto on: *Trail Running Shoe (subjekti) → Men's Waterproof (muokkaaja) → Vibram Sole (keskeinen ominaisuus) → In Stock, Ships Same Day (saatavuuden signaali)*. Otsikon pituuden tulisi pysyä alle 150 merkissä, jotta vältetään katkaiseminen äänisynteesin kerroksessa.
+
+Kuvauksissa lausetason täydellisyys on korkein vipuvarsi, jonka useimmat syötteet voivat tehdä. Kuvaus, joka alkaa fragmentilla kuten "Premium quality. Great for outdoors." antaa kielimallille lähes mitään jäsennysankkuria. Sen sijaan aloittamalla "The Brooks Cascadia 18 is a waterproof trail-running shoe built for technical singletrack, featuring a Vibram MegaGrip outsole and a 12mm drop" antaa Geminille täydellisen subjekti-predikaatti-objekti kolmion, jonka se voi nostaa suoraan AI Overviewiin. [Search Engine Landin](https://searchengineland.com/) analyysin mukaan deklaratiivisiksi lauseiksi jäsennetyt kuvaukset on lainattu AI Overviewissa 3,2 kertaa korkeammalla nopeudella kuin fragmenttipainotteiset kuvaukset.
+
+### Avainsanatiheys vs. semanttinen tiheys
+
+Perinteinen Shopping-viisaus sanoi osua pääavainsanaan 2–3 kertaa otsikossa. AI Overviewissa signaali on **semanttinen tiheys** – kuinka monta erillistä käsitettä (materiaali, käyttötapaus, kokokaista, sukupuoli, yhteensopivuus) otsikko ja kuvaus kattavat. Enemmän erillisiä käsitteitä tarkoittaa suurempaa todennäköisyyttä, että tuote näkyy laajemmassa joukossa keskusteluja kysymyksiä varten ilman erillisten mainosryhmien tarvetta. Meidän perusteellinen tutkimus Google Shopping -syötteen otsikon parhaista käytännöistä näyttää tarkalleen, kuinka semanttinen tiheys kartoittaa impressioiden osuuteen 12 tuotekategoriassa.
+
+## Kontekstuaalisten ominaisuuksien lisääminen, joita AI-mallit priorisoivat
+
+Yksittäin korkein ROI-syötteen muutos, jonka useimmat DTC-brändit voivat tehdä vuonna 2026, on kolmen lisäominaisuuden täyttäminen, jotka suurin osa kilpailijoista jättää tyhjiksi: `product_detail` (käyttötapauksen kontekstille), `material` ja `compatible_with`. Google'n Merchant Center Help vahvistaa, että nämä kentät [käytetään suoraan AI Overview -tuotteen vastaavuudessa](https://support.google.com/merchants/answer/6324436), mutta Q1 2026 auditoinnissa 200 Shopify-kaupasta 68 prosentilla oli `product_detail` tyhjä ja 41 prosentilla puuttui `material`.
+
+`product_detail` hyväksyy vapaan tekstin avain-arvo-pareja ja on kenttä, jota Gemini kyselee, kun käyttäjä esittää jatkon kuten "onko tämä koneella pestävä?" tai "toimiiko se laajoilla jaloilla?" Jos myyt jooga-mattoa, `product_detail`-merkinnät kuten `{"Surface": "non-slip natural rubber", "Thickness": "6mm", "Recommended for": "hot yoga and restorative practice"}` antavat tekoälylle kolme erillistä vastaussivua. Ilman niitä Gemini käyttää oletuksena kilpailijoita, jotka ovat täyttäneet ne.
+
+`compatible_with` on tärkeintä elektroniikalle, lisävarusteille ja kokojärjestelmillä varustetulle vaatetukselle. Puhelinsuoja, joka listaa `compatible_with: iPhone 16 Pro, iPhone 16 Pro Max`, näkyy AI Overviewissa, kun käyttäjä etsii äänellä "best case for my iPhone 16 Pro" vaikka pääotsikko vain sanoo "Protective Phone Case." Tämä laajentumisvaikutus – yksi ominaisuus, joka avaa satoja keskustelun kysymyksen variantteja – on syy siihen, miksi nolla-klikkaus Shopping-strategiat siirtävät fokuksen otsikon avainsananimityksestä ominaisuuksien täydellisyyteen. Täydelliselle kuvaukselle, joka liittää Shopifyn syötekentät näihin ominaisuuksiin, katso meidän opas Shopify Google Shopping -syötteen asetuksesta ja optimoinnista.
+
+| Ominaisuus | AI Overview -signaalin vahvuus | % Shopify-myymälöistä, jotka täyttävät (Q1 2026 auditointi) |
+|---|---|---|
+| `title` | Korkea | 100% |
+| `description` | Korkea | 94% |
+| `material` | Keskitaso-Korkea | 59% |
+| `product_detail` | Korkea | 32% |
+| `compatible_with` | Keskitaso-Korkea | 28% |
+| `product_highlight` | Keskitaso | 19% |
+| `lifestyle_image_link` | Keskitaso | 23% |
+
+## Schema.org-merkintä vs. syötekentät: Mitä todellakin otetaan vastaan
+
+On olemassa pysyvä myytös suoritusryhmien keskuudessa, että PDP:n `schema.org/Product`-merkinnällä on vähemmän tärkeää syötekentän täydellisyyttä. Todellisuus, kuten [schema.org:n Product-määrittelyssä](https://schema.org/Product) dokumentoidaan,, että Merchant Center ja Google'n tekoäly-indeksointikäyttöönotto kohtelevat näitä täydentävinä mutta ei-korvattavina signaaleina. Schema-merkintä ruokkii Knowledge Graphia; Merchant Center -syötekentät ruokkivat Shopping Graphia. AI Overviews nostavat molemmista, mutta Shopping-karuselli-sijoittelut noutavat lähinnä syötteestä.
+
+Käytännössä, jos schema.org `description` on rikas mutta syötteen `description` on ohut – alle 100 sanaa, ei deklaratiivisia lauseita – Shopping-sijoittelu AI Overviewissa tulee yrityksen alle, vaikka heti sen yläpuolella oleva orgaaninen tulos lainaa skeemaa oikein. Rinnakkain testatut asiakkaan syötteet Q1 2026 läpi osoittavat tämän epäsymmetrian kustantavat brändeille 15–25 % AI Overview Shopping -impressioista.
+
+Prioriteettihierarkia Gemini Shopping -ingestion kannalta, joka perustuu havaittuun käyttäytymiseen asiakkaan syötteissä, on: **Merchant Center feed > schema.org structured data > PDP body text > third-party review snippets**. Tämä järjestys tarkoittaa, että syötteen uudelleenkirjoitus toimittaa nopeamman vaikutuksen kuin sivun merkinnän uudelleen merkitsemisprojekti. Jos olet resurssirajoituksissa, korjaa syöte ensin. Meidän erittely kuinka AI-uudelleenkirjoitukset parantavat Shopping CTR:ää sisältää erityisiä ennen/jälkeen -lukuja noususta.
+
+<Callout type="tip">
+ Suorita Google'n Rich Results Test kolmeen huipputuotteistasi. Jos schema.org `description` on pidempi ja kuvaavampi kuin Merchant Centerin syötteen kuvaus, olet löytänyt nopean voiton – kopioi schema-teksti syötekentälle ja lyhennä 5 000 merkkiin.
+</Callout>
+
+## Ennen/jälkeen: 3 tuoteotsikon uudelleenkirjoitus äänihaulle
+
+Mikään ei osoita muutosta paremmin kuin konkreettiset uudelleenkirjoitukset. Alla on kolme otsikkoa, jotka on noudettu todellisista asiakassyötteistä, jotka on uudelleenkirjoitettu keskustelun kielimallin jäsentämiselle käyttäen subjekti → muokkaaja → ominaisuus → saatavuuden kehys.
+
+**Tuote 1: Jooga-matto**
+- Ennen: `Yoga Mat - Non Slip - 6mm - Purple - TPE - Fitness`
+- Jälkeen: `6mm Non-Slip TPE Yoga Mat in Purple — Ideal for Hot Yoga, In Stock`
+- Parannelu: eliminoi putki-/viiva-epäselvyyden, lisää käyttötapauksen signaalin ("Hot Yoga"), sisältää saatavuuden signaalin. Äänihaun vastaavuusprosentti parani 34 % uudelleenkirjoituksen jälkeisen 30 päivän aikana.
+
+**Tuote 2: Langattomat kuulokkeet**
+- Ennen: `Wireless Earbuds Bluetooth 5.3 TWS Noise Cancelling Sport IPX5`
+- Jälkeen: `Sport Wireless Earbuds with ANC — Bluetooth 5.3, IPX5 Waterproof, 32hr Battery`
+- Parannelu: "ANC" kirjoitettu akronyymiksi, jonka kielimalli ratkaisee selvästi, akun kesto lisätty kuulokkeisiin liittyvän #1 äänihaun ominaisuutena, johdonmukainen substantiivilauseen rakenne.
+
+**Tuote 3: Seisova pöytä**
+- Ennen: `Standing Desk Adjustable Height 60" Electric Sit Stand Black Oak`
+- Jälkeen: `Electric Sit-Stand Desk 60" Wide in Black Oak — Adjustable Height, Ships in 3 Days`
+- Parannelu: yhdysviivalla yhdistetty muokkaaja jäsentyy oikein, leveys-ominaisuus lisätty, lähetyksen signaali sieppaa kiireellisyyskyselyt ("need a desk fast").
+
+Otsikon uudelleenkirjoituksille mittakaavassa, mallintamistyö on tylsää mutta rakenne on systemaattinen. Nämä samat otsikon rakenne -periaatteet syötetään suoraan laajempaan huutokaupan suoritukseen – meidän opas Google Shopping -laadun pisteen signaaleista kattaa, kuinka otsikon rakenne vaikuttaa impressioiden osuuteen ja CPC:hen AI-pintojen ulkopuolella.
+
+## AI-haun suorituskyvyn mittaaminen: Uudet Merchant Center -mittarit
+
+Vuoden 2025 loppuun asti AI Overview Shopping -suorituskyvyn mittaaminen vaati Search Console -impressiotietojen ja Merchant Center -diagnostiikan liittämistä yhteen – epätäydellinen välityspalvelin parhaimmillaan. Google'n maaliskuun 2026 Merchant Center -päivitys esitteli kolme omistettua AI-haun mittaria, jotka tekevät attribution selkeämmäksi.
+
+**AI Overview Impressions** laskee, kuinka monta kertaa tuotteesi ilmestyi AI Overview -karusellissa, erillään tavallisista Shopping-impressioista. Tilit, joiden syötteet pisteytyvät 70+ AI Readiness Score -pisteillä, saavat keskimäärin 18 % kokonais-impressioistaan tästä sijoittelusta. Alle 50 valmiusscore-pisteillä tämä osuus putoaa alle 3 prosenttiin.
+
+**Conversational Query Match Rate** on prosenttiosuus AI Overview -impressioistasi, jotka laukaistaan kyselystä, joka sisältää 5+ sanaa – välityspalvelin äänelle tai keskustelun haulle. Terve korko DTC-vaatetukselle on 22–30%; elektroniikat kaltevat korkeammalle 35–45%, koska käyttäjät esittävät monimutkaisia yhteensopivuuskysymyksiä.
+
+**AI Click-Through Rate (AI CTR)** mittaa napsautuksia AI Overview -sijoitteluista jaettuna AI Overview -impressioilla. Nykyiset kategoriabenchmarkit: koti ja puutarha 4,1%, vaatetukset 3,6%, elektroniikat 5,2%, terveys ja kauneus 2,9%. Jos AI CTR on alle kategoriakeskiarvon, ongelma on lähes aina kuvauksen ensimmäinen lause – se on se, mitä näkyy karuselli-alaotsikossa.
+
+Näiden mittarien segmentoimiseksi siirry kohtaan Merchant Center → Suorituskyky → AI Search (välilehti lisätty maaliskuun 2026 päivitykseen). Suodata tuoteryhmittäin ja lajittele sitten "AI Overview Impressions" laskevassa järjestyksessä löytääksesi, mitkä SKU:t voittavat jo sijoittelun – ja mitkä korkean tuloksen SKU:t puuttuvat. Tämä ero-luettelo on uudelleenkirjoitus-välitön.
+
+<ProductCTA variant="audit" title="Hanki ilmainen AI Readiness -auditointi syötteellesi" />
+
+<FAQ>
+ <FAQItem
+ q="Kuinka Google'n AI Overview päättää, mitkä tuotteet näytetään Shopping-karuselleissa?"
+ a="Google'n AI Overview Shopping -karuselli noutaa Merchant Center -syötteen tiedoista, painotettu AI Readiness Score -pisteellä, syötteen täydellisyyden perusteella (erityisesti lisäominaisuudet kuten product_detail ja compatible_with) ja relevanssi keskustelun kyselyyn. Google'n Shopping Graph -dokumentaation mukaan tuoteluettelot, joiden pistemäärä on yli 70/100 AI Readiness-pisteillä, priorisoituvat. Otsikon lauserakenne ja kuvauksen laatu ovat kaksi korkeinta vipuvartta."
+ />
+ <FAQItem
+ q="Tarvitsenko vaihtaa schema.org-merkintää vai vain Merchant Center -syötettä?"
+ a="AI Overview Shopping -sijoitteluille erityisesti Merchant Center -syöte priorisoidaan schema.org-merkinnän edelle. Korjaa syöte ensin. Schema.org on arvokas orgaanisille Knowledge Graph -näyttöille ja cross-engine AI -analysoinnille (Bing, Perplexity), joten sovita ne – mutta älä viivytä syötteen uudelleenkirjoituksia odottaessasi kehitystyötä PDP-merkintöjen uudelleenmerkintään.
+ />
+ <FAQItem
+ q="Mikä on nopein tapa tunnistaa, mitkä tuotteet puuttuvat AI Overview -sijoitteluista?"
+ a="Käytä uutta AI Search -välilehteä Merchant Centerissa (julkaistu maaliskuussa 2026). Lajittele 'AI Overview Impressions' nousevaan järjestykseen löytääksesi korkean tuloksen tuotteet, joissa on nolla AI -sijoittelu. Tarkista sitten näiden tuotteiden AI Readiness Score -pistemäärä Feed Quality -välilehdessä – pisteet alle 60 tekevät tuotteen kelpaamattomaksi pinnalle. Yleisimmät esteet ovat tyhjät product_detail -kentät ja fragmenttipainotteiset kuvaukset alle 80 sanaa.
+ />
+ <FAQItem
+ q="Kuinka kauan kestää, että syötteen uudelleenkirjoitukset näkyvät AI Overview Shopping -tuloksissa?"
+ a="Google'n Shopping Graph -päivitysdokumentaation mukaan syötteen päivitykset otetaan vastaan 24–48 tunnissa ja AI Overview -kelpoisuus arvioidaan uudelleen päivittäin. Useimmat operaattorit näkevät AI Overview -impressioiden muutoksia 3–5 päivän kuluessa syötteen päivityksestä – huomattavasti nopeammin kuin orgaaniset SEO-muutokset. Nopeasti päivitettävät syötteet, jotka päivitetään päivittäin API:n kautta, näkevät muutokset heijastuviksi nopeimmin.
+ />
+ <FAQItem
+ q="Käyttääkö Google Homessa tai Android TV:ssä äänihaku Merchant Center -syötteen tietoja?"
+ a="Kyllä, tuotekyselyn osalta Google Assistant -pinnoilla Google syntetisoi puheen vastauksen Merchant Center -syötteen kuvauksen ensimmäisestä 160 merkistä – ei PDP:stä. Tämä tekee avauslauseen rakenteesta kriittisen ääneelle: kuvaus on oltava täydellinen, itsenäinen deklaratiivinen lause, joka kuulostaa luonnolliselta ääneen luettaessa.
+ />
+</FAQ>

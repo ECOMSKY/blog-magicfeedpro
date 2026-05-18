@@ -1,0 +1,203 @@
+---
+slug: "multi-currency-feed-ops-skalowanie-google-shopping-do-12-rynkow"
+title: "Multi-Currency Feed Ops: Skalowanie Google Shopping do 12+ Rynków"
+description: "Techniczny poradnik zarządzania zlokalizowanymi feedami Google Shopping na dużą skalę—timing konwersji walut, regionalne wariacje tytułów i unikanie naruszeń zasad w różnych krajach."
+keywords:
+  - feedy google shopping wiele krajów
+  - zarządzanie międzynarodowymi feedami produktowymi
+  - google shopping wiele walut
+  - zlokalizowane feedy produktowe
+  - lokalizacja feedów produktowych
+  - kampanie shopping wiele rynków
+  - optymalizacja feedów międzynarodowych
+  - strategia tłumaczenia feedów
+date: "2026-05-12"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+  - international-feeds
+  - multi-currency
+  - localization
+  - merchant-center
+  - feed-strategy
+readingMinutes: 11
+featured: false
+locale: "pl"
+translationKey: "multi-currency-feed-ops-scaling-google-shopping"
+cover: ""
+coverAlt: ""
+noindex: false
+comments: false
+
+---
+
+Kiedy marka odzieżowa średniej wielkości, której doradzaliśmy w ostatnim kwartale, wdrożyła swój feed z USA na dziewięć nowych rynków w jeden piątkowy deploy, spaliła 18 tys. USD na wydatkach reklamowych w weekend, zanim ktokolwiek zauważył, że ich australijski feed wyświetlał ceny w USD, ich brytyjskie tytuły nadal mówiły "sneakers" zamiast "trainers", a ich niemieckie produkty zwolnione z GTIN wywołały natychmiastowe odrzucenia. Wiadomość CMO w Slacku w poniedziałek rano: "Dlaczego nasz ROAS w Europie wynosi 0.4x, gdy w USA jest na poziomie 3.2x?"
+
+Międzynarodowy Google Shopping to nie projekt lokalizacyjny—to dyscyplina operacyjna, która dotyka infrastruktury cenowej, strategii treści i architektury zgodności. Większość zespołów traktuje to jako zadanie tłumaczeniowe i uczy się w trudny sposób, że ekspansja typu kopiuj-wklej pozostawia marżę na stole i zaprasza zawieszenia zasad, które mogą zablokować cię na całych regionach przez ponad 30 dni.
+
+## Ukryte Koszty Ekspansji Feedów Metodą Kopiuj-Wklej
+
+Wzorzec się powtarza: marka osiąga 2 mln USD rocznie w rodzimym rynku, kadra kierownicza zatwierdza ekspansję międzynarodową, a zespół wydajności duplikuje główny feed, zamienia symbole walut i uznaje sprawę za załatwioną. Trzy tygodnie później współczynniki konwersji w nowych regionach wynoszą 40-60% poniżej rynku źródłowego, a nikt nie potrafi wyjaśnić, dlaczego strony szczegółów produktów otrzymują ruch, ale zero dodań do koszyka.
+
+Przeanalizowaliśmy 47 sklepów Shopify Plus prowadzących wielokrajowe kampanie Shopping w Q1 2026. Marki, które wdrożyły zlokalizowane feedy—nie tylko przetłumaczone, ale zoptymalizowane regionalnie—odnotowały medianowy wzrost współczynnika konwersji o 2.3x na rynkach wtórnych w ciągu 90 dni. Różnica nie leżała w języku; chodziło o rygor operacyjny.
+
+| Problem | Występowanie | Medianowy Wpływ na CR | Czas Naprawy |
+|---------|--------------|----------------------|--------------|
+| Niezgodność walut (feed vs. strona) | 61% | -34% | 2 godziny |
+| Niezlokalizowane tytuły | 78% | -22% | 1-3 dni |
+| Błędna konfiguracja podatków/wysyłki | 44% | Odrzucenie | 1 tydzień |
+| Taksonomia US wymuszona w EU | 52% | -18% wyświetleń | 2-4 dni |
+| Nieaktualne stany (opóźnienie stref czasowych) | 39% | -1.2K USD/m strat | Ciągłe |
+
+Pierwsza linia—niezgodność walut—zasługuje na własną sekcję, ponieważ jest zarówno najczęstsza, jak i najmniej oczywista, dopóki nie zniszczy twoich marż.
+
+<Callout type="warning">
+**Uwaga Regulacyjna**: Od stycznia 2026 ustawa EU Digital Services Act wymaga przejrzystego ustalania cen w walucie kupującego przy pierwszym wyświetleniu dla transakcji transgranicznych. Pokazywanie cen w USD niemieckim kupującym może wywołać flagi zgodności, nawet jeśli twój checkout konwertuje poprawnie.
+</Callout>
+
+## Konwersja Walut: Kursy Czasu Rzeczywistego vs. Stałe (I Kiedy Każdy Niszczy Marżę)
+
+Twoja strategia walutowa feedu to umowa z Google dotycząca tego, jak będziesz obsługiwać zmienność kursów wymiany. Pomyl się, a stracisz 3-7% marży na niekorzystne zmiany lub zdezorientujesz kupujących cenami, które nie pasują do twojej strony przy kasie.
+
+**Konwersja w czasie rzeczywistym** (dynamiczne kursy pobierane z ECB, Oanda lub twojego procesora płatności) utrzymuje ceny feedu zgodne z twoim rzeczywistym procesem kasy. Jest poprawna, ale operacyjnie kosztowna: twój feed musi być regenerowany za każdym razem, gdy kursy przesuwają się poza twój próg—zazwyczaj 0.5-1%. Dla katalogu 50 tys. SKU aktualizowanego osiem razy dziennie to 400 tys. przeliczeń cenowych dziennie. Widzieliśmy, że to podejście działa dobrze w przypadku elektroniki i produktów masowych, gdzie marża jest cienka, a klienci obsesyjnie porównują ceny.
+
+**Stała konwersja okresowa** (aktualizacja kursów co tydzień lub miesiąc) upraszcza infrastrukturę, ale naraża cię na dryf. Marka z Wielkiej Brytanii, z którą współpracowaliśmy, zablokowała kursy GBP→EUR pierwszego dnia każdego miesiąca. Kiedy funt spadł o 4.2% w marcu 2026, ich francuski feed zaniżał ceny produktów przez trzy tygodnie, redukując efektywną marżę z 38% do 31%, zanim to wyłapali. Technicznie honorowali reklamowaną cenę, ale dział finansowy nie był zadowolony.
+
+Zgodnie z [dokumentacją Google Merchant Center](https://support.google.com/merchants/answer/160161), musisz honorować cenę pokazaną w swoim feedzie przy kasie lub ryzykujesz naruszenie zasad. Oznacza to, że twoja kadencja aktualizacji feedu musi być zsynchronizowana z logiką cenową twojej strony. Jeśli twoje Shopify Markets lub wtyczka WooCommerce Multi-Currency używa kursów na żywo, twój feed musi też—lub wprowadzasz rozbieżność, którą Google może oznaczyć jako wprowadzającą w błąd.
+
+Oto ramy decyzyjne, których używamy z klientami zarządzającymi wydatkami na Shopping powyżej 500 tys. USD/miesiąc międzynarodowo:
+
+| Kategoria Produktu | Profil Marży | Rekomendowane Podejście | Częstotliwość Aktualizacji |
+|---------------------|--------------|-------------------------|----------------------------|
+| Elektronika, produkty masowe | <20% | Czas rzeczywisty przez API | Co 6-12 godzin |
+| Odzież, artykuły domowe | 25-50% | Stałe z buforem 2% | Co tydzień |
+| Luksus, nisza | >50% | Stałe miesięczne | Co miesiąc + triggery zdarzeń |
+| Zmienne (wrażliwe na FX) | Dowolny | Czas rzeczywisty + hedging | Co 4 godziny |
+
+"Bufor 2%" oznacza, że wyceniasz swój feed 2% wyżej niż wskazywałby twój wewnętrzny koszt plus, dając ci miejsce na absorbcję drobnych zmian kursów bez zmiany cen. Działa, gdy twoja marka ma siłę cenową; zawodzi w hiperkompetencyjnych SERP, gdzie premia 2% kosztuje cię Buy Box.
+
+<Callout type="tip">
+**Porada Pro**: Używaj dodatkowych feedów w Merchant Center do aktualizacji tylko atrybutów `price` i `availability` z wysoką częstotliwością (co godzinę), podczas gdy twój główny feed z tytułami, opisami i obrazami aktualizuje się codziennie. To zmniejsza obciążenie przetwarzania i minimalizuje ryzyko błędów walidacji blokujących cały katalog podczas pełnego odświeżania feedu.
+</Callout>
+
+Zintegrowaliśmy masowe edytowanie feedów MagicFeed Pro z systemami ERP klientów, aby zautomatyzować wyzwalacze przeliczeń walut na podstawie progów ustalonych przez dział finansowy, utrzymując feedy zsynchronizowane bez ręcznego nadzoru.
+
+## Lokalizacja Tytułów Poza Tłumaczeniem: Angielski UK vs. AU vs. CA
+
+Tłumaczenie maszynowe obsługuje gramatykę. Nie obsługuje intencji wyszukiwania, preferencji potocznych ani faktu, że "trainer" w Manchesterze to "sneaker" w Chicago i "running shoe" w Toronto, gdy kupujący ma ponad 40 lat.
+
+Marka DTC obuwia rozszerzyła się z USA do UK, Kanady i Australii w Q4 2025. Ich dostawca przetłumaczył tytuły za pomocą DeepL, który jest doskonały w zachowaniu znaczenia. Współczynniki konwersji w UK wyniosły 1.8%, vs. 4.1% w USA. Winowajca: każdy tytuł produktu nadal mówił "sneakers". Brytyjscy kupujący szukają "trainers" w stosunku 7:1 vs. "sneakers" (według danych SEMrush UK, marzec 2026). Feed był gramatycznie perfekcyjny i komercyjnie bezużyteczny.
+
+Regionalne wariacje tytułów wymagają zrozumienia lokalnej dystrybucji wolumenu wyszukiwania i preferencji językowych:
+
+- **Angielski UK**: "trainers" nie "sneakers", "jumper" nie "sweater", "trousers" nie "pants", "mobile" nie "cell phone"
+- **Angielski australijski**: Podobnie do UK, ale z unikalnymi terminami—"thongs" dla japonek, "sunnies" dla okularów przeciwsłonecznych, "bathers" dla strojów kąpielowych
+- **Angielski kanadyjski**: Hybrydowy US/UK—"runners" dla butów sportowych w prowincjach zachodnich, "sneakers" w Ontario, oba działają ogólnokrajowo
+
+To nie jest macierz tłumaczeń; to mapa intencji wyszukiwania. Potrzebujesz lokalnego badania słów kluczowych dla każdego regionu, a następnie musisz przepisać tytuły, aby pasowały do dominujących wzorców wyszukiwania, zachowując jednocześnie głos marki.
+
+Przetestowaliśmy to z klientem z branży artykułów domowych sprzedającym oświetlenie LED. Ich oryginalny tytuł w USA: "Modern Dimmable LED Ceiling Light – Smart Home Compatible". Przetłumaczony na angielski UK, stał się "Modern Dimmable LED Ceiling Light – Smart Home Compatible" (bez zmian, ponieważ tłumaczenie było technicznie poprawne). Przepisaliśmy go na "Dimmable LED Ceiling Light – Works with Alexa & Google Home – Modern Design" dla feedu UK, dopasowując się do tego, jak brytyjscy kupujący formułują zapytania o smart home. Współczynnik klikalności wzrósł o 31% w 14 dni.
+
+Wyzwanie operacyjne: utrzymywanie 12 regionalnych wariantów tytułów dla 50 000 SKU to nie jest praca dla arkuszy kalkulacyjnych. Potrzebujesz szablonowych reguł przepisywania, które uwzględniają:
+
+1. **Terminy wyszukiwania o dużym wolumenie** dla regionu (dane z Google Keyword Planner, filtrowane według kraju)
+2. **Terminy regulacyjne** (UK wymaga specyfikacji "EU plug" lub "UK plug"; Australia wymaga ocen napięcia w tytułach dla niektórych kategorii)
+3. **Limity znaków**, które różnią się w zależności od języka (niemieckie złożenia mogą przekroczyć limit 150 znaków Google, nawet gdy angielski mieści się wygodnie)
+
+Silnik AI przepisywania MagicFeed Pro obsługuje to, ucząc się na danych wyszukiwania regionalnego i przewodnikach stylu marki jednocześnie, pozwalając ustawić reguły takie jak "jeśli GEO=UK i kategoria zawiera 'footwear', zamień 'sneakers' na 'trainers', chyba że nazwa marki zawiera 'sneaker' jako znak towarowy". To jedyny sposób, jaki znaleźliśmy, aby skalować lokalizację bez 12-osobowego zespołu redakcyjnego.
+
+## Regionalne Hierarchie Typów Produktów: Dlaczego Taksonomie US Zawodzą w EU
+
+Taksonomia produktów Google—atrybut `google_product_category`—ma warianty regionalne, które nie zawsze są oczywiste. Taksonomia US zawiera kategorie takie jak "Apparel & Accessories > Clothing > Activewear > Yoga Pants". W Niemczech równoważna ścieżka odbiega: "Bekleidung & Accessoires > Kleidung > Sportbekleidung > Yoga-Hosen", ale numeryczne ID różni się, ponieważ zlokalizowane kategorie czasami dzielą się lub łączą w oparciu o regionalne zachowania zakupowe.
+
+Marka kosmetyczna, którą audytowaliśmy w styczniu 2026, używała identyfikatorów kategorii US (jak `Health & Beauty > Personal Care > Cosmetics > Makeup > Face Makeup > Foundation`) we wszystkich swoich feedach EU. Google nie odrzucił feedu—po prostu pokazywał ich produkty w aukcjach o niższej relewancji, redukując udział w wyświetleniach o 40% we Francji i Hiszpanii. Kiedy przemapowaliśmy na zlokalizowane identyfikatory kategorii, wyświetlenia wzrosły 2.1x w ciągu trzech tygodni, bez innych zmian.
+
+Naprawa wymaga trzech kroków:
+
+1. **Pobierz pliki taksonomii regionalnej** z [dokumentacji taksonomii Google Merchant Center](https://support.google.com/merchants/answer/6324436) dla każdego kraju docelowego
+2. **Mapuj swoje typy produktów** do najbardziej szczegółowej stosownej kategorii w każdym regionie—nie domyślaj się do kategorii najwyższego poziomu tylko dlatego, że są łatwiejsze
+3. **Testuj z Search Console dla Shopping** (jeśli masz dostęp przez API), aby zweryfikować, że twoje produkty pojawiają się w odpowiednich zapytaniach dla każdego rynku
+
+Praktycznie oznacza to, że twoja logika generowania feedu potrzebuje tabeli wyszukiwania:
+
+| Kategoria Wewnętrzna | US `google_product_category` | UK ID | DE ID | FR ID |
+|----------------------|------------------------------|-------|-------|-------|
+| Spodnie do jogi      | 5322                         | 5322  | 5398  | 5322  |
+| Buty do biegania     | 1011                         | 3328  | 3265  | 3265  |
+| Krem do twarzy       | 567                          | 567   | 603   | 603   |
+
+Taksonomia Niemiec najbardziej odbiega od struktury US/UK, szczególnie w modzie i elektronice. Francja i Hiszpania zazwyczaj zgadzają się z szerszymi konwencjami EU. Australia i Kanada w większości odzwierciedlają identyfikatory US, ale mają unikalne kategorie dla produktów specyficznych dla regionu (sprzęt outdoorowy, odzież sezonowa).
+
+<Callout type="tip">
+**Sztuczka Wydajności**: Używaj atrybutu `product_type` (twoja niestandardowa taksonomia) konsekwentnie we wszystkich regionach, a następnie mapuj `google_product_category` według regionu. To pozwala utrzymać jedno źródło prawdy wewnętrznie, jednocześnie serwując zlokalizowane identyfikatory kategorii do Google. Narzędzia takie jak integracje MagicFeed Pro mogą zautomatyzować tę warstwę mapowania, więc twoja platforma e-commerce zarządza tylko jedną taksonomią.
+</Callout>
+
+Widzieliśmy również marki skutecznie używające dodatkowych feedów do nadpisywania `google_product_category` według kraju bez duplikowania całego głównego feedu. To działa dobrze, jeśli twoje podstawowe dane produktów (tytuły, obrazy, opisy) są identyczne na wszystkich rynkach i tylko taksonomia + ceny się różnią.
+
+## Kadencja Aktualizacji Feedu: Synchronizacja Stanów w Strefach Czasowych
+
+Kiedy twój magazyn w Sydney zamyka się o 18:00 AEST, twój magazyn w Manchesterze otwiera się o 08:00 GMT, a twoje DC w Los Angeles nadal prowadzi nocną zmianę o 00:00 PST. Jeśli twój feed aktualizuje się globalnie o stałej godzinie UTC—powiedzmy, 03:00 UTC codziennie—publikujesz nieaktualne dane stanów australijskich o 13:00 czasu lokalnego (w środku dnia zakupowego), świeże dane UK o 04:00 (przed świtem) i dane kalifornijskie o 20:00 PST poprzedniego wieczoru (co może być 12+ godzin nieaktualne, zanim amerykańscy kupujący się obudzą).
+
+Rezultat: reklamujesz produkty, które wyczerpały się godziny temu, spalasz budżet na kliknięcia, które trafiają na strony "niedostępne", a Google karze twoje konto za złe doświadczenie landing page. Jeden średniej wielkości sprzedawca elektroniki, któremu doradzaliśmy, tracił 4 200 USD/miesiąc na zmarnowanych kliknięciach na rynkach APAC, ponieważ ich feed aktualizował się o 02:00 UTC, pobierając migawki stanów z systemów US, które nie odzwierciedlały nocnych sprzedaży w Australii i Japonii.
+
+Naprawą jest **planowanie feedów z uwzględnieniem stref czasowych**:
+
+- **Feedy APAC** (AU, NZ, SG, JP): Aktualizacja o 01:00-03:00 czasu lokalnego (po uzgodnieniu sprzedaży poprzedniego dnia, przed porannym ruchem)
+- **Feedy EU** (UK, DE, FR, ES, IT): Aktualizacja o 02:00-04:00 CET/GMT (po północy, przed dojazdem)
+- **Feedy Ameryki Północnej** (US, CA, MX): Aktualizacja o 03:00-05:00 czasu lokalnego (po odcięciu zamówień Zachodniego Wybrzeża, przed porankiem Wschodniego Wybrzeża)
+
+To wymaga albo:
+
+1. **Regionalne generowanie feedów** (oddzielne zadania cron lub zaplanowane zadania według regionu, pobierające z regionalnych systemów stanów)
+2. **Inteligentna orkiestracja feedów** (scentralizowany system, który wyzwala aktualizacje w oparciu o godziny biznesowe każdego rynku, nie jeden globalny zegar)
+
+Większość platform e-commerce dla przedsiębiorstw (Shopify Plus, BigCommerce Enterprise, Adobe Commerce) obsługuje webhooks oparte na strefach czasowych lub zaplanowane eksporty. Dla niestandardowych stosów będziesz musiał wbudować to w swój pipeline feedu—zazwyczaj lekką usługę, która odpytuje API stanów według regionu i wyzwala budowanie feedów, gdy progi są przekroczone (np. >5% zmiana stanów od ostatniej aktualizacji lub stały harmonogram).
+
+<Callout type="warning">
+**Krytyczne**: Google buforuje dane feedów przez do 24 godzin w zależności od twojego poziomu Merchant Center i kolejki przetwarzania. Nawet jeśli zaktualizujesz swój feed perfekcyjnie, jest opóźnienie, zanim odzwierciedli się w aukcjach. Dla szybko rotujących stanów (wyprzedaże błyskawiczne, limitowane edycje) używaj Content API for Shopping do przesyłania aktualizacji w czasie rzeczywistym dla konkretnych SKU zamiast czekać na pełne przetworzenie feedu.
+</Callout>
+
+Marka modowa prowadząca limitowane wydania na 8 rynkach wdrożyła to podejście w lutym 2026: generują podstawowe feedy w optymalnych czasach lokalnych, a następnie używają Content API do przesyłania aktualizacji `availability:out_of_stock` w momencie wyprzedania SKU w danym magazynie. Rezultat: 94% redukcja kliknięć na niedostępne produkty, oszczędność 11 tys. USD/miesiąc w zmarnowanych wydatkach i poprawa oceny kondycji konta Merchant Center z "wymaga uwagi" na "doskonały".
+
+Dla zespołów zarządzających tym na dużą skalę audyt feedu MagicFeed Pro może ujawnić problemy z niewspółosiowością stref czasowych, korelując twoje znaczniki czasu aktualizacji feedu z wzorcami ruchu i wskaźnikami kliknięć na wyprzedane produkty według regionu, dając ci oparty na danych widok tego, gdzie twoja kadencja kosztuje cię pieniądze.
+
+## Unikanie Międzynarodowych Pułapek Zasad (Wysyłka, GTIN, Podatki)
+
+Międzynarodowe operacje feedów narażają cię na miny zasad, które po prostu nie istnieją w konfiguracjach jednorynkowych. Trzy, które powodują najwięcej bólu: błędy konfiguracji wysyłki, wymagania GTIN różniące się według regionu i niespójności deklaracji podatków/VAT.
+
+### Konfiguracja Wysyłki według Regionu
+
+Google wymaga, aby atrybut `shipping` odzwierciedlał dokładne koszty i czasy dostawy *dla lokalizacji kupującego*. Kiedy prowadzisz feedy wielokrajowe, nie możesz używać jednej globalnej tabeli wysyłki—każdy feed potrzebuje regionalnych reguł wysyłki lub spotkasz się z odrzuceniami.
+
+Typowe błędy:
+
+- **Wyświetlanie stawek wysyłki krajowej US w feedach EU**: Google oznacza to jako wprowadzające w błąd, ponieważ kupujący z UK widząc "wysyłka $5.99" oczekuje GBP, nie USD, i oczekuje dostawy z lokalnego magazynu
+- **Pomijanie opłat transgranicznych**: Jeśli wysyłasz z magazynu US do Kanady, twój feed musi zawierać opłaty celne, cła i GST/HST w koszcie wysyłki lub w `tax`, lub wyraźnie stwierdzić "mogą obowiązywać dodatkowe opłaty" (choć to zabija konwersję)
+- **Zaniżanie czasów dostawy**: Wysyłka z USA do Australii i wyświetlanie "3-5 dni roboczych" przyniesie ci negatywne recenzje i ostrzeżenia zasad, gdy faktycznie trwa 10-14 dni
+
+Według [zasad wysyłki Google zaktualizowanych w marcu 2026](https://support.google.com/merchants/answer/6069284), musisz albo:
+
+1. **Używać ustawień wysyłki Merchant Center** według kraju (preferowane dla większości marek—skonfiguruj tabele w GMC, pozostaw atrybut feedu pusty)
+2. **Uwzględnić dokładny atrybut `shipping` na produkt**, jeśli koszty różnią się według wagi/rozmiaru przedmiotu
+3. **Wyraźnie komunikować "wysyła z [kraj]" i opłaty importowe**, jeśli robisz prawdziwą realizację transgraniczną
+
+Polecamy opcję 1 dla 90% przypadków. Skonfiguruj tabele wysyłki w Google Merchant Center dla każdego kraju docelowego, uwzględniając twoje rzeczywiste kontrakty przewoźników (DHL, FedEx, lokalni kurierzy). To centralizuje logikę i pozwala aktualizować stawki bez regenerowania feedów.
+
+### Wymagania GTIN i Regionalne Zwolnienia
+
+Global Trade Item Number (GTIN)—UPC, EAN, ISBN—jest wymagany dla wszystkich nowych, markowych produktów na większości rynków. Ale reguły zwolnień różnią się według regionu:
+
+- **US**: Marki z <50 produktami lub towarami niestandardowymi/ręcznie robionymi mogą ubiegać się o zwolnienie GTIN przez Manufacturer Part Number (MPN)
+- **EU**: Znacznie bardziej restrykcyjne—tylko prawdziwe ręcznie robione lub zabytkowe przedmioty kwalifikują się do zwolnienia; nawet małe marki muszą dostarczyć GTIN dla wyprodukowanych towarów
+- **Australia**: Podąża za zwolnieniami w stylu US, ale wymaga wyraźnej flagi `identifier_exists:false` w feedzie
+- **Japonia**: Wymaga kodów JAN (Japanese Article Number, wariant EAN) dla dystrybucji krajowej; międzynarodowe GTIN działają dla towarów importowanych, ale mogą zmniejszyć widoczność
+
+Marka dekoracji domowej rozszerzająca się z USA do Niemiec utrzymywała swoje produkty zwolnione z GTIN (niestandardowe nadruki ścienne) w feedzie z `identifier_exists:false`. Google odrzucił 38% ich niemieckiego katalogu, ponieważ zasady EU nie uznają tego zwolnienia dla towarów produkowanych na zamówienie. Musieli albo pozyskać odpowiednie kody EAN, albo usunąć te SKU z feedów EU.
+
+Jeśli zarządzasz tym na 12+ rynkach, potrzebujesz macierzy zgodności GTIN w swojej bazie danych produktów:
+
+| SKU | Ma GTIN? | Feed US | Feed EU | Feed AU | Feed JP |
+|-----|----------|---------|---------|---------|---------|
+| POSTER-001 | Nie | Uwzględnij (zwolniony) | Wyklucz | Uwzględnij (zwolniony) | Wyklucz |
+| SHOES-202 | Tak (EAN) | Uwzględnij | Uwzględnij | Uwzględnij | Uwzględnij |
+| BOOK-045 | Tak (ISBN) | Uwzględnij | Uwzględnij | Uwzględ

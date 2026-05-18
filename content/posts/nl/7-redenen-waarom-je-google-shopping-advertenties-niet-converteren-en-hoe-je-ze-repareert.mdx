@@ -1,0 +1,136 @@
+---
+slug: "7-redenen-waarom-je-google-shopping-advertenties-niet-converteren-en-hoe-je-ze-repareert"
+translationKey: "7-reasons-google-shopping-ads-not-converting"
+locale: "nl"
+title: "7 Redenen Waarom Je Google Shopping Advertenties Niet Converteren (En Hoe Je Ze Repareert)"
+description: "Je vertoningen zijn prima maar je conversieratio blijft vlak. Hier zijn de 7 meest voorkomende diagnoses — en de 30-minuten oplossing voor elk — gebaseerd op honderden e-commerce audits."
+keywords:
+  - google shopping conversieratio
+  - shopping advertenties converteren niet
+  - performance max diagnose
+  - feed kwaliteit problemen
+date: 2026-05-08
+updated: 2026-05-08
+author: "mfp-team"
+category: "google-shopping"
+tags:
+  - google-shopping
+  - conversion-rate
+  - performance-max
+  - troubleshooting
+featured: false
+comments: false
+cover: ""
+coverAlt: "Google Shopping advertenties diagnostische checklist op een laptopscherm"
+---
+
+Je krijgt kliks. Je CTR is prima. Je CPC is niet uit de hand gelopen. Maar de conversies komen niet, en de ROAS van je winkel bloeit rood.
+
+Dit is het meest voorkomende patroon dat we zien in feed-audits — en het leidt bijna altijd terug naar een van zeven specifieke faalwijzen. Hier is hoe je elk in 30 minuten diagnosticeert en de oplossing implementeert.
+
+## 1. Titel-naar-query mismatch
+
+**Symptoom**: kliks komen binnen, maar de doorklik wordt gevolgd door een 3-seconden bounce. Zoektermrapporten tonen queries die *aangrenzend* zijn aan je product maar niet precies hetzelfde.
+
+**Waarom**: je titel is generiek genoeg om een breed scala aan queries te matchen, maar specifieke shoppers die op de PDP aankomen realiseren zich dat het niet is wat ze wilden.
+
+**Voorbeeld**: titel zegt `Draadloze Oordopjes 2024 Editie`. De query was `iphone draadloze oordopjes met oplaadcase`. De shopper landt, ziet "iPhone-compatibel" niet in de eerste viewport, en bounced.
+
+**Oplossing (30 min)**: haal je top 50 queries met > 100 kliks en \< 1% conversie. Vergelijk voor elk de query met de gematchte titel. Als ze niet nauw overeenkomen, herschrijf dan de titel om ofwel nauwer te matchen *of* om de verkeerde intentie expliciet uit te sluiten.
+
+## 2. Prijscompetitiviteit falen
+
+**Symptoom**: je vertoningen daalden van de ene op de andere dag op specifieke SKU's. CTR op de resterende vertoningen is normaal maar conversie is dramatisch gedaald.
+
+**Waarom**: het prijscompetitiviteitssignaal van Merchant Center vergelijkt je vermelde prijs met hetzelfde product (gematcht op GTIN/merk+MPN) op het hele web. Als je > 10–15% boven de mediaan zit, begint Google je vermelding alleen te tonen bij queries met lagere intentie en de shoppers die *wel* klikken zijn aan het prijsvergelijken.
+
+**Oplossing (30 min)**: open [Merchant Center](https://blog.magicfeedpro.com/nl/posts/merchant-center-errors-12-common-issues-solutions) → Producten → Prijscompetitiviteit. Sorteer op "Boven benchmark". Voor elke high-traffic SKU boven benchmark, doe je ofwel:
+
+- Match de benchmark, of
+- Verbeter het aanbod (gratis verzending, bundel, langere garantie) en update de productbeschrijving om het zichtbaar te maken in de eerste 160 tekens.
+
+<Callout type="tip" title="Prijs hoeft niet de laagste te zijn">
+Verschillende grote winkels in onze portfolio draaien 5–10% *boven* benchmark en converteren nog steeds. De truc is het aanbod (gratis verzending boven €X, levenslange garantie, retourzendingen) zichtbaar genoeg te maken zodat de shopper niet hoeft te vertrekken om het te verifiëren.
+</Callout>
+
+## 3. Zwakke hoofdafbeelding
+
+**Symptoom**: je krijgt vertoningen maar CTR is onder 0,8% zelfs op merkqueries.
+
+**Waarom**: Shopping is een visuele SERP. Als je afbeelding druk is, overlay-tekst heeft, een watermerk heeft, of het product niet als dominant element heeft, verlies je de eye-track race.
+
+**Oplossing (30 min)**: haal je 20 SKU's met hoogste vertoningen. Open elke afbeelding. Beoordeel ze ja/nee op deze 4 criteria:
+
+- Is het product 75%+ van het frame?
+- Is de achtergrond schoon (wit of enkeltoon)?
+- Is er *geen* overlay-tekst, watermerk of rand?
+- Is het ≥ 1200px aan de langste zijde?
+
+Alles dat 2+ faalt krijgt een nieuwe foto of wordt vervangen. De ROI hierop is enorm — een schone hoofdafbeelding is vaak een 30–60% [CTR-stijging](https://blog.magicfeedpro.com/nl/posts/ai-rewrites-improve-google-shopping-ctr-40-percent) op zich.
+
+## 4. Ontbrekende of verouderde reviewsignalen
+
+**Symptoom**: CTR is oké, conversie is slecht, en de shopper bounced van de PDP zonder te scrollen.
+
+**Waarom**: Google Shopping vermeldingen tonen nu inline verkoper- en productreview-sterren. Als je concurrenten 4,5 ★ (200 reviews) tonen en jij toont niets, verlies je de klik in de vergelijkingsweergave.
+
+**Oplossing (30 min)**: zorg ervoor dat productreview markup ([product schema](https://schema.org/Product) met `aggregateRating`) op elke PDP wordt afgevuurd. Als je op Shopify zit, installeer Judge.me of Loox en verbind ze met de [productreview feed van Merchant Center](https://blog.magicfeedpro.com/nl/posts/shopify-product-feed-google-shopping-setup). Vul historische bestellingen aan met een review-aanvraag e-mail — de meeste winkels hebben honderden niet-aangevraagde reviews in hun bestelgeschiedenis zitten.
+
+## 5. Trage productdetailpagina
+
+**Symptoom**: CTR is prima, de shopper arriveert, maar ze bouncen in minder dan 2 seconden — voordat de pagina zelfs maar gerenderd is.
+
+**Waarom**: Mobiele shoppers op Shopping advertenties bouncen dramatisch bij Largest Contentful Paint > 2,5s. [Quality score](https://blog.magicfeedpro.com/nl/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith) daalt ook, wat betekent dat je meer per klik betaalt voor de vertoningen die je wel wint.
+
+**Oplossing (30 min)**: voer [PageSpeed Insights](https://pagespeed.web.dev/) uit op je top 5 SKU PDP's. Mobiele LCP \< 2,5s is de grens. De 3 dingen die dit consistent oplossen:
+
+- Converteer hoofdafbeeldingen naar AVIF/WebP
+- Stel niet-kritieke third-party scripts uit (chatwidget, social proof popups)
+- Gebruik lazy loading voor alles onder de fold
+
+## 6. Gebroken voorraadsignaal
+
+**Symptoom**: vertoningen fluctueren wild van dag tot dag. Je ziet "niet op voorraad" afwijzingen in Merchant Center zelfs wanneer het product op voorraad is.
+
+**Waarom**: je feed `availability` attribuut is verouderd of je geplande fetch mist het inventaris-updatevenster van je winkel. Google straft vermeldingen zwaar af waar shoppers doorklikken naar "niet op voorraad".
+
+**Oplossing (30 min)**: schakel over naar **Content API push** in plaats van geplande fetch als je op Shopify of BigCommerce zit — beide ondersteunen het native. Inventariswijzigingen propageren binnen minuten naar Merchant Center in plaats van uren met de juiste [feed update frequentie](https://blog.magicfeedpro.com/nl/posts/google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test). Voor custom winkels, voeg `availability_date` toe voor nabestellingen zodat Google de vermelding kan blijven tonen met een verwachte verzenddatum.
+
+## 7. PMax bedient het verkeerde publiek
+
+**Symptoom**: hoge uitgaven, lage conversie. Insights tab toont verkeer van queries die niet gerelateerd zijn aan je productcategorie.
+
+**Waarom**: de doelgroepuitbreiding van [Performance Max](https://blog.magicfeedpro.com/nl/posts/performance-max-asset-groups-are-killing-your-feed-a-200k-audit-breakdown) is standaard agressief. Zonder sterke asset group structuur en doelgroepsignalen zal PMax uitgeven aan display- en YouTube-plaatsingen die niet converteren voor high-intent retail.
+
+**Oplossing (30 min)**:
+
+- Splits campagnes per productcategorie — nooit één campagne met alles.
+- Geef **sterke doelgroepsignalen** (bestaande klantenlijst, bezoekers met hoge intentie).
+- Stel **merkuitsluitingen** in zodat PMax je branded search niet cannibaliseert.
+- Als retail-only je doel is, gebruik de **Shopping-only PMax** (geen asset group) variant — het bestaat nog steeds in 2026 en converteert 2–3× beter op queries met hoge intentie.
+
+## Hoe te prioriteren
+
+Voer elke oplossing in deze volgorde uit en je vindt degene die daadwerkelijk kapot is:
+
+1. Controleer Merchant Center → Diagnostiek. (5 min)
+2. Haal top-50 queries per uitgave, sorteer op conversieratio oplopend. (10 min)
+3. Afbeelding en PDP snelheidsaudit op de slechtste 10 SKU's. (30 min)
+4. Prijscompetitiviteitscontrole. (15 min)
+5. Publiek en [campagnestructuurreview](https://blog.magicfeedpro.com/nl/posts/google-shopping-bid-modifiers-vs-feed-segmentation-roi-test). (60 min)
+
+De eerste drie leggen bijna altijd het probleem bloot. Als je dit liever niet handmatig doet, auditeert MagicFeedPro alle 7 in 5 minuten gratis.
+
+<ProductCTA variant="audit" title="Voer de 7-punten audit uit op je live feed">
+We scoren je top 50 SKU's tegen elke bovenstaande diagnose en geven je een geprioriteerde fixlijst.
+</ProductCTA>
+
+## FAQ
+
+<FAQ>
+  <FAQItem q="Hoe snel zou de conversieratio moeten verbeteren na een oplossing?" a="Titel- en afbeeldingsoplossingen tonen meestal meetbare stijging binnen 7–10 dagen terwijl Google het vertoningssignaal herleert. Prijswijzigingen tonen binnen 24–48 uur. PMax structurele wijzigingen hebben 14 dagen nodig om uit de leerfase te komen voordat je de data kunt lezen." />
+  <FAQItem q="Moet ik slecht presterende SKU's pauzeren?" a="Pauzeer de onderste 20% als ze budget van je toppresteerders cannibaliseren. Maar probeer eerst een feed-kwaliteitsdoorgang — veel 'slechte' SKU's zijn eigenlijk prima producten met kapotte titels." />
+  <FAQItem q="Wat is een gezonde Google Shopping conversieratio?" a="Sterk categorie-afhankelijk. Kleding: 1–2,5%. Elektronica: 1,5–4%. Huis: 2–5%. Beauty: 2,5–6%. Als je onder 1% zit op niet-kleding, is er iets structureel kapot — meestal een van de 7 hierboven." />
+</FAQ>
+
+De enkele hoogste-leverage oplossing in deze lijst is bijna altijd #1 (titel-naar-query mismatch). Als je niet weet welke van de 7 je bottleneck is, begin daar.

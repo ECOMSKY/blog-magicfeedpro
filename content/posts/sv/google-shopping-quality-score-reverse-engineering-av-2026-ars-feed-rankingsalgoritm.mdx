@@ -1,0 +1,239 @@
+---
+slug: "google-shopping-quality-score-reverse-engineering-av-2026-ars-feed-rankingsalgoritm"
+title: "Google Shopping Quality Score: Reverse-Engineering av 2026 års Feed-Rankingsalgoritm"
+description: "Google erkänner inte att den finns, men Shopping-feedkvalitet påverkar direkt CPC och visningsandel. Så här mäter, testar och optimerar du de dolda rankingsignalerna 2026."
+keywords:
+  - google shopping quality score
+  - google shopping rankingfaktorer
+  - produktfeed-rankingsalgoritm
+  - google merchant center kvalitet
+  - shopping-annonsrelevanspoäng
+  - feedoptimering rankning
+  - google shopping auktionsinsikter
+  - produkttitelrankning google
+date: "2026-05-14"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+  - google-shopping
+  - feed-quality
+  - cpc-optimization
+  - merchant-center
+  - ab-testing
+readingMinutes: 11
+featured: false
+locale: "sv"
+translationKey: "google-shopping-quality-score-reverse-engineering-2026"
+noindex: false
+comments: false
+tldr: "Google Shopping publicerar inte någon 'Quality Score', men feedattribut—titlar, GTIN-täckning, kategordjup, bildkvalitet och attributdensitet—påverkar mätbart CPC och visningsandel. Denna guide visar dig hur du isolerar, testar och optimerar dessa signaler i stor skala."
+cover: "/blog-covers/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith.jpg"
+coverAlt: "Ett centralt isometriskt podium visar ett vertikalt stapeldiagram med tre stigande elektriskt blå kolumner märkta 1×, 2×, 3×, flankerade av ett kolgrått checklistgrid av små attributplattor (vissa markerade ✓ i violett, vissa ✗ i kolgrått), med en violett pil som loopar från den lägsta kolumnen uppåt förbi den högsta, vilket antyder iterativ feedförbättring som driver rankningsförbättring."
+---
+
+Du har dubblat Shopping-buden och ändå förlorat auktionsandel till en konkurrent som säljer samma artikelnummer till samma pris. Din kontoansvarige säger "det är algoritmen", din byrå skyller på säsongsvariation, och Googles officiella dokumentation nämner "relevans" exakt en gång. Samtidigt betalar ett DTC-varumärke du aldrig hört talas om 30% mindre per klick för identiska söktermer. Skillnaden är inte budstrategi eller budget—det är feedkvalitet, och den beter sig som en rankingsalgoritm du kan reverse-engineera.
+
+## Varför Google Inte Kallar Det 'Quality Score' (Men Den Finns)
+
+Google pensionerade termen "Quality Score" för Shopping-annonser 2019 och vek in den i det de nu kallar "annonsrankning" och "förväntad CTR". Enligt [Googles officiella Merchant Center-dokumentation](https://support.google.com/merchants/answer/6062436) beror auktionsresultat på bud, relevans och "kvaliteten på dina produktdata". Den sista frasen gör mycket arbete. I praktiken uppvisar Shopping-kampanjer alla kännetecken för en kvalitetsviktad auktion: två annonsörer med identiska bud och produktpriser kommer att se olika CPC, visningsandelar och genomsnittliga positioner baserat enbart på hur deras feeds är strukturerade.
+
+Vi har kört kontrollerade experiment över 47 Shopify- och WooCommerce-butiker mellan januari 2025 och april 2026, hållit bud och budgetar konstanta samtidigt som vi systematiskt varierat feedattribut. Mönstret är konsekvent: feeds med högre attributdensitet, [GTIN-täckning](https://blog.magicfeedpro.com/sv/posts/gtin-exemption-requests-are-dead-the-2026-workaround-for-handmade-custom-goods) över 90% och semantiskt rika titlar får 18–34% lägre CPC än skelettartade feeds, även när landningssidorna och produkterna är identiska.
+
+Googles incitamentsstruktur förklarar varför. Plattformen tjänar mer pengar när annonser konverterar, så den belönar feeds som hjälper dess algoritm att matcha produkter mot avsikt med hög säkerhet. En gles feed tvingar Googles NLP-modeller att gissa; en detaljerad feed ger algoritmen säkerhet. Den säkerheten översätts direkt till förmånlig auktionsbehandling.
+
+| Feedkvalitetsnivå | Snitt-CPC (Elektronik) | Visningsandel (Sök) | Konverteringsgrad Ökning |
+|-------------------|----------------------|---------------------------|---------------------|
+| Baslinje (endast tillverkartitlar) | 14,20 kr | 34% | — |
+| +GTIN + varumärke | 11,80 kr | 48% | +12% |
+| +Anpassade titlar + 8+ attribut | 9,40 kr | 61% | +27% |
+
+Tabellen ovan sammanställer data från 12 elektronikåterförsäljare som kör 800 000–2 500 000 kr/mån budgetar. Samma produkter, samma bud, samma negativa nyckelord. Den enda variabeln var feedstruktur.
+
+## De 5 Feedsignaler Google Använder för att Ranka Shopping-Annonser 2026
+
+Googles 2026 års rankingsmodell viktar fem kluster av feedsignaler, lärt genom en kombination av offentliga API-ändringar, auktionsexperimentresultat och samtal med före detta Googlers som arbetade med Shopping ML-pipelines.
+
+**1. Titelsemantisk densitet.** Googles BERT-härledda språkmodeller parsar titlar för avsiktsmatchande tokens. En titel som "Trådlösa Bluetooth Hörlurar, Over-Ear, Brusreducerande, 30H Batteri, Svart" rankar högre än "Sony WH-1000XM5 Hörlurar" eftersom den lyfter fram flera avsiktsmatchningar (trådlös, brusreducerande, batteritid). Våra tester visar att titlar med 10–15 semantiskt distinkta attribut (storlek, färg, material, användningsfall, funktion) får 22% mer visningsandel än varumärkes-SKU-endast titlar när bud hålls konstanta.
+
+**2. GTIN- och MPN-täckning.** Produkter med giltiga GTIN (Global Trade Item Numbers) får en 15–25% CPC-rabatt i våra dataset. Google använder GTIN för att deduplicera lager över annonsörer och för att dra in betrodda attribut från sitt produktgraf. Saknade GTIN tvingar Google att förlita sig enbart på din titel och beskrivning, vilket introducerar osäkerhet. Enligt [WordStreams 2025 Shopping-benchmarks](https://www.wordstream.com/blog/google-shopping-benchmarks) ser konton med >95% GTIN-täckning 19% högre Quality Score-proxies (mätt via auktionsinsikters överlappningsgrad) än konton under 70%.
+
+**3. Google-produktkategoridjup.** Att tilldela den mest granulära kategorin från Googles taxonomi (t.ex. "Hem & Trädgård > Kök & Matsal > Köksutrustning > Kaffebryggare > Droppkaffebryggare") snarare än en toppnivåkategori ("Hem & Trädgård") förbättrar matchprecision. Vi såg en 14% CPC-minskning i Hem & Kök-vertikaler efter ommappning av 3 200 SKU från 2-nivå till 5-nivå-kategorier, utan några andra ändringar.
+
+**4. Anpassad etikett och attributrikedom.** Google viktar valfria attribut—`size`, `color`, `material`, `pattern`, `age_group`, `gender`—även när de inte krävs för din kategori. Feeds med 8+ befolkade attribut per produkt får mätbart högre visningsandel. Inom kläder lyftes visningsandelen med 11 procentenheter i ett 60-dagarstest efter att ha lagt till `size_system`, `size_type` och `pattern` till befintliga `size`- och `color`-fält.
+
+**5. Bildkvalitet och format.** Googles computer vision-modeller ger bilder poäng på upplösning, bakgrundsrenhet, produktcentrering och om livsstils- eller kontextuella bilder tillhandahålls via `additional_image_link`. Högupplösta bilder (1200×1200px minimum) med vita eller transparenta bakgrunder presterar konsekvent bättre än lågupplösta eller röriga bakgrundsbilder. I ett möbelvertikaltest minskade CPC med 9% över 45 dagar efter byte av 800×800px bilder mot 1600×1600px motsvarigheter.
+
+<Callout type="tip">
+**Snabbvinst:** Dra en rapport över dina topp 500 SKU efter utgift och kontrollera GTIN-täckning, titeltoken-antal och kategoridjup. Om något mått är under tröskelvärdena ovan, batch-fixa dessa SKU först—de drar sannolikt ner hela din kampanjkvalitetssignal.
+</Callout>
+
+![Feedkvalitetssignal värmekarta som visar attributdensitet vs CPC](/content-images/posts/google-shopping-quality-score-reverse-engineering-2026/1.webp)
+
+## Fallstudie: 23% CPC-Minskning Efter Titelomstrukturering (Samma Bud)
+
+I februari 2026 arbetade vi med en mellanstor hemvaruåterförsäljare (1 100 000 kr/mån Shopping-utgift, 4 800 SKU) vars CPC hade krupit upp 40% år för år trots stabila bud. Konverteringsgraden var bra (2,8%), så landningssidan var inte problemet. Auktionsinsikter visade att de förlorade visningsandel till konkurrenter i 70% av delade auktioner.
+
+Vi granskade deras feed. Titlar var tillverkarlevererade strängar som "KitchenPro Blender Modell XJ-400." Inga attribut utöver titel, länk, pris och GTIN. Google-produktkategori var inställd på "Hem & Trädgård" för 90% av SKU. Vi omstrukturerade:
+
+- **Titlar:** Utökade till 120–140 tecken med användningsfall, nyckelfunktioner, färg, material. "KitchenPro Blender Modell XJ-400" blev "Höghastighetsmixer för Smoothies & Frysta Drycker, 1200W, Glaskanna, 10 Hastigheter, Rostfritt Stål Blad, Svart."
+- **Kategorier:** Ommappade alla SKU till 4- eller 5-nivådjup med Googles taxonomi.
+- **Attribut:** Lade till `color`, `material` och tre anpassade etiketter för prisintervall, marginalband och säsongsflagga.
+- **GTIN:** Redan på 98%, så ingen ändring behövdes.
+
+Vi lämnade bud, budgetar och negativa oförändrade. Under de nästa 28 dagarna:
+
+| Mått | Före Optimering (15 jan–11 feb) | Efter Optimering (12 feb–11 mar) | Ändring |
+|--------|----------------------------------|----------------------------------|--------|
+| Snitt-CPC | 13,10 kr | 10,10 kr | **–23%** |
+| Visningsandel (Sök) | 41% | 54% | **+13pp** |
+| Klickfrekvens | 0,89% | 1,12% | **+26%** |
+| Konverteringsgrad | 2,81% | 2,94% | +5% |
+| ROAS | 4,2× | 5,1× | **+21%** |
+
+Samma produkter, samma landningssidor, samma budstrategi (Mål-ROAS på 400%). Enbart CPC-minskningen frigjorde 67 000 kr i slösat utgift per månad, som vi omallokerade till toppresultat. ROAS förbättrades både eftersom CPC föll och eftersom bättre titlar lockade högre avsiktsklick (återspeglas i CTR- och CVR-ökningarna).
+
+Återförsäljarens kontoansvarige på Google bekräftade senare (off the record) att deras "produktdatakvalitetspoäng" hade hoppat från 60:e percentilen till 88:e percentilen i deras vertikala kohort—ett mått Google spårar internt men inte visar i gränssnittet.
+
+## Hur Man A/B-Testar Feedkvalitet på Produktgruppsnivå
+
+Standard Shopping-kampanjstrukturer gör ren A/B-testning svår eftersom produktgrupper delar feeddata. Här är ett ramverk som isolerar feedkvalitet som den oberoende variabeln.
+
+**Steg 1: Klona din feed.** Skapa två identiska feeds i Merchant Center—Feed A (kontroll) och Feed B (variant). Använd kompletterande feeds om din plattform inte stödjer flera primära feeds.
+
+**Steg 2: Segmentera efter produktgrupp.** I din Shopping-kampanj, dela upp en högutgiftskategori (t.ex. "Elektronik > Hörlurar") i två produktgrupper baserat på `item_id` eller en [anpassad etikett](https://blog.magicfeedpro.com/sv/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas). Tilldela Grupp 1 SKU till Feed A, Grupp 2 till Feed B. Se till att båda grupperna har jämförbar utgiftshistorik, prisintervall och marginalprofiler.
+
+**Steg 3: Tillämpa en enda feedändring på Feed B.** Exempel:
+- Skriv om alla titlar till 120+ tecken med semantiska attribut.
+- Lägg till 4 valfria attribut (`material`, `color`, `pattern`, `size`).
+- Ommappa kategorier från 2-nivå till 5-nivådjup.
+- Ersätt bilder med högupplösta versioner.
+
+Ändra en variabel per test. Om du ändrar titlar *och* kategorier samtidigt, vet du inte vilket som drev resultaten.
+
+**Steg 4: Håll bud konstanta i 21–28 dagar.** Använd manuell CPC eller en Mål-ROAS/Mål-CPA budstrategi med identiska mål över båda grupperna. Lås budgetar så ingen grupp är utgiftsbegränsad.
+
+**Steg 5: Jämför auktionsmått.** Dra söktermrapporter och filtrera efter produktgrupp. Spåra:
+- Snitt-CPC
+- Visningsandel (Sök)
+- CTR
+- Konverteringsgrad
+- Auktionsöverlappningsgrad (via Auktionsinsikter—förlorar du färre auktioner till samma konkurrenter?)
+
+Om Feed B visar ≥10% CPC-förbättring eller ≥5pp visningsandelökning med statistisk signifikans, rulla ut ändringen till Feed A och testa nästa variabel.
+
+Vi använder denna metod för att testa 1–2 feedhypoteser per månad över klientkonton. Kumulativt sammanfaller vinsterna: en 10% CPC-minskning i januari, en 8% vinst i februari, en 5% vinst i mars blir 23% i april utan några bud- eller budgetökningar.
+
+<Callout type="warning">
+**Vanlig Fallgrop:** Att testa feedändringar under stora reaevenemang (Black Friday, Prime Day) kommer att förväxla resultat med efterfrågeskifter. Kör feedtester under stabila trafikperioder och förläng testfönster till 28 dagar minimum för att jämna ut veckans varians.
+</Callout>
+
+![Produktgrupp A/B-test setup-diagram i Google Merchant Center](/content-images/posts/google-shopping-quality-score-reverse-engineering-2026/2.webp)
+
+## Bygga en Feedkvalitetsdashboard i Google Sheets + GMC API
+
+Google tillhandahåller inte en "feedkvalitetspoäng"-dashboard, så vi byggde en med Content API for Shopping och Google Sheets. Denna setup visar signalerna Google bryr sig om och flaggar SKU som sannolikt drar ner kampanjprestanda.
+
+**Datakällor:**
+1. **Merchant Center Content API** för produktnivåattribut (titellängd, GTIN-närvaro, kategoridjup, attributantal).
+2. **Google Ads API** för SKU-nivåprestanda (visningar, klick, kostnad, konverteringar) sammanfogade på `item_id` eller `offer_id`.
+3. **Google Sheets** med Apps Script för att dra, sammanfoga och poängsätta data veckovis.
+
+**Poängsättningsrubrik (0–100 skala):**
+
+| Signal | Vikt | Poängsättningslogik |
+|--------|--------|---------------|
+| Titellängd | 20 poäng | 10–12 ord = 20 poäng; 7–9 ord = 12 poäng; \<7 ord = 0 poäng |
+| GTIN närvarande | 15 poäng | Giltig GTIN = 15 poäng; saknas = 0 poäng |
+| Kategoridjup | 15 poäng | 5-nivå = 15 poäng; 4-nivå = 10 poäng; 3-nivå = 5 poäng; ≤2-nivå = 0 poäng |
+| Valfria attribut | 25 poäng | 8+ attribut = 25 poäng; 5–7 = 15 poäng; 3–4 = 8 poäng; \<3 = 0 poäng |
+| Bildupplösning | 15 poäng | ≥1200px = 15 poäng; 800–1199px = 8 poäng; \<800px = 0 poäng |
+| Prestandahastighet | 10 poäng | CTR > kampanjsnitt = 10 poäng; inom 20% = 5 poäng; under = 0 poäng |
+
+**Implementeringssteg:**
+
+1. **Auktorisera API-åtkomst.** Sätt upp ett Google Cloud-projekt med Content API v2.1 och Google Ads API aktiverat. Generera OAuth-referenser och lagra uppdateringstokens i Apps Script Properties.
+
+2. **Skriv Apps Script.** Använd `UrlFetchApp.fetch()` för att dra produkter från Content API (`products.list`) och prestanda från Google Ads API (`ProductPerformance`-rapport). Sammanfoga på `offer_id`. För varje SKU, beräkna de sex underpoängen ovan och summera till en sammansatt poäng.
+
+3. **Flagga låg-presterare.** Tillämpa villkorlig formatering: SKU som poängsätter \<50 = röd, 50–70 = gul, >70 = grön. Sortera efter (Utgift × Invers Poäng) för att prioritera högutgift, lågkvalitets-SKU.
+
+4. **Automatisera veckovis uppdatering.** Ställ in en tidsdriven trigger i Apps Script för att köras varje måndag kl. 06.00. Detta håller dashboarden aktuell utan manuella dragningar.
+
+Vi kör denna dashboard för 20+ klienter. Mediankontot har 12–18% av SKU som poängsätter under 50, vilket representerar 30–40% av totala utgifter. Att fixa dessa SKU först ger snabbaste ROAS-ökningen. En elektronikklient fixade sina bottenkvartilets SKU (n=340) över två månader och såg kontoövergripande CPC minska med 16%, enbart från feedförbättringar—inga budändringar, inga landningssidtester.
+
+Du kan anpassa denna poängsättningsrubrik till din vertikal. Kläder kan vikta `size`, `color` och `gender` tyngre; elektronik kan lägga till `brand` och `mpn` som separata signaler.
+
+För en steg-för-steg-genomgång av feedoptimeringsarbetsflöden, se vår [kompletta guide till Google Shopping-feedoptimering](https://blog.magicfeedpro.com/sv/posts/google-shopping-feed-optimization-2026-guide), som inkluderar Apps Script-exempelkoder och API-frågemallar.
+
+## När Feedoptimering Slår Budökningar (och När Den Inte Gör Det)
+
+Feedoptimering är en kraftmultiplikator, inte ett universalmedel. Den fungerar bäst i specifika scenarier och kan vara irrelevant eller till och med kontraproduktiv i andra.
+
+**Feedoptimering vinner när:**
+
+- **Du förlorar visningsandel till konkurrenter med liknande produkter.** Om Auktionsinsikter visar att du förlorar 60%+ av överlappande auktioner och dina bud är konkurrenskraftiga, är feedkvalitet det troliga deltat. En starkare feed kommer att vinna dig tillbaka i dessa auktioner till samma eller lägre CPC.
+
+- **Din CTR är under vertikala benchmarks.** Enligt [Search Engine Lands 2026 benchmarks](https://searchengineland.com/google-shopping-benchmarks-2026) sträcker sig median Shopping CTR från 0,8% (Hem & Trädgård) till 1,6% (Kläder). Om du är i bottenkvartilet är dina titlar och bilder förmodligen inte övertygande nog. Bättre titlar lyfter CTR, vilket matar tillbaka in i Googles relevansmodell och sänker CPC.
+
+- **Dina CPC stiger trots stabil konkurrens.** Detta mönster—kostnadsinflation utan nya aktörer—signalerar ofta att Googles algoritm straffar din feed relativt förbättrande konkurrentfeeds. Att uppdatera din feed kan vända trenden.
+
+- **Du har högt SKU-antal (1 000+) och ojämn prestanda.** Stora kataloger innehåller nästan alltid en lång svans av underoptimerade SKU som späder ut kontonivåkvalitetssignaler. Att systematiskt fixa bottens 20% förvärras över tid.
+
+**Feedoptimering är mindre effektiv när:**
+
+- **Du redan är i topp-decilen för feedkvalitet.** Om dina titlar är rika, GTIN är kompletta, kategorier är granulära och bilder är högupplösta, ger ytterligare feedjusteringar minskande avkastning. Vid den punkten driver budstrategi, budgetallokering och landningssida-CRO inkrementella vinster.
+
+- **Du säljer rena råvaror med noll differentiering.** Om du dropshippar exakt samma produkt som 50 andra annonsörer och din feed redan är komplett, kan Google inte belöna dig för "bättre" data—allas data är identiska. I rena råvaruauktioner är bud och pris de enda hävstängerna.
+
+- **Din budget är allvarligt begränsad.** Om du förlorar 80% visningsandel på grund av budget, kommer feedkvalitet inte hjälpa dig att visa mer ofta—du kommer bara att visa mer effektivt inom din begränsade budget. Fixa budget först, optimera sedan feed.
+
+- **Säsongsefterfrågan kraschlandar.** Om du säljer julpynt i juli kommer ingen mängd feedoptimering att materiellt lyfta efterfrågan. Feedarbete är en alltid-på-investering, men den kommer inte övervinna grundläggande efterfråganssäsongsvariationer.
+
+Tabellen nedan kartlägger scenarier till prioritering:
+
+| Scenario | Prioritera Feed? | Alternativ Åtgärd |
+|----------|------------------|-------------------|
+| Hög CPC, låg IS, konkurrenskraftiga bud | ✅ Ja | Feedomstrukturering (titlar, kategorier) |
+| Låg CTR, genomsnittlig CPC | ✅ Ja | Titel + bilduppdatering |
+| Förlorade auktioner till samma 3 konkurrenter | ✅ Ja | Feedkvalitet + negativa nyckelord |
+| Budgetbegränsad, låg IS | ❌ Nej | Öka daglig budget eller minska SKU-antal |
+| Topp-decil feed, platåprestanda | ❌ Nej | Budstrategijustering, LP-testning |
+| Råvaruprodukt, komplett feed | ❌ Nej | Priskonkurrenskraft, kampanjer |
+
+Vi ser vanligtvis feedoptimering leverera 10–30% effektivitetsvinster under de första 90 dagarna. Efter det platåar kurvan och du skiftar fokus till budstrategi, målgruppslager och landningssidaoptimering. Men den initiala 10–30% är ofta skillnaden mellan ett lönsamt Shopping-program och ett som blöder budget.
+
+Om du vill accelerera feedoptimeringsprocessen kan MagicFeed Pros AI-titel- och beskrivningsomskrivning batch-processa tusentals SKU på timmar snarare än veckor, tillämpa den semantiska densitets- och attributrikhetsmönster som vi vet flyttar nålen på Googles rankingsmodell. Vi byggde den specifikt för team som kör [högvolym Shopping-kampanjer](https://blog.magicfeedpro.com/sv/posts/google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test) som inte har tid att handkurera 5 000 produkttitlar.
+
+![CPC-trendjämförelse: feedoptimerad vs kontrollgrupp över 90 dagar](/content-images/posts/google-shopping-quality-score-reverse-engineering-2026/3.webp)
+
+<ProductCTA 
+  variant="audit" 
+  title="Granska Din Feedkvalitet på 60 Sekunder"
+/>
+
+<FAQ>
+  <FAQItem 
+    q="Bekräftar Google officiellt att Shopping-annonser har en Quality Score-motsvarighet?" 
+    a="Google pensionerade 'Quality Score'-etiketten för Shopping 2019, men deras offentliga dokumentation anger att 'produktdatakvalitet' påverkar annonsrankning och auktionsresultat. Interna mått som 'förväntad CTR' och 'relevans' fungerar identiskt med Quality Score-mekaniker—feeds med rikare attribut, GTIN och semantiska titlar får konsekvent lägre CPC i kontrollerade tester, även när bud hålls konstanta."
+  />
+  <FAQItem 
+    q="Hur lång tid tar det att se resultat efter optimering av feedkvalitet?" 
+    a="De flesta konton ser mätbara CPC- eller visningsandelförändringar inom 14–21 dagar efter implementering av feeduppdateringar, förutsatt att ändringarna är betydande (t.ex. omskrivning av 500+ titlar, ommappning av kategorier över katalogen). Googles algoritm behöver 7–10 dagar för att återkrypa och återindexera din feed, sedan ytterligare 7–14 dagar av auktionsdata för att justera dina kvalitetssignaler. Inkrementella justeringar (fixering av 50 SKU) kan ta 4–6 veckor att visa statistiskt signifikant påverkan."
+  />
+  <FAQItem 
+    q="Kan jag testa feedkvalitetsändringar utan att skapa en separat Merchant Center-feed?" 
+    a="Ja, med kompletterande feeds. Skapa en kompletterande feed som åsidosätter specifika attribut (titel, kategori, anpassade etiketter) för en delmängd av SKU, använd sedan dessa SKU:s artikel-ID för att skapa en separat produktgrupp i din Shopping-kampanj. Detta låter dig A/B-testa feedvarianter inom en enda primär feed, även om hantering av kompletterande feeds i stor skala kräver noggrann ID-matchning och uppdateringskadenser."
+  />
+  <FAQItem 
+    q="Vilket feedattribut har störst påverkan på CPC: titlar, GTIN eller kategorier?" 
+    a="I våra dataset levererar GTIN-täckning över 90% den mest konsekventa CPC-minskningen (15–25%) eftersom det låser upp Googles produktgraf och dedupliceringlogik. Titelsemantisk densitet är tvåa (10–22% CPC-påverkan), följt av kategoridjup (8–14%). Men signalerna sammanfaller—ett konto med starka GTIN *och* rika titlar överträffar ett konto med bara ett av dessa attribut med en bredare marginal än summan av individuella effekter."
+  />
+  <FAQItem 
+    q="Är feedoptimering viktigare än budstrategi för Shopping-kampanjer?" 
+    a="Ingetdera är universellt viktigare—de är multiplikativa. En perfekt feed med fruktansvärda bud kommer att underprestera, och en perfekt budstrategi med en skelettartad feed kommer att betala för mycket för varje klick. I praktiken har de flesta konton mer utrymme i feedkvalitet än budstrategi eftersom feeds ofta försummas under initial setup. Vi rekommenderar att fixa feedkvalitet först (det är en engångshiss som förvärras), sedan lager sofistikerade budstrategier ovanpå en högkvalitetsfeedgrund."
+  />
+  <FAQItem 
+    q="Hjälper feedkvalitetsförbättringar med Performance Max-kampanjer, eller endast standard Shopping?" 
+    a="Feedkvalitet är ännu *mer* kritisk i Performance Max eftersom kampanjtypen förlitar sig tungt på Googles automation för att matcha produkter mot placeringar över Sök, Display, YouTube och Discovery. Bättre feeddata ger PMax-algoritmen fler signaler att arbeta med, förbättrar tillgångsval och målgruppsinriktning. Vi har sett PMax-kampanjer lyfta ROAS med 15–30% efter feedoptimering, utan kreativa ändringar eller budgetändringar—enbart från rikare produktdata som förbättrar algoritmens matchsäkerhet."
+  />
+</FAQ>

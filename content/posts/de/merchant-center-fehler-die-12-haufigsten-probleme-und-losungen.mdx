@@ -1,0 +1,225 @@
+---
+slug: "merchant-center-fehler-die-12-haufigsten-probleme-und-losungen"
+translationKey: "merchant-center-errors-12-common-issues-solutions"
+locale: "de"
+title: "Merchant Center-Fehler: Die 12 häufigsten Probleme und Lösungen"
+description: "Jeder Merchant Center-Fehler in verständlicher Sprache. Die 12 häufigsten Produktablehnungen — was sie auslöst, wie man sie diagnostiziert und wie man sie im laufenden Betrieb behebt, ohne Impressionen zu verlieren."
+keywords:
+  - merchant center fehler
+  - produktablehnung google
+  - merchant center diagnose
+  - google shopping fehler
+  - feed fehler beheben
+date: 2026-05-05
+updated: 2026-05-05
+author: "mfp-team"
+category: "merchant-center"
+tags:
+  - merchant-center
+  - troubleshooting
+  - disapprovals
+  - listicle
+featured: false
+comments: false
+cover: ""
+coverAlt: "Google Merchant Center Diagnose-Dashboard mit Produktproblemen"
+---
+
+Wenn Sie jemals auf die Diagnoseseite des Merchant Centers gestarrt haben und sich gefragt haben, was „eingeschränkte Leistung: Preisabweichung" eigentlich bedeutet, ist dieser Artikel für Sie.
+
+Diese 12 Fehler machen etwa 90% der Ablehnungen aus, die wir bei Kundenaudits sehen. Jeder hat einen spezifischen Auslöser, einen spezifischen Diagnosepfad und eine spezifische 30-Minuten-Lösung.
+
+## 1. Fehlende GTIN
+
+**Der Fehler**: „Erforderliches Feld fehlt [gtin]" oder „Eingeschränkte Leistung aufgrund fehlender GTIN".
+
+**Was ihn auslöst**: Markenprodukte (Wiederverkäufer) müssen die GTIN (UPC/EAN/ISBN) angeben. Eigenmarkenprodukte können ausgenommen werden, indem `identifier_exists` auf `false` gesetzt wird, aber die meisten Kataloge vergessen dies.
+
+**Diagnose**:
+
+```text
+Merchant Center → Produkte → Diagnose → Filter: Problem = „Fehlende GTIN"
+```
+
+**Lösung**:
+
+- Wiederverkaufte Markenprodukte: Holen Sie die GTIN von Ihrem Lieferanten oder suchen Sie sie auf der Website des Herstellers. Fügen Sie sie zum `barcode`-Feld der Variante in Shopify oder dem Äquivalent in Ihrer Plattform hinzu.
+- Eigenmarke / handgefertigt: Setzen Sie `identifier_exists: false` in Ihrem Feed. In Shopify ist dies ein Metafeld (`google.identifier_exists: FALSE`).
+
+<Callout type="tip" title="Lassen Sie es nicht einfach leer">
+Die GTIN leer zu lassen ohne `identifier_exists: false` ist das Schlimmste von beiden Welten — Sie bekommen eine Warnung *und* verlieren den Ranking-Vorteil, eine zu haben. Setzen Sie das Flag explizit.
+</Callout>
+
+## 2. Falsche Google-Produktkategorie
+
+**Der Fehler**: „Produktkategorie nicht spezifisch genug" oder „Produkt stimmt nicht mit Kategorie überein".
+
+**Was ihn auslöst**: Ihr Produkt ist einer zu breiten Kategorie zugeordnet (z.B. „Bekleidung & Accessoires" statt „Bekleidung & Accessoires > Kleidung > Hemden & Tops > Businesshemden").
+
+**Lösung**: Öffnen Sie das Produkt, setzen Sie den vollständigen 5-Ebenen-Pfad der Google-Produktkategorie. Die Taxonomie wird als Google Sheet veröffentlicht, das Sie durchsuchen können. Spezifität zählt — 5-Ebenen-Pfade ranken im Durchschnitt 2–3× besser als 2-Ebenen.
+
+## 3. Bildqualitätsprobleme
+
+**Der Fehler**: „Bildqualität zu niedrig" oder „Werbliche Überlagerung auf Bild".
+
+**Was ihn auslöst**:
+
+- Bild \< 250×250px (harte Anforderung)
+- Bild mit Textüberlagerung, Logos, Wasserzeichen oder Rahmen
+- Bild mit Schaufensterpuppen (für einige Bekleidungskategorien)
+- Bild nicht auf sauberem Hintergrund
+
+**Lösung**: Das Hauptbild muss das Produkt zentriert auf sauberem Hintergrund zeigen, ≥800px (ideal 1500×1500), keine Überlagerung. Für Shopify-Shops verwenden Sie das *primäre* Produktbild in der Variante, kein Lifestyle-Bild.
+
+## 4. Preisabweichung zwischen Feed und Landing-Page
+
+**Der Fehler**: „Preisabweichung" oder „Landing-Page-Preis unterscheidet sich vom Feed".
+
+**Was ihn auslöst**: Der Preis in Ihrem Feed stimmt nicht mit dem auf der Produktdetailseite angezeigten Preis überein. Häufige Ursachen:
+
+- Angebotspreise werden beim Checkout angewendet, aber nicht im Feed
+- Währungsumrechnungsdrift bei Multi-Regions-Feeds
+- Unterschied zwischen brutto und netto
+- MwSt-Unterschiede zwischen Ländern
+
+**Lösung**:
+
+- Passen Sie `price` im Feed an den exakten Bruttopreis an, den der Käufer auf der Produktdetailseite sieht.
+- Bei einem Angebot befüllen Sie `sale_price` und `sale_price_effective_date` — ändern Sie nicht einfach vorübergehend `price`.
+
+## 5. Fehlende oder falsche Rückgabebedingungen
+
+**Der Fehler**: „Fehlende Rückgabebedingungen" oder „URL der Rückgabebedingungen lädt nicht".
+
+**Was ihn auslöst**: Seit 2024 verlangt Google eine klar zugängliche Rückgaberichtlinie, die von Ihrem Merchant Center-Konto verlinkt ist.
+
+**Lösung**:
+
+- Merchant Center → Tools → Retouren → richten Sie die Standardrichtlinie ein (Zeitfenster in Tagen, Rückversandkosten, Wiederauffüllungsgebühr).
+- Überprüfen Sie, dass die URL auf Ihrer Website eine Seite mit der klar sichtbaren Richtlinie lädt — Googles Crawler prüft dies.
+
+## 6. Eingeschränkte Produktklasse
+
+**Der Fehler**: „Richtlinie für eingeschränkte Produkte" — gilt für Alkohol, Nahrungsergänzungsmittel, Kosmetika mit verschreibungspflichtigen Inhaltsstoffen, Waffen, Glücksspiel-Bezug usw.
+
+**Was ihn auslöst**: Ihr Produkt befindet sich in einer eingeschränkten Kategorie, die zusätzliche Zertifizierung erfordert (z.B. benötigen Nahrungsergänzungsmittel Zutatenlisten; Kosmetika benötigen bestimmte Kennzeichnungen).
+
+**Lösung**:
+
+- Identifizieren Sie die spezifische eingeschränkte Kategorie aus dem Ablehnungsgrund.
+- Für Nahrungsergänzungsmittel: geben Sie `nutrition_facts` und `ingredients`-Attribute an.
+- Für altersbeschränkt: geben Sie `age_group: adult` an und stellen Sie sicher, dass Ihre Produktdetailseite Altersprüfung hat.
+- Für einige Kategorien (Alkohol, Waffen in einigen Ländern): beantragen Sie eine Ausnahmegenehmigung über das Merchant Center-Richtlinien-Tool.
+
+## 7. Landing-Page-Probleme
+
+**Der Fehler**: „Landing-Page stimmt nicht überein" oder „Landing-Page-Fehler".
+
+**Was ihn auslöst**:
+
+- Landing-Page leitet um (302-Kette), bevor sie sich auflöst
+- Landing-Page gibt 4xx oder 5xx zurück
+- Landing-Page rendert leer (schweres JS, langsamer LCP)
+- Produkt auf der Produktdetailseite stimmt nicht mit dem Feed überein (z.B. falsche Farbe)
+
+**Lösung**:
+
+- Lösen Sie jede Weiterleitungskette auf — die finale URL sollte die kanonische Produktdetailseite sein.
+- Bei SPA-lastigen Shops stellen Sie sicher, dass der Produktinhalt serverseitig gerendert oder für Crawler vorgerendert ist.
+- Überprüfen Sie, dass `availability` im Feed mit dem übereinstimmt, was die Produktdetailseite anzeigt.
+
+## 8. Versandabweichung
+
+**Der Fehler**: „Versand nicht berechenbar" oder „Versandkosten unterscheiden sich vom Feed".
+
+**Was ihn auslöst**:
+
+- Ihre Versandeinstellungen im Merchant Center decken das Zielland nicht ab.
+- Der Feed sagt kostenloser Versand, aber die Produktdetailseite berechnet Versandkosten.
+- Versand auf Variantenebene (z.B. schwere Artikel) nicht im Feed deklariert.
+
+**Lösung**:
+
+- Merchant Center → Tools → Versand und Retouren → stellen Sie sicher, dass jedes Land, in das Sie verkaufen, konfiguriert ist.
+- Für schwere Produkte überschreiben Sie den Versand auf Produktebene über das `shipping`-Attribut.
+
+## 9. Veraltete oder fehlerhafte Verfügbarkeit
+
+**Der Fehler**: „Nicht vorrätig — sollte vorrätig sein" oder umgekehrt.
+
+**Was ihn auslöst**: Ihr Feed sagt `in_stock`, aber die Produktdetailseite zeigt „ausverkauft", oder Ihr Feed aktualisiert zu langsam, wenn sich der Lagerbestand ändert.
+
+**Lösung**:
+
+- Wechseln Sie von geplanter Abholung zu Push (Content API oder Shopify's nativer Google-Channel-Push).
+- Setzen Sie `availability_date` für Produkte auf Nachbestellung, damit Google sie weiterhin anzeigt.
+- Prüfen Sie die Verzögerung zwischen der Lagerbestandsaktualisierung Ihres Shops und der Spiegelung im Merchant Center. Alles > 1 Stunde kostet Sie Impressionen während Lagerengpässen.
+
+## 10. Unzulässige Inhalte
+
+**Der Fehler**: „Unzulässiger Inhalt" — löst normalerweise bei Waffen, Drogen, Fälschungen, Inhalten für Erwachsene, gefährlichen Chemikalien oder politisch thematisierten Waren aus.
+
+**Was ihn auslöst**: jedes Produkt, das Googles [Richtlinien für eingeschränkte Inhalte](https://support.google.com/merchants/answer/6149970) berührt.
+
+**Lösung**:
+
+- Bei falsch-positiv (z.B. eine Sportbekleidungsmarke wird wegen „Waffen" markiert aufgrund eines Kickbox-Handschuhs), reichen Sie eine manuelle Prüfungsanfrage ein über Merchant Center → Diagnose → Prüfung anfordern.
+- Wenn Ihr Produkt tatsächlich in eine verbotene Kategorie fällt, können Sie es nicht auf Shopping bewerben. Entfernen Sie es von Shopping und verlassen Sie sich auf andere Kanäle.
+
+## 11. Fehlende Steuerkonfiguration
+
+**Der Fehler**: „Steuer nicht für Ziel konfiguriert".
+
+**Was ihn auslöst**: In den USA (bundesstaatenweise Steuer), der EU (MwSt pro Land) oder anderen Multi-Jurisdiktions-Setups decken Ihre Merchant Center-Steuereinstellungen den Zielstaat/-land nicht ab.
+
+**Lösung**:
+
+- Merchant Center → Tools → Steuer → konfigurieren Sie pro Bundesstaat (USA) oder pro Land (EU) Steuer.
+- Für EU stellen Sie sicher, dass Sie Bruttopreise verwenden (der Standard für EU Shopping).
+
+## 12. Feed-Strukturfehler
+
+**Der Fehler**: „Feed kann nicht geparst werden" oder „Ungültiges Feed-Format".
+
+**Was ihn auslöst**:
+
+- Sonderzeichen nicht escaped (kaufmännisches Und, Anführungszeichen innerhalb von CSV-Feldern)
+- Falsche Spaltentrennzeichen
+- Codierungsprobleme (UTF-8 vs ISO-8859-1)
+- Multi-Wert-Felder nicht mit dem richtigen Separator formatiert (`/` für Größen usw.)
+
+**Lösung**:
+
+- Für CSV/TSV-Feeds: validieren Sie über das Merchant Center „Feed testen"-Tool vor dem Upload.
+- Für XML-Feeds: validieren Sie die XML-Struktur (schließen Sie alle Tags) und escapen Sie Sonderzeichen.
+- Für Shopify/BigCommerce/native Kanäle: das passiert selten; falls doch, kontaktieren Sie den Support der Kanal-App.
+
+## Wie man wöchentlich prüft, ohne sein Wochenende zu verlieren
+
+Ein 15-minütiges wöchentliches Merchant Center-Audit fängt 95% der Probleme ab, bevor sie Budget verbrennen:
+
+1. **Diagnose → Probleme**: sortieren Sie nach „Betroffene Impressionen" absteigend. Beheben Sie alles über 1K Betroffene.
+2. **Produkte → Abgelehnt**: überfliegen Sie die Liste. Gruppieren Sie nach Problemtyp. Beheben Sie zuerst das häufigste Muster (eine Lösung behebt normalerweise 20+ SKUs).
+3. **Tools → Prüfungen**: antworten Sie auf neue manuelle Prüfungsanfragen innerhalb von 48h.
+4. **Leistung → Bestseller**: überprüfen Sie, dass Ihre Top-20-SKUs noch einen gesunden Impression-Share zeigen.
+
+Wenn Sie häufig auf [Produktablehnung aufgrund mangelhafter Feed-Qualität](https://blog.magicfeedpro.com/de/posts/google-shopping-feed-optimization-2026-guide) stoßen, überprüfen Sie Ihre grundlegende Feed-Struktur. Viele strukturelle Fehler erzeugen Folgefehler, die beim ersten Blick nicht offensichtlich sind, aber [Ihre Conversion-Rate stark beeinträchtigen](https://blog.magicfeedpro.com/de/posts/7-reasons-google-shopping-ads-not-converting).
+
+## FAQ
+
+<FAQ>
+  <FAQItem q="Wie lange dauert es, bis Merchant Center ein behobenes Produkt wieder genehmigt?" a="Automatisierte Neuprüfungen werden normalerweise innerhalb von 1–24 Stunden nach dem nächsten Feed-Abruf abgeschlossen. Manuelle Prüfungsanfragen können 3–7 Tage dauern, sind aber meist schneller. Das Pushen der Lösung über Content API bringt Sie in die Warteschlange nach vorne." />
+  <FAQItem q="Bringt das Beheben von Ablehnungen meine Impressionen wieder auf Ausgangsniveau?" a="Normalerweise innerhalb von 7–10 Tagen. Stark abgelehnte Konten durchlaufen möglicherweise ein probatorisches Re-Ranking — beheben Sie zuerst die SKUs mit den höchsten Impressionen, um schneller zu erholen." />
+  <FAQItem q="Warum sehe ich immer wieder neue Fehlerkategorien, die ich noch nie gesehen habe?" a="Google fügt mehrmals im Jahr Produktproblemkategorien hinzu und verfeinert sie. Die Erweiterung 2024–2026 hat sich auf Rückgabebedingungen, Bildqualität und Preisgenauigkeit konzentriert. Prüfen Sie wöchentlich, um neue frühzeitig zu erkennen." />
+  <FAQItem q="Kann ich gegen eine Ablehnung Einspruch einlegen, mit der ich nicht einverstanden bin?" a="Ja. In Merchant Center → Diagnose → klicken Sie auf das Problem → ‚Prüfung anfordern'. Geben Sie Kontext. Echte Fehlalarme (selten, aber real) werden normalerweise innerhalb von 3–5 Werktagen aufgehoben." />
+</FAQ>
+
+## Schnellreferenz
+
+Wenn Sie sich nur eine Sache merken: **Diagnose → nach Betroffene Impressionen sortieren → wöchentlich die Top 3 beheben**. Diese eine Disziplin hält Ihren Feed gesünder als 90% aller Konten.
+
+Für Shopify-Nutzer bietet sich eine [vollständige Schritt-für-Schritt-Anleitung zur Produktfeed-Einrichtung](https://blog.magicfeedpro.com/de/posts/shopify-product-feed-google-shopping-setup) an, um Feed-Strukturfehler von Anfang an zu vermeiden. Bei komplexeren Setups mit mehreren Varianten hilft eine durchdachte [Varianten-Clustering-Strategie](https://blog.magicfeedpro.com/de/posts/variant-clustering-in-shopping-feeds-stop-cannibalizing-your-own-ads), Kannibalisierung zwischen eigenen Anzeigen zu verhindern. Viele der oben beschriebenen Fehler lassen sich auch durch eine bessere [Segmentierung mit Custom Labels](https://blog.magicfeedpro.com/de/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas) proaktiv vermeiden, da Sie so problematische SKUs isolieren und gezielt beheben können.
+
+<ProductCTA variant="audit" title="Holen Sie sich ein vollständiges Merchant Center-Audit, kostenlos">
+Wir ziehen Ihren Live-Feed, decken jeden Ablehnungs-Cluster auf und geben Ihnen eine priorisierte Fix-Liste mit der 30-Minuten-Behebung pro Problemtyp.
+</ProductCTA>

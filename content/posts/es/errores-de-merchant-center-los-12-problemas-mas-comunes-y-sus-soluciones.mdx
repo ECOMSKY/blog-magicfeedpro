@@ -1,0 +1,109 @@
+---
+slug: "errores-de-merchant-center-los-12-problemas-mas-comunes-y-sus-soluciones"
+translationKey: "merchant-center-errors-12-common-issues-solutions"
+locale: "es"
+title: "Errores de Merchant Center: Los 12 Problemas Más Comunes y Sus Soluciones"
+description: "Cada error de Merchant Center, en lenguaje claro. Las 12 desaprobaciones de producto más comunes — qué las dispara, cómo diagnosticarlas y cómo arreglarlas en producción sin perder impresiones."
+keywords:
+  - errores merchant center
+  - desaprobación producto google
+  - diagnóstico merchant center
+date: 2026-05-05
+updated: 2026-05-05
+author: "mfp-team"
+category: "merchant-center"
+tags:
+  - merchant-center
+  - troubleshooting
+  - desaprobaciones
+  - listicle
+featured: false
+comments: false
+cover: ""
+coverAlt: "Panel de diagnóstico de Google Merchant Center mostrando problemas de producto"
+---
+
+> Versión en español — traducción inicial pendiente de revisión humana.
+
+Si alguna vez has mirado fijamente la página de diagnóstico de Merchant Center preguntándote qué significa realmente "rendimiento limitado: discrepancia de precio", este artículo es para ti.
+
+Estos 12 errores representan aproximadamente el 90% de las desaprobaciones que vemos en auditorías. Cada uno tiene un disparador específico, una ruta de diagnóstico específica y un arreglo específico de 30 minutos.
+
+## 1. GTIN faltante
+
+**Error**: "Falta el campo obligatorio [gtin]" o "Rendimiento limitado por falta de GTIN".
+
+**Arreglo**: productos de marca revendidos → obtén el GTIN del proveedor. Marca blanca → establece `identifier_exists: false`.
+
+<Callout type="tip" title="No lo dejes en blanco">
+Dejar GTIN en blanco sin `identifier_exists: false` es lo peor de ambos mundos.
+</Callout>
+
+## 2. Categoría de producto incorrecta
+
+**Arreglo**: abre el producto, establece la ruta completa de Google Product Category de 5 niveles.
+
+## 3. Problemas de calidad de imagen
+
+**Arreglo**: la imagen hero debe ser el producto centrado sobre un fondo limpio, ≥800px (ideal 1500×1500), sin superposición.
+
+## 4. Discrepancia de precio entre feed y landing page
+
+**Arreglo**: haz que `price` en el feed coincida con el precio exacto incluido de impuestos que el comprador ve en la PDP.
+
+## 5. Política de devoluciones faltante o incorrecta
+
+**Arreglo**: Merchant Center → Herramientas → Devoluciones → configura la política por defecto.
+
+## 6. Clase de producto restringida
+
+**Arreglo**: identifica la categoría restringida específica. Para suplementos: suministra `nutrition_facts` e `ingredients`. Para edad restringida: suministra `age_group: adult`.
+
+## 7. Problemas de landing page
+
+**Arreglo**: resuelve cualquier cadena de redirección. Asegúrate de que el contenido del producto está renderizado server-side o pre-renderizado.
+
+## 8. Discrepancia de envío
+
+**Arreglo**: [Merchant Center](https://blog.magicfeedpro.com/es/posts/shopify-product-feed-google-shopping-setup) → Herramientas → Envío y devoluciones → asegúrate de que cada país al que vendes está configurado.
+
+## 9. Disponibilidad obsoleta o rota
+
+**Arreglo**: cambia de fetch programado a push (Content API o el push nativo del canal Google de Shopify).
+
+## 10. Contenido prohibido
+
+**Arreglo**: si es falso positivo, presenta una solicitud de revisión manual. Si tu producto cae genuinamente en una categoría prohibida, no puedes anunciarlo en Shopping.
+
+## 11. Configuración de impuestos faltante
+
+**Arreglo**: Merchant Center → Herramientas → Impuestos → configura por estado (US) o por país (UE).
+
+## 12. Errores de estructura del feed
+
+**Arreglo**: para feeds CSV/TSV: valida vía la herramienta "Test feed" de Merchant Center antes de subir. Para XML: valida la estructura.
+
+## Cómo auditar semanalmente sin perder el fin de semana
+
+1. **Diagnóstico → Problemas**: ordena por "Impresiones afectadas" descendente.
+2. **Productos → Desaprobados**: examina la lista. Agrupa por tipo de problema.
+3. **Herramientas → Reseñas**: responde a cualquier solicitud de revisión manual en 48h.
+4. **Rendimiento → Más vendidos**: verifica que tus 20 SKUs principales siguen mostrando una cuota de impresión sana.
+
+La [optimización del feed de Google Shopping](https://blog.magicfeedpro.com/es/posts/google-shopping-feed-optimization-2026-guide) no termina con arreglar desaprobaciones — los equipos que ejecutan auditorías semanales detectan problemas de rendimiento antes de que afecten la tasa de conversión. Si tus anuncios no generan resultados, revisa estos [7 factores de diagnóstico](https://blog.magicfeedpro.com/es/posts/7-reasons-google-shopping-ads-not-converting) para identificar dónde está el problema estructural.
+
+Para feeds complejos con múltiples variantes o SKUs padre-hijo mal configurados, la [agrupación de variantes](https://blog.magicfeedpro.com/es/posts/variant-clustering-in-shopping-feeds-stop-cannibalizing-your-own-ads) correcta previene la canibalización de impresiones. Y si gestionas productos sin códigos de barras estándar, consulta esta [guía sobre la política GTIN 2026](https://blog.magicfeedpro.com/es/posts/gtin-exemption-requests-are-dead-the-2026-workaround-for-handmade-custom-goods) para productos personalizados.
+
+Finalmente, muchas desaprobaciones son síntomas de [problemas más profundos en la estructura del feed](https://blog.magicfeedpro.com/es/posts/performance-max-asset-groups-are-killing-your-feed-a-200k-audit-breakdown) — especialmente cuando Performance Max está activo y compite contra campañas Shopping estándar por las mismas consultas.
+
+## FAQ
+
+<FAQ>
+  <FAQItem q="¿Cuánto tiempo tarda Merchant Center en re-aprobar un producto arreglado?" a="Las re-verificaciones automatizadas suelen completarse en 1–24 horas tras el siguiente fetch del feed." />
+  <FAQItem q="¿Arreglar desaprobaciones devolverá mis impresiones a la línea base?" a="Normalmente en 7–10 días." />
+  <FAQItem q="¿Puedo apelar una desaprobación con la que no estoy de acuerdo?" a="Sí. En Merchant Center → Diagnóstico → haz clic en el problema → 'Solicitar revisión'." />
+</FAQ>
+
+<ProductCTA variant="audit" title="Obtén una auditoría completa de Merchant Center, gratis">
+Extraemos tu feed en vivo, identificamos cada cluster de desaprobación y te damos una lista de correcciones priorizada con la remediación de 30 minutos por tipo de problema.
+</ProductCTA>

@@ -1,0 +1,133 @@
+---
+slug: "pmax-feed-segmentering-ratt-produkter-i-ratt-grupp"
+title: "PMax Feed-segmentering: Rätt produkter i rätt grupp"
+description: "Shopify Performance Max feed-segmentering efter marginal, omsättning och returfrekvens — inte magkänsla — stoppar budgetläckage. Revidera dina tillgångsgrupper på under 30 minuter."
+keywords:
+ - shopify performance max feed-segmentering
+ - pmax tillgångsgrupp produktsegmentering shopify
+ - performance max kampanjstruktur shopify
+ - shopify pmax produktgruppdelning
+ - google shopping pmax feedkontroll
+ - performance max listgrupper shopify
+ - shopify pmax budgetallokering per produkt
+ - pmax vs standard shopping shopify feed
+date: "2026-05-18"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - performance-max
+ - shopify
+ - feed-segmentation
+ - asset-groups
+ - pmax-structure
+readingMinutes: 9
+featured: false
+locale: "sv"
+translationKey: "shopify-pmax-feed-segmentation"
+noindex: false
+comments: false
+cover: "/blog-covers/shopify-pmax-feed-segmentation-which-products-deserve-their-own-asset-group.jpg"
+coverAlt: "Ett produktkatalogrutnät av isometriska paneler delas in i distinkta kluster — en stor elektriskt blå grupp av höga marginalprodukter grenande sig åt vänster via feta pilar, ett litet kolgrått kluster av lågomsatta objekt grenande sig höger mot ett ✗, med en violett budgetflödesstavlare som stiger brant över det blå klustret."
+---
+
+Shopify Performance Max feed-segmentering är det enda strukturella beslut som avgör om Googles automation förstärker dina bästa SKU:er eller tyst bränner budget på död inventarie. Bland höga utgiftskonton som kör $30k–$150k/månad på PMax är mönstret konsistent: köpmän som segmenterar efter fedsignaler — marginalnivå, omsättning, AOV, returfrekvens — återhämtar i genomsnitt 15–22% av slösat budget inom 60 dagar. De som behåller en universalkampanj ger Googles algoritm en motsägelsefull signalblandning och undrar varför ROAS planar ut.
+
+## Varför en enda PMax-kampanj för hela din Shopify-katalog är budgetläckage
+
+En enda PMax-kampanj med en tillgångsgrupp och "Alla produkter" i listningsgruppen är den vanligaste strukturen vi granskar vid $30k+/månad utgift — och det är nästan alltid rotorsaken till ojämn ROAS. Googles PMax-algoritm allokerar budget mellan tillgångsgrupper först, sedan ned till enskilda produkter inom en grupp. När 12 000 SKU:er delar en budgetpool använder algoritmen standard att optimera för vägen med minst motstånd: höga klickvolymprodukter som inte nödvändigtvis är dina högsta marginal.
+
+Den praktiska konsekvensen är brutal. Ett tillbehör för $4,99 med 12% marginal kan kannibalisera imtryckesandel från en hero-produkt för $249 med 58% marginal helt enkelt för att den har mer historisk klickdata. Enligt [Googles officiella Performance Max-dokumentation](https://support.google.com/google-ads/answer/10724817) fungerar tillgångsgrupper som den primära budgetallokeringsenheten, inte enskilda produkter. Den arkitektoniska verkligheten betyder att din segmenteringslogik på tillgångsgruppnivå är den enda spaken du helt kontrollerar.
+
+Vi har sett Shopify-butiker förlora 28% av sin effektiva ROAS på denna exakta dynamik. En modedirekt butik som körde $80k/månad hade 9 400 SKU:er i en enda kampanj. Deras 40 främsta marginalprodukter — genomsnittligt $310 AOV och 61% bruttomarginal — fick 6% av totala intryck. Bortskaffningsprodukterna längst ned i katalogen med $19 prispunkter konsumerade 44% av utgifterna. Lösningen var inte en anbudjustering. Det var en ombyggnad av feedsegmentering.
+
+## De 4 fedsignaler som bör driva dina tillgångsgruppsdelningar
+
+De bäst presterande PMax-strukturerna vi har arbetat med använder exakt fyra fedhämtade signaler för att definiera segmentgränser: bruttomarginal, 90-dagars omsättning, genomsnittligt ordervärde och efterföljande 30-dagars returfrekvens. Dessa fyra signaler kan kodas direkt in i `custom_label_0` till `custom_label_3` i din Shopify-produktfeed, vilket ger Googles algoritm hårda gränser att arbeta inom.
+
+**Bruttomarginal** är den viktigaste signalen och den mest saknade från Shopify-feeds. De flesta butiker exporterar kostnaden för sålda varor (COGS) från sitt lagersystem men kartlägger aldrig den till ett feedattribut. Utan en marginaletikert kan Google inte skilja en produkt med 70% marginal från en med 10% marginal — de ser identiska på feednivå. Vi rekommenderar tre nivåer: `margin-high` (>50%), `margin-mid` (25–50%) och `margin-low` (\<25%).
+
+**90-dagars omsättning** skiljer dina beprövade efterfrågesignaler från otestad inventarie. Produkter med färre än 50 klick på 90 dagar har otillräcklig data för PMax konverteringsmodellering; att lumpa dem med högomsatta SKU:er tvingar algoritmen att genomsnittsberäkna ned. **Returfrekvens** är den undervärderad. En produkt med 35% returfrekvens och ett starkt ROAS-nummer förstör faktiskt bidragsmarginal — men PMax ser bara konverteringen, inte återförsäljningen. Kodning av returfrekvens som en anpassad etikett låter dig skapa ett dedikerat låg-utgifts- eller exkluderat segment för kroniska återförare.
+
+Med hjälp av MagicFeed Pros anpassade etikettbyggare kan du automatisera tilldelningen av alla fyra etiketter från en enda regelkonfiguration, hämtande COGS, orderdata och returdata från din Shopify-butik utan en manuell exportcykel.
+
+| Signal | Feedattribut | Exempelvärden | Tillgångsgruppsåtgärd |
+|---|---|---|---|
+| Bruttomarginal | custom_label_0 | margin-high, margin-mid, margin-low | Separata kampanjer per nivå |
+| 90-dagars omsättning | custom_label_1 | fast-mover, slow-mover, new-sku | Isolera nya SKU:er, skydda snabbköpare |
+| AOV-band | custom_label_2 | aov-high, aov-mid, aov-low | Matcha budststrategi till AOV |
+| Returfrekvens | custom_label_3 | return-low, return-high | Undertryck eller exkludera return-high |
+
+<Callout type="warning">
+Använd aldrig bara produkttyp eller Google-produktkategori som din segmenteringsaxel för PMax. Kategorier talar om för Google vad produkten *är*, inte vad den är *värd* för ditt företag. Ett telefonhölje för $9 och ett för $90 kan dela samma kategori — och samma tillgångsgrupp — utan någon fedsignal för att skilja budgetallokeringen.
+</Callout>
+
+## Steg för steg: Exportera Shopify-produktdata för att bygga en segmenteringsmatris
+
+Innan du omstrukturerar en enda kampanj behöver du en segmenteringsmatris: ett kalkylark som mappar varje SKU till dess fyra signalvärden. Att bygga det från Shopify tar cirka 90 minuter första gången, och under 20 minuter vid uppdatering när du har exportmallen konfigurerad.
+
+Börja med en gruppproduktexport från Shopify Admin → Produkter → Exportera (CSV, alla produkter). Detta ger dig `Variant SKU`, `Variant Price` och `Variant Cost` (om du har angett COGS — om inte kommer denna kolumn att vara tom och det är ditt första problem att åtgärda). Enligt [Shopifys egen dokumentation om Google-integration](https://help.shopify.com/en/manual/promoting-marketing/google) matar variantnivå kostnadsdata direkt in i Google-kanalappens supplemental feed-kapacitet.
+
+Dra sedan din 90-dagars orderexport från Analytics → Reports → Försäljning per produkt. Slå samman på SKU med hjälp av en VLOOKUP eller en enkel Python-sammanslagning. Lägg till en returkolumn från ditt 3PL eller Shopify returner — detta är den mest smärtsamma dataöppningen för butiker utan ett dedikerat BI-verktyg, men det är obligatoriskt för returfrekvensen-etiketten. När slumpad, tillämpa din tröskellogik: flagga varje SKU:s marginalnivå, hastighetsnivå, AOV-band och returtnivå.
+
+Utgången är en fyrkolutnamn supplemental feed. Ladda upp den till Google Merchant Center som en supplemental datakälla, eller använd MagicFeed Pros Shopify-integration för att synkronisera etiketterna automatiskt enligt ett dagligt schema, så att din segmentering förblir aktuell när inventariet vänds och returfrekvenserna skiftar.
+
+<Callout type="tip">
+Om din COGS-data i Shopify är ofullständig — vanligt efter katalogmigrationer eller leverantörsförändringar — använd din median kategorimarginál som en konservativ proxy för `custom_label_0` tills du kan fylla i faktiska uppgifter. En ungefärlig marginal-etikett är betydligt bättre än ingen marginal-etikett för PMax tillgångsgruppsontroll.
+</Callout>
+
+## Listningsgrupplogik kontra tillgångsgruppslogik — Vad de flesta guider får fel
+
+De flesta PMax-guider behandlar "listningsgrupper" och "tillgångsgrupper" som utbytbara termer. De är det inte, och förvirringen kostar Shopify-köpmän riktiga pengar. En tillgångsgrupp är den kreativa och audiensebehållaren — den håller dina rubriker, bilder, audiensesignaler och en budgetallokeringskontext. En listningsgrupp är produktfiltret *inne i* en tillgångsgrupp som definierar vilka produkter från din feed som är berättigade att servera.
+
+Du kan ha en välstrukturerad tillgångsgrupp med rätt kreativ för höga AOV-produkter men en listningsgrupp som oavsiktligt innehåller låga marginal-SKU:er för att filterlogiken inte var tillräckligt tätt. Tillgångsgrupps kreativa och audiensesignalen slösas sedan bort på fel produkter. Omvänt kan du ha en perfekt segmenterad listningsgrupp men generisk, universalkreatig som inte matchar produktnivåns köparintention.
+
+Den korrekta arkitekturen staplar båda lagren. För en högt marginal tillgångsgrupp: listningsgruppen filtreras till `custom_label_0 = margin-high`, OCH tillgångsgruppen innehåller kreativa tillgångar — rubriker, beskrivningar, bilder — specifikt skrivna för premiumköparintention. För en ny-SKU-inkubationsgrupp: listningsgrupp filtreras till `custom_label_1 = new-sku`, tillgångsgruppen använder bredare audiensesignaler och en Target CPA-budststrategi för att samla data utan att bränna marginal.
+
+Detta är också där MagicFeed Pros AI-feedomskrivning skapar sammansatt värde — när din titel- och beskrivningskvalitet matchar tillgångsgruppsintentionen förbättras PMax:s relevanspoäng för annonser och din berättigade imtryckesandel ökar. Feedkvalitet och kampanjstruktur är inte separata arbetsflöden; de förstärker varandra.
+
+## Ett verkligt konto: Hur en 12 000-SKU Shopify-butik gick från 1 till 9 tillgångsgrupper
+
+En UK-baserad hemvarutillverkare på Shopify (£2,1M årlig intäkt, £65k/månad PMax-utgift) kom till oss i Q3 2025 med en enda PMax-kampanj, en tillgångsgrupp och en ROAS på 4,1x — vilket såg bra ut tills vi bröt ned bidragsmarginal. Deras effektiva marginaljusterad ROAS var 1,8x för att låg-marginal clearance-objekt konsumerade 51% av utgifterna.
+
+Vi byggde om deras struktur till 9 tillgångsgrupper under tre veckor med hjälp av ramverket för fyra signaler ovan. Grupperna var: (1) Margin-High / Fast-Mover hero-produkter, (2) Margin-High / Slow-Mover för högt värderade objekt som behövde efterfrågeskapande, (3) Margin-Mid / Fast-Mover kärnområde, (4) Margin-Mid / Slow-Mover, (5) Ny SKU-inkubation, (6) Säsongs- / kampanjartiklar, (7) Låg-marginal likvidering — begränsad budget, endast target CPA, (8) High-return-rate karantän — minimal utgift, (9) Varumärkessökning exkluderingar universalgrupp.
+
+Resultaten efter 60 dagar: rapporterad ROAS flyttade från 4,1x till 5,6x. Ännu viktigare, marginaljusterad ROAS gick från 1,8x till 3,9x — en 117% förbättring av faktisk lönsamhet. Hero-produktgruppen (Grupp 1, ~340 SKU:er) gick från 8% imtryckesandel till 31%. Bortskaffningsartiklar sjönk från 51% av utgifterna till 14%.
+
+Den nyckelaktivatorn var ren feeddata. Innan ombyggnaden körde vi en fullständig feedattributrevision och fann att 23% av SKU:erna saknade COGS-data, 41% med odeskriptiva titlar som undertryckte Quality Scores, och 1 200 produkter med GTIN:er flaggade som felaktiga i Merchant Center. Att åtgärda feeden först gjorde segmenteringen arbete; segmentering utan ren data är bara omordnandet av dåliga signaler.
+
+## Feedattributkrav för varje segment för att faktiskt fungera i PMax
+
+En segmenteringsstrategi hålls endast om de underliggande feedattributen är fullständiga och korrekta. Var och en av de nio segmenttyperna ovan har en annan attributprioritet, och luckor i specifika fält gör att produkter faller ut ur berättigade segment eller serveras med försämrad kvalitet.
+
+För **höga marginal hero-segment** är icke-förhandlingsbar attribut: korrekt `price` och `sale_price` (felaktigheter orsakar godkännanden), korrekt `GTIN` eller `MPN` (GTIN-saknad minskar auktionsberechtigung per Googles specifikation för produktdata), och optimerad `title` med varumärke + produkttyp + nyckelspecifikation i de första 70 tecknen. En svag titel i ett hero-segment är pengar som lämnats på bordet — titeln är den primära relevansignalen för Shopping-frågor.
+
+För **ny-SKU-inkubationssegment** är det mest kritiska attributet `product_type` — utan en välstrukturerad produkttypitaxonomi har Googles algoritm ingen kategorisignal för att sätta initial imtryckesmålgrupp. Enligt Search Engine Lands täckning av PMax bästa praxis tar produkter utan en definierad produkttyp 3–5x längre tid för att lämna "inlärnings"-fasen, brännande inkubationsbudget utan att generera användbar konverteringsdata.
+
+För **höga returfrekvens karantänsegment** granskar din `description` och `title` för noggrannhetsluckor — vilseledande titlar och beskrivningar är #1-föraren för förhindrbara returer, särskilt inom beklädnad och elektronik. Produkter som återvänder vid >25% hastighet har nästan alltid ett feednoggrannhetsproblem uppströms. Att åtgärda feeddata, inte bara karantän för produkterna, är den hållbara reparationen.
+
+Checklistan för fullständigt attribut för varje segmenttyp mappar nära det som en strukturerad feedrevision ytor. Om du inte har kört en på sistone, går ramverket checklista på MagicFeed Pros feedattributrevisionguide genom varje obligatoriskt och rekommenderat attribut efter produktkategori och segmenttyp.
+
+<ProductCTA variant="audit" title="Få en kostnadsfri feedsegmenteringsrevision för din Shopify PMax-kampanj" />
+
+<FAQ>
+ <FAQItem
+ q="Hur många tillgångsgrupper ska en Shopify PMax-kampanj ha?"
+ a="Det finns inget universellt tal, men data från medelstora till stora Shopify-konton ($30k+/månad) visar konsekvent att 5–9 tillgångsgrupper överträffar 1–3. Det rätta antalet bestäms av hur många distinkta marginalnivåer, hastighetshinkar och AOV-band din katalog har — inte av SKU-antal. En butik med 500 SKU:er kan behöva 7 grupper; en butik med 20 000 SKU:er kan köra på 6 om segmenten är rena."
+ />
+ <FAQItem
+ q="Kan jag använda anpassade etiketter för PMax listningsgrupper i Shopify?"
+ a="Ja. Anpassade etiketter (custom_label_0 till custom_label_4) är fullt stödda i Google Shopping-feeds anslutna till Shopify via Google-kanalappen eller ett tredjepartsfedalternativ. Du tilldelar värden i din supplemental feed, och de dyker upp som filterbara attribut i listningsgruppsbyggaren inne i Google Ads. De påverkar inte organiska produktlistor eller Shopifys egna samlingskategorier."
+ />
+ <FAQItem
+ q="Hur länge tar Performance Max att lära sig efter en omstrukturering?"
+ a="Googles officiella vägledning säger att PMax-kampanjer behöver minst 6 veckor för att lämna inlärningsfasen efter en betydande strukturell förändring. I praktiken tenderar konton med ren feeddata och stark konverteringshistoria att stabiliseras på 3–4 veckor. Undvik att göra ändringar i budststrategi under de första 21 dagarna efter en omstrukturering — staplade förändringar förlänger inlärningsperioden och gör det omöjligt att isolera vad som orsakade prestatinskiften."
+ />
+ <FAQItem
+ q="Vad är skillnaden mellan PMax listningsgrupper och produktgrupper i Standard Shopping?"
+ a="I Standard Shopping är produktgrupper den primära budget- och budsmekanism — du tilldelar CPC:er på produktgruppnivå. I PMax är listningsgrupper rent ett filter för vilka produkter som är berättigade att servera inom en tillgångsgrupp; den faktiska budgetallokeringen styrs av kampanjens budststrategi och tillgångsgruppsstruktur. Det är därför segmenteringslogik som fungerade i Standard Shopping inte direkt överför till PMax utan att tänka om runt tillgångsgrupper."
+ />
+ <FAQItem
+ q="Bör jag helt exkludera låg-marginal produkter från PMax eller bara begränsa deras budget?"
+ a="Att helt exkludera låg-marginal produkter är sällan det rätta samtalet om inte deras returfrekvens eller marginal är negativ efter returer. En bättre metod är att isolera dem i en dedikerad tillgångsgrupp med en konservativ Target CPA eller Target ROAS som reflekterar deras faktiska bidragsmarginal. Detta håller dem berättigade för imtryckesandel under höga efterfrågeperioder (försäljning, säsongsspikar) utan att kannibalisera budget från hero-segment."
+ />
+</FAQ>

@@ -1,0 +1,241 @@
+---
+slug: "les-groupes-d-elements-performance-max-tuent-votre-flux-analyse-d-un-audit-a-200-000"
+title: "Les Groupes d'Éléments Performance Max Tuent Votre Flux : Analyse d'un Audit à 200 000 $"
+description: "PMax cannibalise les campagnes Shopping en promouvant les SKU à faible marge lorsque votre flux manque de hiérarchie product_type. Analyse forensique et corrections que la plupart des agences ratent."
+keywords:
+  - groupes d'éléments performance max flux shopping
+  - pmax vs campagnes shopping
+  - cannibalisation performance max
+  - optimisation groupe d'éléments google
+  - flux produits performance max
+  - structure flux shopping pmax
+  - ciblage produits performance max
+  - conflit google shopping pmax
+date: 2026-05-14
+author: "mfp-team"
+category: "google-shopping"
+tags:
+  - performance-max
+  - feed-optimization
+  - campaign-structure
+  - dtc-brands
+  - margin-recovery
+readingMinutes: 11
+featured: false
+locale: "fr"
+translationKey: "performance-max-asset-groups-killing-feed-audit"
+noindex: false
+comments: false
+tldr: "Les groupes d'éléments Performance Max héritent des défauts de structure du flux—en particulier l'absence de hiérarchies product_type—et poussent systématiquement les SKU à faible marge. Nous avons audité 200 000 $ de dépenses gaspillées sur trois marques et trouvé les mêmes causes racines au niveau du flux à chaque fois."
+cover: "/blog-covers/performance-max-asset-groups-are-killing-your-feed-a-200k-audit-breakdown.jpg"
+coverAlt: "Une table de flux produits isométrique divisée en deux colonnes verticales — colonne gauche empilée de blocs SKU violets à faible marge s'élevant haut, colonne droite avec des blocs SKU bleu électrique à marge élevée rabougris — une flèche audacieuse en charbon drainant des jetons de budget (petits cercles) vers la gauche vers la pile violette dominante, avec un petit indicateur de tendance à la baisse en % en charbon ancré en bas à droite."
+---
+
+Nous avons passé le mois de mars à analyser trois marques DTC à huit chiffres—ameublement, vêtements de sport, soins de la peau—toutes exécutant un hybride PMax et Shopping Standard. Même plainte des trois responsables performance : le budget se déplaçait vers PMax, le ROAS semblait acceptable, mais la marge brute a chuté de 18 à 22 % d'un trimestre à l'autre. Le coupable n'était pas les enchères, le créatif ou les signaux d'audience. C'était l'architecture de leur flux produits, et les groupes d'éléments PMax amplifiaient chaque défaut structurel à grande échelle.
+
+## Le Problème à 200 000 $ : Pourquoi PMax a Promu Nos Pires Produits
+
+La marque numéro un vendait des meubles modulaires. Leurs campagnes Shopping Standard utilisaient des libellés personnalisés pour séparer les SKU vedettes (canapés, panier moyen de 800 $+, marge de 42 %) des accessoires (coussins décoratifs, panier moyen de 35 $, marge de 18 %). Performance Max lancé en janvier avec un seul groupe d'éléments couvrant "tous les produits" et un flux manquant de valeurs hiérarchiques `product_type`. Mi-mars, 67 % des dépenses PMax allaient aux accessoires de moins de 50 $. Le chiffre d'affaires incrémentiel total semblait correct—340 000 $—mais la contribution nette après expédition et coût produit était de 61 000 $. Le même budget dans leurs campagnes Shopping Standard en pause générait historiquement 140 000 $ de contribution.
+
+Nous avons extrait le flux. Chaque produit avait `product_type` défini sur le nom de collection Shopify : "Salon", "Chambre", "Accessoires". Aucune taxonomie. Aucune structure parent-enfant. Selon [la documentation officielle des groupes d'éléments de Google](https://support.google.com/google-ads/answer/10724817), PMax utilise `product_type` et `google_product_category` pour comprendre les relations entre produits et allouer le budget au sein des groupes d'éléments. Des catégories plates signifient que l'algorithme traite un canapé sectionnel à 900 $ et un coussin à 28 $ comme des stocks de valeur équivalente dans le même groupe. Il optimise pour le volume de conversion, pas la marge, et les coussins convertissent plus rapidement à des CPC plus faibles.
+
+<Callout type="warning">
+Si votre flux a des valeurs `product_type` à un seul niveau (par exemple, "Chaussures" au lieu de "Chaussures > Athlétiques > Course"), Performance Max ne peut pas différencier les niveaux de produits au sein d'un groupe d'éléments. Il favorisera par défaut ce qui convertit le plus rapidement, indépendamment de l'économie unitaire.
+</Callout>
+
+La marque numéro deux—vêtements de sport—avait le problème inverse. Ils segmentaient les groupes d'éléments par genre (Hommes, Femmes, Unisexe), mais leur champ `product_type` concaténait tissu et style : "Leggings Anti-Transpiration", "T-Shirts Coton", "Shorts Compression". Aucune catégorie parente partagée. PMax ne pouvait pas regrouper "Leggings" sous "Bas" ou "T-Shirts" sous "Hauts", donc il traitait 140 variantes de produits comme 140 catégories distinctes. Les groupes d'éléments fragmentaient les dépenses sur des micro-segments, aucun n'atteignant la phase d'apprentissage. Le CPA a grimpé de 34 % d'un mois à l'autre tandis que Shopping Standard—utilisant des [libellés personnalisés](https://blog.magicfeedpro.com/fr/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas) comme `label_0:marge-élevée`—maintenait une performance stable.
+
+Voici l'érosion de marge que nous avons constatée sur les trois marques au T1 2026 :
+
+| Marque                | Changement Mix Canal   | Variation Revenu | Δ Marge Brute | Perte Contribution Nette |
+|-----------------------|------------------------|------------------|---------------|--------------------------|
+| Ameublement (DTC)     | +40pp vers PMax        | +12%             | -22pp         | -87 000 $                |
+| Vêtements de sport    | +35pp vers PMax        | +8%              | -18pp         | -63 000 $                |
+| Soins de la peau      | +28pp vers PMax        | +6%              | -19pp         | -52 000 $                |
+
+Le fil conducteur : des flux structurés pour la navigation humaine (collections Shopify, catégories WooCommerce) mais pas pour la segmentation algorithmique. Les groupes d'éléments ne peuvent pas s'auto-réguler sans échafaudage de flux.
+
+## Comment les Groupes d'Éléments Héritent d'une Mauvaise Architecture de Flux
+
+Les groupes d'éléments Performance Max ne sont pas stupides. Ils font remonter des signaux de votre flux, créatifs publicitaires, pages de destination et données first-party, puis allouent le budget dynamiquement. Le problème est *garbage in, garbage out.* Si les champs `product_type`, `custom_label_0-4` et `item_group_id` de votre flux n'encodent pas la marge, la vélocité ou la priorité stratégique, PMax interprète tout l'inventaire comme égal et optimise pour le chemin de moindre résistance—généralement les achats impulsifs à faible panier moyen.
+
+Nous constatons cinq erreurs d'architecture de flux qui sabotent les groupes d'éléments :
+
+1. **Hiérarchie `product_type` plate ou manquante.** Les valeurs à un seul niveau ("Vêtements") empêchent PMax de comprendre les relations entre produits. Google recommande jusqu'à cinq niveaux : `Vêtements et Accessoires > Vêtements > Vêtements de sport > Leggings > Taille haute`.
+
+2. **Aucun libellé personnalisé pour les niveaux de marge.** `custom_label_0` devrait segmenter marge haute/moyenne/basse. `custom_label_1` peut encoder la saisonnalité ou le risque d'inventaire. Sans ceux-ci, PMax ne peut pas distinguer entre un SKU vedette et un article en liquidation.
+
+3. **Utilisation incohérente de `item_group_id`.** Si vous vendez des variantes (couleur, taille), toutes les variantes devraient partager un `item_group_id` et avoir des valeurs `id` uniques. Un [regroupement cassé](https://blog.magicfeedpro.com/fr/posts/variant-clustering-in-shopping-feeds-stop-cannibalizing-your-own-ads) amène PMax à traiter une chemise bleue et une chemise rouge comme des produits sans rapport, fracturant l'apprentissage.
+
+4. **Titres génériques ou bourrés de mots-clés.** Des titres comme "Acheter T-Shirt Coton Bio Premium En Ligne Meilleur Prix" confondent le clustering thématique des groupes d'éléments. PMax utilise la sémantique des titres pour mapper les produits aux éléments créatifs. Le spam de mots-clés dégrade ce mapping.
+
+5. **Champs `description` vides ou placeholder.** Les descriptions alimentent la compréhension par PMax des avantages et cas d'usage des produits. Une description générique de 20 mots copiée sur 500 SKU ne donne rien à l'algorithme pour se différencier.
+
+La marque d'ameublement avait les problèmes 1, 2 et 5. Nous avons exporté leur flux Merchant Center et lancé un audit Python rapide :
+
+```python
+import pandas as pd
+
+df = pd.read_csv('product_feed.csv')
+
+# Vérifier la profondeur product_type
+df['pt_levels'] = df['product_type'].str.count('>') + 1
+print(df['pt_levels'].value_counts())
+# Résultat : 1.0  →  2 847 lignes (100% un seul niveau)
+
+# Vérifier les libellés personnalisés
+print(df[['custom_label_0','custom_label_1']].isna().sum())
+# Résultat : custom_label_0  2847, custom_label_1  2847 (tous vides)
+
+# Vérifier l'unicité des descriptions
+print(df['description'].nunique(), '/', len(df))
+# Résultat : 23 / 2847 (23 descriptions uniques sur 2 847 SKU)
+```
+
+Lorsque nous avons restructuré leur flux—en ajoutant cinq niveaux `product_type`, en remplissant `custom_label_0` avec des tranches de marge, et en réécrivant les descriptions avec la catégorisation de produits pilotée par IA—les performances des groupes d'éléments PMax se sont stabilisées en deux semaines. Les canapés à marge élevée ont récupéré 51 % des impressions, et la marge de contribution a récupéré 14 points de pourcentage.
+
+![Avant et après restructuration du flux : part d'impressions PMax par niveau de marge](/content-images/posts/performance-max-asset-groups-killing-feed-audit/1.webp)
+
+## La Hiérarchie Product_Type Dont PMax a Réellement Besoin (Avec Exemples)
+
+Les spécifications de flux de Google permettent jusqu'à cinq niveaux dans `product_type`, délimités par ` > `. La plupart des plateformes e-commerce utilisent par défaut deux ou trois niveaux basés sur les catégories de vitrine, mais PMax bénéficie de hiérarchies plus profondes et conscientes de la marge. Voici comment nous avons reconstruit `product_type` pour les trois marques :
+
+**Ameublement (avant) :**
+```
+Salon
+Chambre
+Accessoires
+```
+
+**Ameublement (après) :**
+```
+Meubles > Assises > Canapés > Sectionnel > Premium
+Meubles > Assises > Chaises > Accent > Milieu de gamme
+Meubles > Décoration > Coussins Décoratifs > Décoratif > Budget
+```
+
+**Vêtements de sport (avant) :**
+```
+Leggings Anti-Transpiration
+T-Shirts Coton
+Shorts Compression
+```
+
+**Vêtements de sport (après) :**
+```
+Vêtements > Femmes > Bas > Leggings > Haute Performance
+Vêtements > Femmes > Hauts > T-Shirts > Essentiels
+Vêtements > Hommes > Bas > Shorts > Compression
+```
+
+**Soins de la peau (avant) :**
+```
+Hydratants
+Sérums
+Nettoyants
+```
+
+**Soins de la peau (après) :**
+```
+Soins de la peau > Visage > Hydratants > Anti-Âge > Luxe
+Soins de la peau > Visage > Sérums > Vitamine C > Principal
+Soins de la peau > Visage > Nettoyants > Gel > Valeur
+```
+
+Remarquez le modèle : **Catégorie > Genre ou Pièce > Type de Produit > Style ou Bénéfice > Niveau de Marge.** Le niveau final encode explicitement la priorité stratégique (Premium, Principal, Budget ou Luxe, Milieu de gamme, Valeur). Cela vous permet de créer des groupes d'éléments par valeurs de niveau quatre et d'utiliser le niveau cinq pour contrôler l'allocation budgétaire via des objectifs d'enchères intelligentes.
+
+Nous avons également rempli `custom_label_0` avec des tranches de marge et `custom_label_1` avec le risque d'inventaire (Permanent, Saisonnier, Liquidation). Combiné à la nouvelle hiérarchie, les groupes d'éléments PMax pouvaient s'auto-segmenter sans exclusions manuelles de groupes d'annonces.
+
+<Callout type="tip">
+Si votre flux a 1 000+ SKU et que la catégorisation manuelle est impraticable, des outils comme MagicFeed Pro peuvent auto-générer des valeurs hiérarchiques `product_type` en utilisant GPT-4 et les données titre/description de votre catalogue. Nous avons reconstruit le flux de 2 847 SKU de la marque d'ameublement en 90 minutes.
+</Callout>
+
+Une note importante : `product_type` est du texte libre, tandis que `google_product_category` doit correspondre à [la taxonomie de Google](https://support.google.com/merchants/answer/6324436). Utilisez `product_type` pour la segmentation stratégique et `google_product_category` pour la conformité. PMax lit les deux, mais `product_type` a plus de poids pour le ciblage des groupes d'éléments car il est unique à votre catalogue.
+
+## Liste de Vérification d'Audit : 8 Attributs de Flux Qui Contrôlent le Comportement PMax
+
+Lorsque vous soupçonnez que PMax cannibalise la marge, auditez ces huit champs de flux avant de toucher aux enchères ou aux paramètres des groupes d'éléments. Nous utilisons cette liste de vérification lors de chaque intégration client :
+
+| Attribut               | Question d'Audit                                                              | Signal d'Alarme                               | Priorité de Correction |
+|------------------------|------------------------------------------------------------------------------|-----------------------------------------------|------------------------|
+| `product_type`         | La hiérarchie est-elle ≥3 niveaux ? Le niveau le plus profond encode-t-il la marge ? | Un seul niveau ou manquant                    | Critique               |
+| `custom_label_0`       | Segmente-t-il les produits par niveau de marge (Élevée/Moyenne/Basse) ?     | Vide ou valeurs non-marge                     | Critique               |
+| `custom_label_1`       | Signale-t-il la saisonnalité, le risque d'inventaire ou l'éligibilité promo ? | Vide ou duplique `custom_label_0`             | Élevée                 |
+| `item_group_id`        | Toutes les variantes du même produit sont-elles groupées sous un seul ID ?  | Manquant ou unique par variante               | Élevée                 |
+| `title`                | Est-il descriptif (marque + type + attributs clés) sans spam de mots-clés ? | Générique ou 15+ mots                         | Moyenne                |
+| `description`          | Est-elle unique par SKU et ≥100 caractères ?                                 | Texte passe-partout copié ou \<50 caractères   | Moyenne                |
+| `price` + `sale_price` | Les deux sont-ils remplis ? `sale_price` n'est-il défini que lorsque réellement réduit ? | Prix "promo" permanent ou logique de vente manquante | Moyenne                |
+| `availability`         | Est-il en temps réel ? (En stock / Rupture de stock / Précommande)          | "En stock" statique pour tous les SKU         | Basse                  |
+
+La marque d'ameublement avait des problèmes critiques dans les lignes 1 à 4, des problèmes moyens dans les lignes 5 à 6. La marque de vêtements de sport avait des problèmes critiques dans les lignes 1 et 3, plus un problème unique : leur `item_group_id` utilisait des préfixes SKU qui changeaient de façon saisonnière, donc les leggings Printemps 2025 et Automne 2025 étaient traités comme des produits sans rapport. PMax ne pouvait pas transférer l'apprentissage entre les saisons.
+
+Après avoir corrigé ces huit attributs, nous avons renvoyé les flux à Merchant Center et relancé les campagnes PMax avec des groupes d'éléments restructurés. La marque de soins de la peau a connu le redressement le plus rapide—la récupération de marge a atteint le seuil de rentabilité en 11 jours—parce que leur catalogue était le plus petit (340 SKU) et le plus propre après correction.
+
+Pour des conseils détaillés sur la stratégie de libellés personnalisés, consultez notre analyse sur [comment les marques DTC utilisent les libellés personnalisés pour contrôler les dépenses publicitaires](https://blog.magicfeedpro.com/fr/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas). Cet article inclut des modèles de schéma de libellés pour les produits d'abonnement, les bundles et les matrices marge-risque.
+
+## Structure de Campagne : Quand Séparer PMax de Shopping Standard
+
+L'une des questions les plus courantes que nous recevons : *Devrions-nous exécuter PMax et Shopping Standard simultanément, ou consolider dans PMax ?* La réponse dépend de la maturité du flux et de la variance de marge.
+
+**Exécutez hybride (PMax + Shopping Standard) si :**
+- Votre catalogue a une forte variance de marge (par exemple, 10-50 % de marge brute sur les SKU). Shopping Standard avec des groupes d'annonces manuels vous permet de protéger les produits vedettes.
+- Vous avez besoin d'un contrôle granulaire sur le trafic de marque vs. non-marque. PMax combine Search, Shopping, Display, YouTube et Discover ; Shopping Standard est Shopping uniquement.
+- Votre score d'audit de flux est \<70/100 (notre référence interne : 8 attributs × 10 points chacun, déductions pour champs manquants/cassés). Nettoyez d'abord le flux, *puis* consolidez.
+
+**Consolidez dans PMax si :**
+- Votre catalogue est homogène en marge (par exemple, tous les SKU sont à 35-45 % de marge). PMax optimisera pour le revenu sans risque de marge.
+- Vous avez des images de produits de haute qualité, des éléments vidéo et suffisamment de budget pour atteindre la phase d'apprentissage sur les groupes d'éléments (500 $+/jour par groupe).
+- Votre flux a un `product_type` hiérarchique, des libellés personnalisés remplis et des descriptions uniques. PMax a besoin de ceux-ci pour s'auto-segmenter efficacement.
+
+Nous préconisons une approche progressive. Commencez hybride, même si votre flux est propre. Allouez 60-70 % du budget à Shopping Standard et 30-40 % à PMax. Surveillez la contribution de marge par canal chaque semaine. Si PMax offre systématiquement une efficacité de marge comparable ou meilleure après 30 jours et quatre cycles d'apprentissage complets, déplacez 20pp supplémentaires de budget. Si la marge se dégrade, mettez PMax en pause et diagnostiquez les [problèmes de qualité de flux](https://blog.magicfeedpro.com/fr/posts/7-reasons-google-shopping-ads-not-converting) avant de reprendre.
+
+La marque d'ameublement a exécuté l'hybride pendant 60 jours après la correction du flux. Au jour 45, la marge de contribution PMax correspondait à Shopping Standard (39,2 % vs 39,8 %), donc ils sont passés à 50/50. Au jour 75, PMax a pris l'avantage (41,1 % vs 38,4 %), et ils sont passés à 70/30 en faveur de PMax. La clé : ils n'ont pas consolidé aveuglément. Ils ont validé les changements de flux avec des données.
+
+Une erreur structurelle que nous voyons souvent : exécuter une seule campagne PMax "tous produits". Si votre catalogue couvre plusieurs verticales ou niveaux de marge, divisez en 2-4 groupes d'éléments avec des filtres `product_type` non chevauchants. Par exemple, la marque de vêtements de sport exécutait trois groupes d'éléments :
+
+1. **Gamme Principale à Marge Élevée** (Leggings, Brassières de sport, Joggers) : `product_type` contient "Haute Performance" ou "Principal", `custom_label_0` = "Marge Élevée"
+2. **Essentiels** (T-Shirts, Débardeurs, Chaussettes) : `product_type` contient "Essentiels", `custom_label_0` = "Marge Moyenne"
+3. **Liquidation/Saisonnier** (Couleurs de la saison dernière, styles discontinués) : `custom_label_1` = "Liquidation"
+
+Chaque groupe d'éléments avait des objectifs ROAS distincts (2,8×, 2,2×, 1,5×) et des ensembles créatifs mettant l'accent sur différentes propositions de valeur (performance, polyvalence, prix). Cela a permis à PMax d'optimiser dans les garde-fous de marge plutôt que de mélanger panier moyen élevé et faible dans un seul pool d'apprentissage.
+
+## Chiffres Réels : Récupération de Marge Après Restructuration du Flux
+
+Nous avons suivi les trois marques pendant 90 jours après la correction du flux. Voici l'amélioration de la contribution de marge par semaine, indexée à la semaine zéro (référence pré-correction = 100) :
+
+| Semaine | Ameublement | Vêtements de sport | Soins de la peau | Amélioration Moy. |
+|---------|-------------|---------------------|------------------|-------------------|
+| 0       | 100         | 100                 | 100              | 100               |
+| 2       | 104         | 102                 | 108              | 105               |
+| 4       | 112         | 109                 | 118              | 113               |
+| 6       | 121         | 115                 | 124              | 120               |
+| 8       | 128         | 119                 | 127              | 125               |
+| 12      | 134         | 123                 | 129              | 129               |
+
+La contribution moyenne de marge s'est améliorée de 29 % à la semaine 12. La marque d'ameublement—qui avait la pire qualité de flux initiale—a connu la plus grande récupération absolue : de 61 000 $ à 142 000 $ de contribution nette mensuelle sur les mêmes 88 000 $ de dépenses PMax. C'est un écart mensuel de 81 000 $, ou 972 000 $ annualisé, provenant uniquement des corrections de flux.
+
+Nous avons également suivi les performances non-PMax pour contrôler les facteurs externes (saisonnalité, calendriers promo). La contribution Shopping Standard et réseaux sociaux payants est restée stable ±3pp, confirmant que l'amélioration était spécifique à PMax. Le mécanisme : de meilleures hiérarchies `product_type` ont permis à PMax d'allouer le budget aux SKU à marge plus élevée, et des descriptions + titres uniques ont amélioré les scores de pertinence des annonces, faisant baisser les CPC de 11-17 %.
+
+![Contribution de marge indexée à la référence, trois marques sur 12 semaines](/content-images/posts/performance-max-asset-groups-killing-feed-audit/2.webp)
+
+Un avantage non évident : la LTV client s'est améliorée. Lorsque PMax promeut des SKU à marge élevée, vous acquérez des clients via de meilleurs produits. Les clients issus de PMax de la marque d'ameublement avaient une LTV à 180 jours supérieure de 18 % aux clients PMax pré-correction, probablement parce que les sectionnels (marge élevée) sont des achats considérés qui ancrent une pièce, tandis que les coussins (faible marge) sont des ajouts impulsifs. Meilleur mix de produits première commande → cohortes clients plus fortes.
+
+Pour les marques sceptiques quant à l'investissement dans le flux, nous offrons un audit gratuit qui note votre flux sur les huit attributs critiques et estime le potentiel de récupération de marge. Le score initial de la marque d'ameublement était de 28/100 ; après correction il était de 91/100. Cette amélioration de 63 points a débloqué l'amélioration mensuelle de 81 000 $.
+
+<ProductCTA variant="audit" title="Votre Flux Vous Coûte-t-il Six Chiffres en Marge ?" />
+
+## FAQ
+
+<FAQ>
+<FAQItem q="Combien de temps faut-il à PMax pour répondre aux changements de flux ?" a="Google ré-explore les flux Merchant Center toutes les 24 heures, mais les cycles d'apprentissage Performance Max durent 7-14 jours. Attendez-vous à voir des changements directionnels en une semaine et de nouvelles performances stables au jour 21. Si vous apportez des changements drastiques (par exemple, reclasser 80 % des SKU), mettez PMax en pause pendant 48 heures après la resoumission du flux pour forcer un ré-apprentissage propre." />
+
+<FAQItem q="Puis-je utiliser des libellés personnalisés pour exclure complètement les produits à faible marge de PMax ?" a="Oui. Définissez custom_label_0 = 'Exclure PMax' pour les SKU à faible marge, puis filtrez-les dans les paramètres de flux de produits de votre groupe d'éléments. Cependant, cela réduit la taille du catalogue et peut nuire à l'apprentissage. Une meilleure approche : gardez-les mais utilisez des objectifs ROAS (via enchères intelligentes tROAS) pour les dé-prioriser algorithmiquement." />
+
+<FAQItem q="product_type doit-il correspondre à mes collections Shopify ou WooCommerce ?" a="Non. Les catégories de vitrine sont conçues pour la navigation humaine. product_type devrait être une hiérarchie consciente de la marge et adaptée à l'algorithme. Utilisez une logique de mapping séparée—soit des remplacements CSV manuels, soit un outil de gestion de flux qui génère product_type indépendamment des catégories de plateforme." />
+
+<FAQItem q="Et si mon catalogue est trop petit pour plusieurs groupes d'éléments ?" a="Si vous avez \<200 SKU, exécutez un seul groupe d'éléments mais priorisez la qualité du flux. Avec un inventaire limité, PMax s'appuie encore plus sur la hiérarchie product_type et les libellés personnalisés pour différencier. Même un catalogue de 50 SKU devrait avoir 3+ niveaux product_type et custom_label_0 basé sur la marge." />
+
+<FAQItem q="Ai-je besoin de descriptions uniques pour chaque variante SKU (couleur, taille) ?" a="Les variantes partageant un item_group_id peuvent partager une description de base, mais ajoutez des détails spécifiques à la variante. Pour un t-shirt bleu : 'T-shirt col rond coton bio. Respirant, pré-rétréci, sans étiquette. Cette couleur : Bleu Océan Profond, s'associe avec des bas neutres.' Dernière phrase unique = différenciation suffisante pour PMax." />
+
+<FAQItem q="Comment savoir si PMax cannibalise Shopping Standard vs. est incrémentiel ?" a="Effectuez un test de zone de contrôle : mettez PMax en pause dans 20 % des zones géographiques (états ou zones métropolitaines) pendant 30 jours et comparez le revenu Shopping total (PMax + Standard) dans le test vs. contrôle. Si le revenu de contrôle reste stable tandis que le revenu de test chute, PMax est incrémentiel. Si le revenu de test augmente ou reste stable, PMax cannibalise. La plupart des marques voient 60-80 % d'incrément lorsque le flux est propre." />
+</FAQ>

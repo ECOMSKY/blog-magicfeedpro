@@ -1,0 +1,133 @@
+---
+slug: "pmax-feed-segmentatie-welke-producten-verdienen-aparte-asset-groups"
+title: "PMax Feed Segmentatie: Welke Producten Verdienen Aparte Asset Groups"
+description: "Shopify Performance Max feed segmentatie op marge, snelheid en retourpercentage—niet op gevoel—stopt budgetverspilling. Controleer uw asset groups in onder 30 minuten."
+keywords:
+ - shopify performance max feed segmentatie
+ - pmax asset group product segmentatie shopify
+ - performance max campagnestructuur shopify
+ - shopify pmax productgroep split
+ - google shopping pmax feed controle
+ - performance max listing groups shopify
+ - shopify pmax budgettoewijzing per product
+ - pmax vs standard shopping shopify feed
+date: "2026-05-18"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - performance-max
+ - shopify
+ - feed-segmentation
+ - asset-groups
+ - pmax-structure
+readingMinutes: 9
+featured: false
+locale: "nl"
+translationKey: "shopify-pmax-feed-segmentation"
+noindex: false
+comments: false
+cover: "/blog-covers/shopify-pmax-feed-segmentation-which-products-deserve-their-own-asset-group.jpg"
+coverAlt: "Een productcatalogusraster van isometrische tegels splitst zich in afzonderlijke clusters — een grote elektrisch blauwe groep high-margin SKU's vertakkend naar links via vetgedrukte pijlen, een klein antracietcluster van langzaam bewegende artikelen vertakkend naar rechts naar een ✗, met een violet budgetstroomstaafdiagram steil stijgend boven het blauwe cluster."
+---
+
+Shopify Performance Max feed segmentatie is de enige structurele beslissing die bepaalt of Google's automation uw beste SKU's versterkt of stilletjes budget verspilt aan dode voorraad. Bij accounts met hoog uitgavenniveau die $30k–$150k/maand aan PMax spenderen, is het patroon consistent: handelaren die segmenteren op feed signalen — margetier, snelheid, AOV, retourpercentage — herstellen gemiddeld 15–22% van verspilde uitgaven binnen 60 dagen. Degenen die één catch-all-campagne aanhouden geven Google's algoritme een tegenstrijdig signaalmengselversturen en vragen zich af waarom ROAS stagneert.
+
+## Waarom Één PMax-Campagne voor Uw Gehele Shopify-Catalogus Budgetverspilling Is
+
+Een enkele PMax-campagne met één asset group en "Alle Producten" in de listing group is de meest voorkomende structuur die we auditeren bij $30k+/maand uitgaven — en het is bijna altijd de worteloorzaak van onregelmatige ROAS. Google's PMax-algoritme wijst budget eerst toe aan asset groups, vervolgens aan afzonderlijke producten binnen een groep. Wanneer 12.000 SKU's één budgetpool delen, stelt het algoritme zich standaard in op optimalisering voor het pad van de minste weerstand: producten met hoog klikvolume die niet noodzakelijk uw hoogste margeproducten zijn.
+
+Het praktische gevolg is bruut. Een $4,99 accessoire met 12% marge kan indrukshare uit een $249 heroïsch product met 58% marge opeten, simpelweg omdat het meer historische klikgegevens heeft. Volgens [Google's officiële Performance Max-documentatie](https://support.google.com/google-ads/answer/10724817) functioneren asset groups als de primaire budgettoewijzingseenheid, niet afzonderlijke producten. Die architecturale realiteit betekent dat uw segmentatielogica op asset-group-niveau de enige hefboom is die u volledig kunt controleren.
+
+We hebben Shopify-winkels gezien die 28% van hun effectieve ROAS verloren aan deze exact dezelfde dynamiek. Een fashion DTC-bedrijf dat $80k/maand uitgaf, had 9.400 SKU's in één campagne. Hun top 40 margineproducten — gemiddeld $310 AOV en 61% brutowinst — ontvingen slechts 6% van totale indrukken. De uitverkoopartikelen onderin de catalogus met $19 prijspunten verbruikten 44% van de uitgaven. De oplossing was geen biedingsaanpassing. Het was een herstructurering van feed segmentatie.
+
+## De 4 Feed-Signalen Die Uw Asset Group Splits Moeten Bepalen
+
+De best presterende PMax-structuren die we hebben meegemaakt, gebruiken exact vier feed-afgeleide signalen om segmentgrenzen te definiëren: brutowinst-tier, snelheid op 90 dagen, gemiddelde orderwaarde-band en retourpercentage van de afgelopen 30 dagen. Deze vier signalen kunnen direct in `custom_label_0` tot en met `custom_label_3` in uw Shopify-productfeed worden gecodeerd, waardoor Google's algoritme harde grenzen krijgt om mee te werken.
+
+**Brutowinst-tier** is het belangrijkste signaal en het meest ontbrekende signaal in Shopify-feeds. De meeste winkels exporteren kostprijs van goederen (COGS) van hun inventarisseersysteem maar wijzen deze nooit aan een feed-attribuut toe. Zonder een margenlabel kan Google geen product met 70%-marge onderscheiden van een product met 10%-marge — ze zien er identiek uit op feed-niveau. We raden drie tiers aan: `margin-high` (>50%), `margin-mid` (25–50%) en `margin-low` (\<25%).
+
+**90-daagse snelheid** scheidt uw bewezen vraagtsignalen van ongebruikte voorraad. Producten met minder dan 50 klikken in 90 dagen hebben onvoldoende gegevens voor PMax's conversiemodellering; het samenvoegen ervan met high-velocity SKU's dwingt het algoritme om af te ronden. **Retourpercentage** is degene die ondergewaardeerd is. Een product met een retourpercentage van 35% en een sterk ROAS-getal vernietigde daadwerkelijk bijdragemarge — maar PMax ziet alleen de conversie, niet de omkering. Door het retourpercentage als aangepast label te coderen, kunt u een dedicated low-spend- of exclude-segment maken voor chronische retourbellers.
+
+Met behulp van MagicFeed Pro's custom label builder kunt u de toewijzing van alle vier labels automatiseren vanuit een enkele regelconfiguratie, waarbij COGS, ordergegevens en retourgegevens van uw Shopify-winkel worden opgehaald zonder een handmatige exportcyclus.
+
+| Signaal | Feed-attribuut | Voorbeeldwaarden | Asset Group-actie |
+|---|---|---|---|
+| Brutowinst | custom_label_0 | margin-high, margin-mid, margin-low | Gescheiden campagnes per tier |
+| 90-daagse snelheid | custom_label_1 | fast-mover, slow-mover, new-sku | Nieuwe SKU's isoleren, snelle movers beschermen |
+| AOV-band | custom_label_2 | aov-high, aov-mid, aov-low | Biedingsstrategie afstemmen op AOV |
+| Retourpercentage | custom_label_3 | return-low, return-high | Return-high onderdrukken of uitsluiten |
+
+<Callout type="warning">
+Gebruik nooit alleen producttype of Google-productcategorie als uw segmentatieaxis voor PMax. Categorieën vertellen Google wat het product *is*, niet wat het *waard* is voor uw bedrijf. Een $9 telefoonhoesje en een $90 telefoonhoesje kunnen dezelfde categorie — en dezelfde asset group — delen zonder een feed-level signaal om budgettoewijzing te differentiëren.
+</Callout>
+
+## Stap voor Stap: Shopify-Productgegevens Exporteren om een Segmentatiematrix Uit Te Bouwen
+
+Voordat u een enkele campagne herstructureert, hebt u een segmentatieMatrix nodig: een spreadsheet die elke SKU aan zijn vier signaalwaarden toewijst. Het bouwen ervan vanuit Shopify duurt de eerste keer ongeveer 90 minuten, en minder dan 20 minuten bij vernieuwing zodra u de exportsjabloon hebt geconfigureerd.
+
+Begin met een bulk-productexport van Shopify Admin → Products → Export (CSV, alle producten). Dit geeft u `Variant SKU`, `Variant Price` en `Variant Cost` (als u COGS hebt ingevoerd — zo niet, deze kolom zal leeg zijn en dat is uw eerste probleem om op te lossen). Volgens [Shopify's eigen documentatie over Google-integratie](https://help.shopify.com/en/manual/promoting-marketing/google) stromen variantkosten direct naar Google kanaal-app's supplementale feed-mogelijkheid.
+
+Haal vervolgens uw 90-daagse orderexport op uit Analytics → Reports → Sales by product. Voeg deze samen op SKU met behulp van een VLOOKUP of een eenvoudige Python merge. Voeg een retourkolom toe van uw 3PL of Shopify retourportaal — dit is de meest pijnlijke gegevensextractie voor winkels zonder een dedicated BI-tool, maar het is niet onderhandelbaar voor het retourlabel. Nadat u deze hebt samengevoegd, past u uw drempel logica toe: markeer de marge-tier, snelheidstier, AOV-band en returntier van elke SKU.
+
+De uitvoer is een vier-koloms aanvullende feed. Upload deze naar Google Merchant Center als aanvullende gegevensbron, of gebruik MagicFeed Pro's Shopify-integratie om de labels automatisch op basis van een dagelijks schema te synchroniseren, zodat uw segmentatie actueel blijft terwijl voorraad draait en retourpercentages verschuiven.
+
+<Callout type="tip">
+Als uw COGS-gegevens in Shopify onvolledig zijn — gebruikelijk na catalogusmigraties of leverancierswisselingen — gebruik uw mediane categoriewinstmarge als conservatieve proxy voor `custom_label_0` totdat u werkelijke waarden kunt invullen. Een ruw margenlabel is aanzienlijk beter dan geen margenlabel voor PMax asset group-controle.
+</Callout>
+
+## Listing Group-Logica vs. Asset Group-Logica — Wat de Meeste Gidsen Verkeerd Doen
+
+De meeste PMax-gidsen behandelen "listing groups" en "asset groups" als uitwisselbare termen. Ze zijn dit niet, en de verwarring kost Shopify-handelaren echt geld. Een asset group is de creatieve en publiekscontainer — het bevat uw koppen, afbeeldingen, publieksignalen en een budgettoewijzingscontext. Een listing group is het productfilter *binnen* een asset group dat bepaalt welke producten uit uw feed geschikt zijn om uit te voeren.
+
+U kunt een goed gestructureerde asset group met de juiste creatieve voor high-AOV-producten hebben, maar een listing group die per ongeluk low-margin SKU's bevat omdat de filterlogica niet strak genoeg was. De creatieve en publieksignaalpodding van de asset group wordt dan verspild aan de verkeerde producten. Omgekeerd kunt u een perfect gesegmenteerde listing group hebben, maar generieke catch-all-creatieve die niet overeenkomen met de intente van de productTier. 
+
+De juiste architectuur stapelt beide lagen. Voor een high-margin asset group: de listing group filters naar `custom_label_0 = margin-high`, EN de asset group bevat creatieve activa — koppen, beschrijvingen, afbeeldingen — speciaal geschreven voor premium koopbeslissingen. Voor een nieuwe-SKU-incubatie-groep: listing group filters naar `custom_label_1 = new-sku`, asset group gebruikt bredere publieksignalen en een Target CPA-biedingsstrategie om gegevens te verzamelen zonder marge te verbranden.
+
+Dit is ook waar MagicFeed Pro's AI feed-herschrijving samengestelde waarde creëert — wanneer uw titel- en beschrijvingskwaliteit aansluit bij de asset group-doelstelling, verbeteren PMax's ad relevance score en stijgt uw in aanmerking komende indrukshare. Feed-kwaliteit en campagnestructuur zijn niet gescheiden workflows; ze versterken elkaar.
+
+## Een Echt Account: Hoe een 12.000-SKU Shopify-Winkel Van 1 naar 9 Asset Groups Ging
+
+Een Britse home goods Shopify-winkel (£2,1M jaarlijkse inkomsten, £65k/maand PMax-uitgaven) kwam naar ons in Q3 2025 met één PMax-campagne, één asset group en een ROAS van 4,1x — wat goed leek totdat we marginbijdrage onderzochten. Hun effectieve marge-gecorrigeerde ROAS was 1,8x omdat low-margin uitverkoopartikelen 51% van de uitgaven verbruikten.
+
+We bouwden hun structuur in drie weken om naar 9 asset groups, met behulp van het viersignaal-raamwerk hierboven. De groepen waren: (1) Margin-High / Fast-Mover heroïsche producten, (2) Margin-High / Slow-Mover voor high-value items die vraagopwekking nodig hebben, (3) Margin-Mid / Fast-Mover kernbereik, (4) Margin-Mid / Slow-Mover, (5) Nieuwe SKU incubatie, (6) Seizoens- / promotionele items, (7) Low-margin vloeiing — capped budget, alleen target CPA, (8) High-return-rate quarantaine — minimale uitgaven, (9) Brand search exclusion catch-all.
+
+De resultaten na 60 dagen: gerapporteerde ROAS steeg van 4,1x naar 5,6x. Nog belangrijker: marge-gecorrigeerde ROAS steeg van 1,8x naar 3,9x — een verbetering van 117% in werkelijke winstgevendheid. De heroïsche productgroep (Groep 1, ~340 SKU's) steeg van 8% indrukshare naar 31%. Uitverkoopartikelen daalden van 51% uitgaven naar 14%.
+
+De belangrijkste factor was schone feed-gegevens. Vóór de herstructurering voerden we een volledige feed-attribuutaudit uit en ontdekten we dat 23% van SKU's COGS-gegevens misten, 41% niet-beschrijvende titels had die Quality Scores onderdrukte, en 1.200 producten hadden GTIN's die in Merchant Center als niet-gelijktijdig waren gemarkeerd. Het eerst repareren van de feed maakte de segmentatie werk; segmentatie zonder schone gegevens is gewoon slechte signalen opnieuw rangschikken.
+
+## Feed-Attribuutvereisten Zodat Elk Segment Daadwerkelijk in PMax Werkt
+
+Een segmentatiestrategiehoudt alleen als de onderliggende feed-kenmerken volledig en nauwkeurig zijn. Elk van de negen bovengenoemde segmenttypes heeft een ander attribuutprioriteit, en hiaten in specifieke velden zullen ertoe leiden dat producten uit in aanmerking komende segmenten vallen of met verminderde kwaliteit serveren.
+
+Voor **high-margin hero-segmenten** zijn de niet onderhandelbare attributen: nauwkeurige `price` en `sale_price` (niet-overeenkomsten veroorzaken afkeuringen), juiste `GTIN` of `MPN` (ontbrekende GTIN's verminderen veilinggeschiktheid volgens Google's productgegevensspecificatie), en geoptimaliseerde `title` met merk + producttype + belangrijke specificatie in de eerste 70 tekens. Een zwakke titel in een hero-segment is geld dat op tafel wordt achtergelaten — de titel is het primaire relevantiesignaal voor Shopping-zoekopdrachten.
+
+Voor **new-SKU incubatie-segmenten** is het meest kritieke attribuut `product_type` — zonder een goed gestructureerde producttype taxonomie, Google's algoritme heeft geen categorisch signaal om initiële indrukktargeting in te zetten. Volgens Search Engine Land's coverage van PMax best practices, producten zonder een gedefinieerd producttype nemen 3–5x langer om de "learning" fase te verlaten, waardoor incubatiebudget wordt verbruikt zonder bruikbare conversiegegevens op te wekken.
+
+Voor **high-return-rate quarantaine-segmenten** controleert u uw `description` en `title` op nauwkeurigheidsleemten — misleidende titels en beschrijvingen zijn de #1 drijver van preventieve retouren, vooral in kleding en elektronica. Producten die tegen meer dan 25% terugkeren hebben bijna altijd een upstream feed-nauwkeurigheid probleem. Het repareren van feed-gegevens, niet alleen het in quarantaine plaatsen van producten, is de duurzame oplossing.
+
+De volledige attribuutcontrolelijst voor elk segmenttype stemt nauw af op wat een gestructureerde feed-audit aan het licht brengt. Als u er onlangs geen hebt uitgevoerd, helpt de controlelijst raamwerk op MagicFeed Pro's feed attribuut audit gids u door elk vereist en aanbevolen attribuut op categorie en segmenttype.
+
+<ProductCTA variant="audit" title="Ontvang een Gratis Feed Segmentatie Audit voor Uw Shopify PMax-Campagne" />
+
+<FAQ>
+ <FAQItem
+ q="Hoeveel asset groups moet een Shopify PMax-campagne hebben?"
+ a="Er is geen universeel getal, maar gegevens van mid-to-large Shopify-accounts ($30k+/maand) laten consistent zien dat 5–9 asset groups beter presteren dan 1–3. Het juiste getal wordt bepaald door hoeveel verschillende margintiers, snelheid buckets en AOV-bands uw catalogus heeft — niet op basis van SKU-telling. Een 500-SKU-winkel kan 7 groepen nodig hebben; een 20.000-SKU-winkel kan op 6 draaien als de segmenten schoon zijn."
+ />
+ <FAQItem
+ q="Kan ik aangepaste labels voor PMax listing groups in Shopify gebruiken?"
+ a="Ja. Aangepaste labels (custom_label_0 tot en met custom_label_4) worden volledig ondersteund in Google Shopping feeds die via Shopify via de Google kanaalapp of een feed-tool van derden zijn verbonden. U wijst waarden toe in uw aanvullende feed, en zij verschijnen als filterbare attributen in de listing group builder in Google Ads. Ze hebben geen invloed op organische productlijsten of Shopify's eigen collecties."
+ />
+ <FAQItem
+ q="Hoe lang duurt het voordat Performance Max leert na een herstructurering?"
+ a="Google's officiële richtlijnen stellen dat PMax-campagnes minimaal 6 weken nodig hebben om de leerfase na een significante structurele wijziging af te sluiten. In de praktijk hebben accounts met schone feed-gegevens en sterke conversiegeschiedenis de neiging zich in 3–4 weken te stabiliseren. Vermijd het aanbrengen van wijzigingen in biedingsstrategie gedurende de eerste 21 dagen na een herstructurering — gestapelde wijzigingen verlengen de leerperiode en maken het onmogelijk om te isoleren wat prestatieverschuivingen heeft veroorzaakt."
+ />
+ <FAQItem
+ q="Wat is het verschil tussen PMax listing groups en productgroepen in Standard Shopping?"
+ a="In Standard Shopping zijn productgroepen het primaire budget- en biedingsbeheersmechanisme — u wijst CPC's op het productgroepniveau toe. In PMax zijn listing groups zuiver een filter voor welke producten geschikt zijn om binnen een asset group te serveren; de werkelijke budgettoewijzing wordt gecontroleerd door de biedingsstrategie van de campagne en de asset group structuur. Dit is waarom segmentatielogica die in Standard Shopping werkte niet direct naar PMax kan worden overgedragen zonder opnieuw na te denken rond asset groups."
+ />
+ <FAQItem
+ q="Moet ik low-margin producten volledig uit PMax uitsluiten of alleen hun budget begrenzen?"
+ a="Low-margin producten volledig uitsluiten is zelden de juiste keus, tenzij hun retourpercentage of marge na retouren negatief is. Een betere benadering is deze in een dedicated asset group met een conservatieve Target CPA of Target ROAS die hun werkelijke margebijdrage weerspiegelt. Dit houdt hen geschikt voor indrukshare tijdens hoogtijdagen met hoge vraag (verkoop, seizoenspikes) zonder budget van hero-segmenten in te pikken."
+ />
+</FAQ>

@@ -1,0 +1,242 @@
+---
+slug: "multi-currency-feed-ops-google-shopping-schalen-naar-12-markten"
+title: "Multi-Currency Feed Ops: Google Shopping schalen naar 12+ markten"
+description: "Technisch handboek voor het beheren van gelokaliseerde Google Shopping feeds op schaal—timing van valutaconversie, regionale titelvariaties en het vermijden van beleidsovertredingen over GEO's heen."
+keywords:
+  - google shopping feeds meerdere landen
+  - internationaal shopping feed management
+  - google shopping meerdere valuta's
+  - gelokaliseerde productfeeds
+  - shopping feed lokalisatie
+  - multi markt shopping campagnes
+  - internationale feed optimalisatie
+  - shopping feed vertaalstrategie
+date: "2026-05-12"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+  - international-feeds
+  - multi-currency
+  - localization
+  - merchant-center
+  - feed-strategy
+readingMinutes: 11
+featured: false
+locale: "nl"
+translationKey: "multi-currency-feed-ops-scaling-google-shopping"
+cover: ""
+coverAlt: ""
+noindex: false
+comments: false
+
+---
+
+Toen een middelgroot kledingmerk dat we vorig kwartaal adviseerden hun Amerikaanse feed in één vrijdag naar negen nieuwe markten uitrolde, verbrandden ze $ 18.000 aan advertentie-uitgaven tijdens het weekend voordat iemand merkte dat hun Australische feed prijzen in USD vermeldde, hun Britse titels nog steeds "sneakers" zeiden in plaats van "trainers," en hun Duitse producten zonder GTIN onmiddellijk werden afgekeurd. Het Slack-bericht van de CMO maandagochtend: "Waarom is onze ROAS in Europa 0,4x terwijl de VS op 3,2x zit?"
+
+Multi-markt Google Shopping is geen lokalisatieproject—het is een operationele discipline die prijsinfrastructuur, contentstrategie en compliance-architectuur raakt. De meeste teams behandelen het als een vertaaltaak en leren op de harde manier dat kopiëren-plakken-expansie marge op tafel laat liggen en beleidsschorsingen uitnodigt die je 30+ dagen uit hele regio's kunnen sluiten.
+
+## De verborgen kosten van kopiëren-plakken feed-expansie
+
+Het patroon herhaalt zich: een merk haalt $ 2 miljoen/jaar omzet in hun thuismarkt, leidinggevenden geven groen licht voor internationale expansie, en het performance-team dupliceert de primaire feed, verwisselt valutatekens en noemt het klaar. Drie weken later liggen conversieratio's in nieuwe GEO's 40-60% onder de oorspronkelijke markt, en niemand kan verklaren waarom de productdetailpagina's wel verkeer krijgen maar nul toevoegingen aan winkelwagen.
+
+We analyseerden 47 Shopify Plus-winkels met multi-country Shopping-campagnes in Q1 2026. Merken die gelokaliseerde feeds implementeerden—niet alleen vertaald, maar regionaal geoptimaliseerd—zagen mediane conversieratio-stijgingen van 2,3x in secundaire markten binnen 90 dagen. Het verschil was niet taal; het was operationele nauwkeurigheid.
+
+| Probleem | Prevalentie | Mediane impact op CR | Tijd om op te lossen |
+|-------|-----------|---------------------|-------------|
+| Valuta-mismatch (feed vs. site) | 61% | -34% | 2 uur |
+| Niet-gelokaliseerde titels | 78% | -22% | 1-3 dagen |
+| Verkeerde belasting/verzending config | 44% | Afwijzing | 1 week |
+| Amerikaanse taxonomie opgelegd aan EU | 52% | -18% vertoningen | 2-4 dagen |
+| Verouderde voorraad (tijdzone-vertraging) | 39% | -€ 1.100/maand verspilling | Doorlopend |
+
+De eerste regel—valuta-mismatch—verdient een eigen sectie omdat het zowel het meest voorkomende als het minst duidelijke is totdat het je marges vernietigt.
+
+<Callout type="warning">
+**Regelgevende opmerking**: Sinds januari 2026 vereist de EU Digital Services Act transparante prijzen in de valuta van de koper bij eerste vertoning voor grensoverschrijdende transacties. Het tonen van USD-prijzen aan Duitse shoppers kan compliance-waarschuwingen triggeren, zelfs als je checkout correct converteert.
+</Callout>
+
+## Valutaconversie: realtime vs. vaste tarieven (en wanneer elk de marge doodt)
+
+Je feed-valutastrategie is een contract met Google over hoe je wisselkoersvolatiliteit gaat afhandelen. Doe het verkeerd en je verliest ofwel 3-7% marge aan ongunstige verschuivingen of je verwart shoppers met prijzen die niet overeenkomen met je site bij afrekenen.
+
+**Realtime conversie** (dynamische tarieven opgehaald uit ECB, Oanda of je betalingsverwerker) houdt feedprijzen in lijn met je daadwerkelijke checkout-flow. Het is correct, maar operationeel duur: je feed moet opnieuw genereren telkens wanneer tarieven verder bewegen dan je drempel—typisch 0,5-1%. Voor een catalogus van 50.000 SKU's die acht keer per dag update, zijn dat 400.000 prijsherberekeningen per dag. We hebben gezien dat deze aanpak goed werkt voor elektronica en bulkproducten waar de marge dun is en klanten obsessief prijzen vergelijken.
+
+**Vaste periodieke conversie** (tarieven wekelijks of maandelijks bijwerken) vereenvoudigt de infrastructuur maar stelt je bloot aan drift. Een Brits merk waarmee we werkten, vergrendelde GBP→EUR-tarieven op de eerste van elke maand. Toen het pond in maart 2026 4,2% daalde, waren hun Franse feedproducten drie weken te laag geprijsd, waardoor de effectieve marge van 38% naar 31% daalde voordat ze het opvingen. Ze namen technisch gezien de geadverteerde prijs in acht, maar de financiële afdeling was niet blij.
+
+Volgens [Google's Merchant Center-documentatie](https://support.google.com/merchants/answer/160161) moet je de prijs die in je feed wordt getoond bij het afrekenen honoreren of je riskeert beleidsovertredingen. Dat betekent dat je feed-updatefrequentie moet synchroniseren met de prijslogica van je site. Als je Shopify Markets of WooCommerce Multi-Currency-plugin live tarieven gebruikt, moet je feed dat ook doen—of je introduceert een discrepantie die Google kan markeren als misleidend.
+
+Hier is het besluitvormingskader dat we gebruiken met klanten die $ 500.000+/maand internationale Shopping-uitgaven beheren:
+
+| Productcategorie | Margeprofiel | Aanbevolen aanpak | Updatefrequentie |
+|-----------------|----------------|---------------------|------------------|
+| Elektronica, bulkproducten | <20% | Realtime via API | Elke 6-12 uur |
+| Kleding, woonartikelen | 25-50% | Vast met 2% buffer | Wekelijks |
+| Luxe, niche | >50% | Vast maandelijks | Maandelijks + event triggers |
+| Volatiel (FX-gevoelig) | Elke | Realtime + hedging | Elke 4 uur |
+
+De "2% buffer" betekent dat je je feed 2% hoger prijst dan je interne cost-plus zou voorschrijven, waardoor je ruimte krijgt om kleine tariefverschuivingen op te vangen zonder opnieuw te prijzen. Het werkt wanneer je merk prijsmacht heeft; het faalt in hypercompetitieve SERP's waar een 2% premie je de Buy Box kost.
+
+<Callout type="tip">
+**Pro tip**: Gebruik aanvullende feeds in Merchant Center om alleen de `price`- en `availability`-attributen met hoge frequentie (elk uur) bij te werken, terwijl je primaire feed met titels, beschrijvingen en afbeeldingen dagelijks update. Dit vermindert de verwerkingslast en minimaliseert het risico dat validatiefouten je hele catalogus blokkeren tijdens een volledige feed-refresh.
+</Callout>
+
+We hebben MagicFeed Pro's bulk feed editing-workflows geïntegreerd met ERP-systemen van klanten om valutaherberekenings-triggers te automatiseren op basis van door treasury ingestelde drempels, waardoor feeds synchroon blijven zonder handmatige controle.
+
+## Titellokalisatie verder dan vertaling: UK vs. AU vs. CA Engels
+
+Machinevertaling behandelt grammatica. Het behandelt niet zoekintentie, informele voorkeur, of het feit dat een "trainer" in Manchester een "sneaker" is in Chicago en een "running shoe" in Toronto wanneer de koper ouder is dan 40.
+
+Een DTC-schoeiselmerkt breidde zich uit van de VS naar het VK, Canada en Australië in Q4 2025. Hun leverancier vertaalde titels met DeepL, wat uitstekend is voor het behouden van betekenis. Conversieratio's in het VK landden op 1,8%, versus 4,1% in de VS. De boosdoener: elke producttitel zei nog steeds "sneakers." Britse shoppers zoeken naar "trainers" met een verhouding van 7:1 vs. "sneakers" (volgens SEMrush UK-gegevens, maart 2026). De feed was grammaticaal perfect en commercieel nutteloos.
+
+Regionale titelvariaties vereisen begrip van lokale zoekvolumeverdeling en taalkundige voorkeuren:
+
+- **UK Engels**: "trainers" niet "sneakers," "jumper" niet "sweater," "trousers" niet "pants," "mobile" niet "cell phone"
+- **Australisch Engels**: vergelijkbaar met UK maar met unieke termen—"thongs" voor slippers, "sunnies" voor zonnebrillen, "bathers" voor zwemkleding
+- **Canadees Engels**: hybride VS/UK—"runners" voor sportschoenen in westelijke provincies, "sneakers" in Ontario, beide werken nationaal
+
+Dit is geen vertaalmatrix; het is een zoekintentie-kaart. Je hebt lokaal zoekwoordonderzoek nodig voor elke GEO, dan moet je titels herschrijven om dominante zoekpatronen te matchen terwijl je merkstem behoudt.
+
+We testten dit met een woonartikelen-klant die LED-verlichting verkoopt. Hun oorspronkelijke Amerikaanse titel: "Modern Dimmable LED Ceiling Light – Smart Home Compatible." Vertaald naar UK Engels werd het "Modern Dimmable LED Ceiling Light – Smart Home Compatible" (geen verandering, omdat de vertaling technisch correct was). We herschreven het naar "Dimmable LED Ceiling Light – Works with Alexa & Google Home – Modern Design" voor de UK-feed, wat overeenkomt met hoe Britse shoppers smart home-zoekopdrachten formuleren. Click-through rate steeg 31% in 14 dagen.
+
+De operationele uitdaging: het onderhouden van 12 regionale titelvarianten voor 50.000 SKU's is geen taak voor spreadsheets. Je hebt sjabloonherschrijfregels nodig die rekening houden met:
+
+1. **Hoogvolume zoektermen** per GEO (gegevens uit Google Keyword Planner, gefilterd op land)
+2. **Regelgevende termen** (UK vereist "EU plug" of "UK plug"-specificatie; Australië vereist voltage-ratings in titels voor bepaalde categorieën)
+3. **Tekenlimieten** die per taal variëren (Duitse samenstellingen kunnen de 150-tekenlimiet van Google overschrijden, zelfs wanneer Engels comfortabel past)
+
+MagicFeed Pro's AI-herschrijf-engine behandelt dit door te trainen op regionale zoekgegevens en merkstijlgidsen tegelijkertijd, waardoor je regels kunt instellen zoals "als GEO=UK en categorie bevat 'footwear', vervang 'sneakers' door 'trainers' tenzij merknaam 'sneaker' als handelsmerk bevat." Het is de enige manier die we hebben gevonden om lokalisatie te schalen zonder een redactieteam van 12 personen.
+
+## Regionale producttypehiërarchieën: waarom Amerikaanse taxonomieën falen in de EU
+
+Google's producttaxonomie—het `google_product_category`-attribuut—heeft regionale varianten die niet altijd voor de hand liggend zijn. De Amerikaanse taxonomie bevat categorieën zoals "Apparel & Accessories > Clothing > Activewear > Yoga Pants." In Duitsland wijkt het equivalente pad af: "Bekleidung & Accessoires > Kleidung > Sportbekleidung > Yoga-Hosen," maar het numerieke ID verschilt omdat gelokaliseerde categorieën soms splitsen of samenvoegen op basis van regionaal winkelgedrag.
+
+Een beautymerk dat we in januari 2026 auditeerden, gebruikte Amerikaanse categorie-ID's (zoals `Health & Beauty > Personal Care > Cosmetics > Makeup > Face Makeup > Foundation`) in al hun EU-feeds. Google wees de feed niet af—het toonde hun producten gewoon in minder relevante veilingen, waardoor impression share met 40% daalde in Frankrijk en Spanje. Toen we opnieuw mappten naar gelokaliseerde categorie-ID's, stegen impressions 2,1x binnen drie weken, zonder andere wijzigingen.
+
+De oplossing vereist drie stappen:
+
+1. **Download regionale taxonomiebestanden** van [Google's Merchant Center taxonomie-documentatie](https://support.google.com/merchants/answer/6324436) voor elk doelland
+2. **Map je producttypen** naar de meest granulaire toepasselijke categorie in elke GEO—val niet terug op categorieën op topniveau alleen omdat ze gemakkelijker zijn
+3. **Test met Search Console voor Shopping** (als je toegang hebt via API) om te verifiëren dat je producten verschijnen in relevante zoekopdrachten voor elke markt
+
+In de praktijk betekent dit dat je feed-generatielogica een opzoektabel nodig heeft:
+
+| Interne categorie | US `google_product_category` | UK ID | DE ID | FR ID |
+|-------------------|------------------------------|-------|-------|-------|
+| Yoga Pants        | 5322                         | 5322  | 5398  | 5322  |
+| Hardloopschoenen  | 1011                         | 3328  | 3265  | 3265  |
+| Gezichtscrème     | 567                          | 567   | 603   | 603   |
+
+Duitslands taxonomie wijkt het meest af van de VS/UK-structuur, vooral in mode en elektronica. Frankrijk en Spanje stemmen meestal overeen met bredere EU-conventies. Australië en Canada spiegelen meestal Amerikaanse ID's maar hebben unieke categorieën voor regiospecifieke producten (outdooruitrusting, seizoenskleding).
+
+<Callout type="tip">
+**Efficiëntiehack**: Gebruik het `product_type`-attribuut (je aangepaste taxonomie) consistent over alle GEO's, map dan `google_product_category` per regio. Dit laat je één enkele bron van waarheid intern onderhouden terwijl je gelokaliseerde categorie-ID's naar Google serveert. Tools zoals MagicFeed Pro's integrations kunnen deze mappinglaag automatiseren zodat je e-commerceplatform slechts één taxonomie beheert.
+</Callout>
+
+We hebben ook merken met succes aanvullende feeds zien gebruiken om `google_product_category` per land te overschrijven zonder hun hele primaire feed te dupliceren. Dit werkt goed als je kernproductgegevens (titels, afbeeldingen, beschrijvingen) identiek zijn over markten en alleen taxonomie + prijzen variëren.
+
+## Feed-updatefrequentie: voorraad synchroniseren over tijdzones
+
+Wanneer je Sydney-magazijn sluit om 18:00 AEST, opent je Manchester-magazijn om 08:00 GMT, en je Los Angeles DC draait nog steeds de nachtdienst om 00:00 PST. Als je feed globaal update op een vast UTC-tijdstip—zeg, 03:00 UTC dagelijks—publiceer je verouderde Australische voorraadgegevens om 13:00 lokale tijd (midden-winkeldag), verse UK-gegevens om 04:00 (voor zonsopgang), en Californië-gegevens om 20:00 PST de vorige avond (wat 12+ uur verouderd kan zijn tegen de tijd dat Amerikaanse shoppers wakker worden).
+
+Het resultaat: je adverteert producten die uren geleden niet meer op voorraad waren, verbrandt budget aan kliks die "niet beschikbaar"-pagina's raken, en Google bestraft je account voor slechte landingspagina-ervaring. Een middelgrote elektronicaretailer die we adviseerden, verloor $ 4.200/maand aan verspilde kliks over APAC-markten omdat hun feed om 02:00 UTC updatede, voorraadsnapshots trekkend uit Amerikaanse systemen die nachtelijke verkopen in Australië en Japan niet weerspiegelden.
+
+De oplossing is **tijdzone-bewuste feed-planning**:
+
+- **APAC-feeds** (AU, NZ, SG, JP): update om 01:00-03:00 lokale tijd (na reconciliatie van verkopen van vorige dag, vóór ochtendverkeer)
+- **EU-feeds** (UK, DE, FR, ES, IT): update om 02:00-04:00 CET/GMT (na middernacht, vóór spitsuur)
+- **Noord-Amerika-feeds** (VS, CA, MX): update om 03:00-05:00 lokaal (na West Coast-besteldeadline, vóór East Coast-ochtend)
+
+Dit vereist ofwel:
+
+1. **Regionale feed-generatie** (aparte cron jobs of geplande taken per GEO, trekkend uit regionale voorraadsystemen)
+2. **Slimme feed-orkestratie** (een gecentraliseerd systeem dat updates triggert op basis van de bedrijfsuren van elke markt, niet een enkele globale klok)
+
+De meeste enterprise e-commerceplatforms (Shopify Plus, BigCommerce Enterprise, Adobe Commerce) ondersteunen tijdzone-gebaseerde webhooks of geplande exports. Voor custom stacks moet je dit bouwen in je feed-pipeline—meestal een lichtgewicht service die voorraad-API's per regio pollt en feed-builds triggert wanneer drempels worden overschreden (bijv. >5% voorraadverandering sinds laatste update, of vast schema).
+
+<Callout type="warning">
+**Kritiek**: Google cachet feedgegevens tot 24 uur afhankelijk van je Merchant Center-tier en verwerkingswachtrij. Zelfs als je je feed perfect update, is er latentie voordat het in veilingen reflecteert. Voor snelbewegende voorraad (flash sales, gelimiteerde releases), gebruik de Content API for Shopping om realtime updates voor specifieke SKU's te pushen in plaats van te wachten op volledige feed-herverwerking.
+</Callout>
+
+Een modemerk dat limited-edition releases draait in 8 markten implementeerde deze aanpak in februari 2026: ze genereren basisfeeds op optimale lokale tijden, gebruiken dan de Content API om `availability:out_of_stock`-updates te pushen zodra een SKU uitverkocht is in een bepaald magazijn. Resultaat: 94% reductie in niet-beschikbare-product-kliks, besparend $ 11.000/maand aan verspilde uitgaven en verbetering van hun Merchant Center-accountgezondheidsscore van "aandacht nodig" naar "uitstekend."
+
+Voor teams die dit op schaal beheren, kan MagicFeed Pro's feed audit-tool tijdzone-misalignment-problemen blootleggen door je feed-update-tijdstempels te correleren met verkeerspatronen en niet-op-voorraad-klikpercentages per GEO, waardoor je een datagedreven beeld krijgt van waar je cadans je geld kost.
+
+## Het vermijden van grensoverschrijdende beleidsvalkuilen (verzending, GTIN, belasting)
+
+Internationale feed-operaties stellen je bloot aan beleidsmijnen die simpelweg niet bestaan in single-market setups. De drie die de meeste pijn veroorzaken: verzendingsconfiguratiefouten, GTIN-vereisten die per regio variëren, en belasting/BTW-declaratie-inconsistenties.
+
+### Verzendingsconfiguratie per GEO
+
+Google vereist dat het `shipping`-attribuut accurate leveringskosten en -tijden weergeeft *voor de locatie van de shopper*. Wanneer je multi-country feeds draait, kun je geen enkele globale verzendtabel gebruiken—elke feed heeft regiospecifieke verzendregels nodig of je krijgt afwijzingen.
+
+Veelgemaakte fouten:
+
+- **Amerikaanse binnenlandse verzendtarieven vermelden in EU-feeds**: Google markeert dit als misleidend omdat een Britse shopper die "$ 5,99 verzending" ziet GBP verwacht, niet USD, en levering verwacht vanuit een lokaal magazijn
+- **Weglaten van grensoverschrijdende kosten**: als je vanuit een Amerikaans magazijn naar Canada verzendt, moet je feed makelaarskosten, douanerechten en GST/HST in de verzendkosten of in `tax` opnemen, of duidelijk vermelden "extra kosten kunnen van toepassing zijn" (hoewel dit conversie vernietigt)
+- **Onderschatten van levertijden**: verzenden vanuit de VS naar Australië en "3-5 werkdagen" vermelden levert je negatieve reviews en beleidswaarschuwingen op wanneer het werkelijk 10-14 dagen duurt
+
+Volgens [Google's verzendbeleid bijgewerkt maart 2026](https://support.google.com/merchants/answer/6069284), moet je ofwel:
+
+1. **Merchant Center-verzendinstellingen per land gebruiken** (de voorkeur voor de meeste merken—stel tabellen in in GMC, laat feed-attribuut leeg)
+2. **Nauwkeurig `shipping`-attribuut per product opnemen** als kosten variëren per artikelgewicht/-grootte
+3. **Duidelijk communiceren "verzendt vanuit [land]" en importkosten** als je echte grensoverschrijdende fulfillment doet
+
+We raden optie 1 aan voor 90% van de gevallen. Stel verzendtabellen in Google Merchant Center in voor elk doelland, rekening houdend met je daadwerkelijke vervoerderscontracten (DHL, FedEx, lokale koeriers). Dit centraliseert de logica en laat je tarieven bijwerken zonder feeds opnieuw te genereren.
+
+### GTIN-vereisten en regionale vrijstellingen
+
+Het Global Trade Item Number (GTIN)—UPC, EAN, ISBN—is vereist voor alle nieuwe, merkproducten in de meeste markten. Maar vrijstellingsregels verschillen per regio:
+
+- **VS**: Merken met <50 producten of custom/handgemaakte goederen kunnen GTIN-vrijstelling aanvragen via Manufacturer Part Number (MPN)
+- **EU**: Veel strikter—alleen echte handgemaakte of vintage items komen in aanmerking voor vrijstelling; zelfs kleine merken moeten GTIN's leveren voor gefabriceerde goederen
+- **Australië**: volgt VS-stijl vrijstellingen maar vereist expliciete `identifier_exists:false`-vlag in feed
+- **Japan**: vereist JAN-codes (Japanese Article Number, een variant van EAN) voor binnenlandse distributie; internationale GTIN's werken voor geïmporteerde goederen maar kunnen zichtbaarheid verminderen
+
+Een interieurmerk dat uitbreidde van de VS naar Duitsland hield hun GTIN-vrijgestelde producten (custom-geprinte wandkunst) in de feed met `identifier_exists:false`. Google wees 38% van hun Duitse catalogus af omdat EU-beleid die vrijstelling niet erkent voor op bestelling vervaardigde goederen. Ze moesten ofwel goede EAN-codes verkrijgen of die SKU's uit EU-feeds verwijderen.
+
+Als je dit over 12+ markten beheert, heb je een GTIN-compliance-matrix nodig in je productdatabase:
+
+| SKU | Heeft GTIN? | US Feed | EU Feed | AU Feed | JP Feed |
+|-----|-----------|---------|---------|---------|---------|
+| POSTER-001 | Nee | Opnemen (vrijgesteld) | Uitsluiten | Opnemen (vrijgesteld) | Uitsluiten |
+| SHOES-202 | Ja (EAN) | Opnemen | Opnemen | Opnemen | Opnemen |
+| BOOK-045 | Ja (ISBN) | Opnemen | Opnemen | Opnemen | Opnemen |
+
+Deze logica bouwen in je feed-generatie voorkomt afwijzingen. Tools zoals DataFeedWatch en Feedonomics kunnen producten per GEO filteren op basis van GTIN-status, maar je hebt nog steeds schone brondata nodig.
+
+### Belasting- en BTW-declaratie
+
+Sinds januari 2025 vereist Google Shopping BTW-inclusieve prijzen in feeds voor EU-landen waar BTW van toepassing is op het verkooppunt. Als je feed prijzen exclusief belasting toont en je site BTW toevoegt bij afrekenen, beschouwt Google dit als een prijsmismatch en kan je account geschorst worden.
+
+De operationele hoofdpijn: BTW-tarieven verschillen per land (19% in Duitsland, 20% in VK, 21% in Spanje, 25% in Zweden) en soms per productcategorie (verlaagde tarieven voor boeken, voedsel, kinderartikelen). Je feed moet ofwel:
+
+1. **BTW opnemen in `price`-attribuut** en `tax` op nul zetten (werkt als je site BTW-inclusieve prijzen toont)
+2. **Prijs exclusief belasting tonen in `price` en BTW berekenen in `tax`-attribuut** (werkt als je site prijzen ex-BTW toont en belasting toevoegt bij afrekenen)
+
+De meeste DTC-merken tonen BTW-inclusieve prijzen aan EU-shoppers, dus optie 1 is schoner. Maar als je B2B bent of opereert in markten waar zakelijke kopers prijzen ex-BTW zien, heb je optie 2 nodig plus logica om het `tax`-tarief te variëren per product en land.
+
+We bouwden een BTW-berekeningslaag voor een B2B-industriële voorraden-klant die feedprijzen aanpast op basis van:
+
+- Land van shopper (gedetecteerd via Merchant Center's multi-country feed-setup)
+- Productcategorie (standaard, verlaagd of nul BTW-tarief)
+- Klanttype (B2B ziet ex-BTW, B2C ziet inclusief)
+
+Het is complex, maar niet onderhandelbaar als je compliant wilt blijven en beleidsschorsingen wilt vermijden die je 30+ dagen uit hele regio's sluiten.
+
+<FAQ>
+<FAQItem q="Moet ik aparte Merchant Center-accounts maken voor elk land of multi-country feeds gebruiken in één account?" a="Gebruik multi-country feeds binnen één Merchant Center-account tenzij je aparte juridische entiteiten per regio hebt of radicaal verschillende productcatalogi. Google's multi-country setup laat je alle feeds, Shopping-campagnes en beleidsregels op één plek beheren, wat rapportage vereenvoudigt en het risico op cross-account beleidsovertredingen vermindert. Aparte accounts hebben alleen zin als je gescheiden facturering nodig hebt of verschillende merken per GEO draait." />
+
+<FAQItem q="Hoe behandel ik producten die alleen in sommige markten beschikbaar zijn maar niet in andere?" a="Gebruik feed-regels of aanvullende feeds om SKU's per land uit te sluiten. Filter in je feed-generatielogica producten op basis van `availability_by_country` of vergelijkbare voorraadvlaggen, zodat elke regionale feed alleen SKU's bevat die je daadwerkelijk naar die GEO kunt fulfilllen. Niet-beschikbare producten adverteren verspilt budget en schaadt accountgezondheid; het is beter om kleinere, nauwkeurige feeds te draaien dan grote, vervuilde." />
+
+<FAQItem q="Wat is de beste manier om feedwijzigingen in een nieuwe markt te testen voordat je live gaat?" a="Gebruik Google Merchant Center's diagnostics-tabblad om je feed te valideren voordat je Shopping-campagnes inschakelt. Upload een testfeed, wacht op verwerking (meestal 30-60 minuten), bekijk dan afwijzingen en waarschuwingen. Los problemen op, upload opnieuw en itereer tot je nul kritieke fouten hebt. Schakel dan pas campagnes in. Voor hoogwaardige lanceringen (nieuwe regio's met significant budget), overweeg een kleine testcampagne te draaien met 5-10% van je catalogus om conversietracking, checkout-flow en beleidsconformiteit te valideren voordat je schaalt." />
+
+<FAQItem q="Hoe vaak moet ik valutaconversietarieven in mijn feeds bijwerken?" a="Het hangt af van je margeprofiel en checkout-flow. Als je realtime tarieven bij afrekenen gebruikt (via Shopify Markets, Stripe, PayPal), werk je feeds minstens twee keer per dag bij om prijsdiscrepanties te minimaliseren. Als je vaste periodieke tarieven gebruikt, werk je wekelijks of maandelijks bij maar voeg je een buffer van 1-3% toe in feedprijzen om volatiliteit op te vangen. Monitor je werkelijke checkout-prijzen vs. feedprijzen wekelijks; als drift 2% overschrijdt, verhoog je updatefrequentie of pas je buffer aan." />
+
+<FAQItem q="Kan ik dezelfde productafbeeldingen over alle landen gebruiken, of heb ik gelokaliseerde visuals nodig?" a="Je kunt dezelfde afbeeldingen gebruiken voor de meeste productcategorieën (kleding, elektronica, woonartikelen) zolang ze geen tekstoverlays in een specifieke taal bevatten. Vermijd lifestyle-afbeeldingen met zichtbare borden, verpakkingen of culturele elementen die niet vertalen (bijv. VS-centrische feestdagen, regiospecifieke modellen). Als je afbeeldingen tekst bevatten (maattabellen, feature-callouts), heb je gelokaliseerde varianten nodig. Google vereist geen gelokaliseerde afbeeldingen, maar conversieratio's verbeteren 10-20% wanneer visuals lokale context matchen, vooral in mode- en voedselcategorieën." />
+
+<FAQItem q="Wat is de straf voor het verkeerd krijgen van grensoverschrijdend beleid—hoe snel handelt Google?" a="Beleidsovertredingen triggeren onmiddellijke afwijzingen (binnen uren na feed-verwerking) voor problemen zoals ontbrekende GTIN's of onjuiste verzending. Accountniveau-schorsingen voor misleidende prijzen of herhaalde overtredingen kunnen binnen 7-14 dagen plaatsvinden en je 30+ dagen uit Shopping-advertenties sluiten terwijl je in beroep gaat. Geautomatiseerde systemen markeren de meeste problemen onmiddellijk; menselijke beoordelingen duren 3-5 werkdagen. De schade is niet alleen verloren omzet—geschorste accounts verliezen historische prestatiegegevens en veilingsignalen, dus wanneer je terugkomt, begin je koud. Preventie is goedkoper dan remediatie." />
+</FAQ>
+
+<ProductCTA variant="audit" title="Schaal je multi-markt feeds zonder operationele chaos" />
+
+Shopping-campagnes draaien in 12+ markten is niet alleen vertaling en valutawisselingen—het is een operationele discipline die prijzen, compliance, voorraad en zoekintentie raakt. De merken die succesvol schalen bouwen systemen die lokaliseren op het feed-niveau, niet het campagneniveau. Ze automatiseren regionale titelherzieningen, synchroniseren voorraad over tijdzones en onderhouden GTIN-compliance-matrices zodat één beleidsmisstap in Duitsland niet cascadeert in een globale accountschorsing. Als je zescijferige maandelijkse budgetten over meerdere GEO's beheert en nog steeds handmatig met spreadsheets jongleert, ben je één feedfout verwijderd van een heel duur weekend.

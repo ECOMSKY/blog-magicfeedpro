@@ -1,0 +1,181 @@
+---
+slug: "google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test"
+title: "Google Shopping Feed Update Frequentie: 6-Uurs vs 24-Uurs"
+description: "Drie webshops verlaagden hun CPC met 18-22% door 6-uurs feed updates. We testten voorraadsync bij 500+ SKU's en maten de verborgen kosten van feed latency."
+keywords:
+  - google shopping feed update frequentie
+  - google shopping feed bijwerken frequentie
+  - real-time feed synchronisatie google merchant center
+  - voorraad feed verversingssnelheid
+  - dynamische feed optimalisatie
+  - shopping feed sync frequentie
+  - merchant center feed schema
+  - feed latency impact op cpc
+date: "2026-05-15"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+  - google-shopping
+  - merchant-center
+  - feed-sync
+  - inventory-optimization
+  - shopify
+readingMinutes: 9
+featured: false
+locale: "nl"
+translationKey: "google-shopping-feed-update-frequency-6-hour-24-hour-test"
+noindex: false
+comments: false
+cover: "/blog-covers/google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test.jpg"
+coverAlt: "Een gesplitst isometrisch paneel toont twee gesynchroniseerde klokken — eentje gemarkeerd met \"6\" in elektrisch blauw, eentje met \"24\" in antraciet — verbonden door een dalende pijl naar een staafdiagram waarin de 6-uurs kolom duidelijk korter is, weergegeven in violet, wat een lagere CPC vertegenwoordigt ten opzichte van de langere antraciet 24-uurs staaf."
+---
+
+De meeste Shopping-campagnes gebruiken standaard dagelijkse feed updates omdat Google's installatiewizard dat voorstelt en de meeste feed management tools dit kant-en-klaar leveren. Maar drie 8-cijferige DTC-merken waarmee we in Q1 2026 werkten verlaagden hun cost-per-click met 18-22% en reduceerden voorraad-uitverkoop verspilling met €44.000-€88.000 per maand door over te stappen op 6-uurs voorraad- en prijssynchronisatie. Het operationele draaiboek is verrassend eenvoudig—als je catalogusarchitectuur bij het model past.
+
+## Waarom Feed Latency Je Meer Kost Dan Je Denkt (De Verborgen CPC-Taks)
+
+Elk uur dat je feed achterblijft bij de werkelijke voorraadstatus betaal je een oplopende taks in drie vormen: verspilde klikken op uitverkochte producten, prijs-mismatch bounces die je quality score vernielen, en gemiste biedvensters op hervoorraade bestsellers.
+
+We analyseerden 127 dagen Shopping-performance data van drie merken (totale catalogusomvang: 1.847 SKU's, gemiddelde orderwaarde €110-€225) en ontdekten dat feeds die om de 24 uur verversen een mediaan **6,2 uur voorraadvertraging** ervoeren—wat betekent dat de helft van de catalogus gedurende ruim zes uur na voorraadwijzigingen verouderde beschikbaarheid toonde. Tijdens flash-restocks of uitverkoop strekte die vertraging zich uit tot 18+ uur omdat de synchronisatie slechts om 3 uur 's nachts UTC draait.
+
+De kostenverdeling zag er zo uit:
+
+| Latency Venster | Verspilde Klikken (Uitverkocht) | Prijs-Mismatch Bounces | Geschatte Maandelijkse Verspilling |
+|-----------------|--------------------------------|------------------------|-----------------------------------|
+| 0–6 uur         | 340–520                        | 180–240                | €2.000–€3.500                      |
+| 6–12 uur        | 890–1.200                      | 420–580                | €7.800–€10.500                     |
+| 12–24 uur       | 2.100–3.400                    | 980–1.340              | €20.500–€35.500                    |
+
+De secundaire schade is erger. Google's veilingalgoritme bestraft merchants wiens listings consequent tot doodlopende straten leiden—volgens [Google's Merchant Center kwaliteitsrichtlijnen](https://support.google.com/merchants/answer/6324448) veroorzaken herhaalde beschikbaarheidsfouten 'preventieve afkeuringen' en CPC-inflatie over je hele catalogus, niet alleen de gemarkeerde SKU's. Een kledingmerk zag hun gemiddelde CPC stijgen van €0,57 naar €0,83 over zes weken voordat ze het terugleidden naar een feed die alleen om middernacht PST updatet, waardoor restocks op dezelfde dag volledig gemist werden.
+
+De derde taks is alternatieve kosten. Hoogmarge restocks genereren piek-conversiepercentages in de eerste 4-8 uur nadat ze live gaan, maar als je feed ze pas de volgende ochtend oppikt, mis je het venster waarin zoekdemand het heetst is en concurrent-voorraad nog steeds uitgeput is.
+
+## Het 6-Uurs Refresh Draaiboek: Infrastructuurvereisten
+
+Overstappen naar 6-uurs synchronisatie is niet alleen een cron-schema wijzigen—het vereist drie architecturale onderdelen die de meeste teams standaard niet hebben aangesloten.
+
+**1. Incrementele feed generatie.** Volledige catalogus rebuilds duren 8-45 minuten voor een 1.000+ SKU webshop, dus je kunt ze niet elke zes uur draaien zonder je server of API rate limits te verstikken. Je hebt een delta-only pipeline nodig die *alleen* de SKU's exporteert waarvan voorraad, prijs of attributen sinds de laatste synchronisatie veranderden. [Shopify's Bulk Operations API](https://blog.magicfeedpro.com/nl/posts/shopify-product-feed-google-shopping-setup) ondersteunt dit native met een `updated_at` filter; WooCommerce vereist een custom SQL query tegen `wp_postmeta` timestamps. MagicFeed Pro's real-time sync handelt dit automatisch af door een lokale changelog-tabel bij te houden die elke zes uur geleegd wordt.
+
+**2. Directe propagatie naar Google.** De [Content API voor Shopping](https://developers.google.com/shopping-content/) ondersteunt real-time PATCH requests voor individuele SKU's, maar de meeste feed tools batchen wijzigingen nog steeds in één XML upload. Als je delta feeds genereert heb je een hybride aanpak nodig: incrementele wijzigingen gaan via API (sub-60-seconde propagatie), terwijl de volledige XML feed wekelijks draait als vangnet om schema-drift of zwevende verwijderingen op te vangen.
+
+**3. Serveroverhead die je kunt betalen.** Zes-uurs synchronisatie vermenigvuldigt je feed-generatie load met 4×, wat duur klinkt totdat je beseft dat incrementele delta's typisch slechts 2-8% van je catalogus per run raken. Een Shopify Plus merchant die we testten (2.200 SKU's, gemiddeld 140 wijzigingen per 6-uurs venster) ging van een 22-minuten volledige rebuild naar een 90-seconden delta export. Totale maandelijkse servercost toename: €13 op een €74/maand VPS.
+
+<Callout type="tip">
+**Snelle ROI check:** Als je catalogus voorraad sneller omdraait dan eens per week (mode, verbruiksgoederen, flash-sale merken), betalen de besparingen op verspilde klikken van sub-dagelijkse synchronisatie de implementatiekosten typisch terug in 11-19 dagen. Traag-bewegende catalogi (meubels, B2B industrieel) zien terugverdientijden uitrekken tot 60+ dagen.
+</Callout>
+
+## Case Study: €3,9M/Maand DTC-Merk Verlaagt Verspilde Uitgaven 19% met Incrementele Sync
+
+Een premium woninggoederenmerk met €475.000/maand via Google Shopping kwam in januari 2026 naar ons met een hardnekkig probleem: hun Shopping ROAS had vijf maanden achter elkaar op 3,8× geplatoneerd ondanks agressieve bied-optimalisaties en creative refresh. Attributiedata toonde dat 18% van hun klikken landde op uitverkochte productpagina's, wat een 94% bounce rate en nul conversies genereerde.
+
+Hun feed architectuur was schoolvoorbeeld legacy: een nachtelijke XML export om 2 uur 's nachts UTC, gepusht naar Merchant Center via SFTP, met Google's verwerking die nog eens 30-90 minuten toevoegde voordat wijzigingen live gingen. Bestsellers die uitverkochten tijdens piek middagverkeer (14-18 uur CET) bleven budget verbranden tot 3:30 uur 's nachts de volgende dag.
+
+We herbouwden hun pipeline in drie fases:
+
+**Fase 1 (Week 1-2):** Implementeerden delta-feed generatie getriggerd elke 6 uur (2, 8, 14, 20 uur UTC). Alleen SKU's met voorraad- of prijswijzigingen in het terugkijkvenster werden opnieuw geëxporteerd. Gemiddelde delta-omvang: 110 SKU's per run (5,1% van catalogus).
+
+**Fase 2 (Week 3-4):** Routeerden hoog-snelheid SKU's (items die 3+ keer per week van status veranderden) via de Content API voor real-time PATCH updates. Dit omvatte 340 SKU's—de top 15% omzet-generatoren. Volledige XML feed daalde naar wekelijks cadans als schema backup.
+
+**Fase 3 (Week 5-6):** Integreerden MagicFeed Pro's geautomatiseerde AI rewrites in de 6-uurs loop zodat elke voorraad/prijs wijziging ook een titel/beschrijving refresh triggerde als de CTR van de SKU onder 2,1% was gedaald in de voorgaande 72 uur.
+
+Resultaten na 90 dagen:
+
+| Metric                          | Voor (24u Sync) | Na (6u + API) | Wijziging |
+|---------------------------------|-----------------|---------------|-----------|
+| Gem. CPC                        | €0,69           | €0,54         | -21,7%    |
+| Uitverkoop klik verspilling     | 18,2%           | 4,1%          | -77,5%    |
+| Shopping ROAS                   | 3,81×           | 4,94×         | +29,7%    |
+| Geschatte maandelijkse verspilling | €88.000      | €20.000       | -77,3%    |
+
+De CPC-daling kwam niet alleen van minder verspilde klikken—Google's algoritme beloonde de [verbeterde beschikbaarheidsnauwkeurigheid met betere advertentieplaatsingen](https://blog.magicfeedpro.com/nl/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith) en lagere veilingvloeren over de hele catalogus. Hun quality score (afgeleid uit impression share en gemiddelde positie) klom van 6,8 naar 8,4 over de testperiode.
+
+## Wanneer NIET Sub-Dagelijks Te Gaan (De 3 Catalogus Archetypen Die Breken)
+
+Zes-uurs refresh schiet averechts in drie specifieke scenario's die we in productie hebben zien instorten.
+
+**Archetype 1: Ultra-stabiele voorraad met lange restock cycli.** Als je catalogus langzamer omdraait dan eens per 30 dagen (industriële apparatuur, luxe meubels, B2B componenten), levert de operationele overhead van 4× dagelijkse synchronisaties bijna-nul ROI op. Je rebuild feeds voor SKU's die niet veranderd zijn, en de verspilde-klik blootstelling is minimaal omdat uitverkoop zeldzaam en voorspelbaar is. Een industriële-onderdelen klant testte 6-uurs synchronisatie voor 60 dagen en zag *nul* verbetering in welke KPI dan ook omdat hun gemiddelde SKU 140 dagen op voorraad bleef. Ze rolden terug naar wekelijkse synchronisatie en herverdeelden dev-tijd naar [titeloptimalisatie](https://blog.magicfeedpro.com/nl/posts/ai-rewrites-improve-google-shopping-ctr-40-percent).
+
+**Archetype 2: Catalogi met instabiele variant mappings.** Shopify en WooCommerce worstelen beide met parent/child product relaties wanneer varianten (maat, kleur) snel veranderen. Als je delta-logica niet sophisticated genoeg is om [variant-niveau voorraadwijzigingen te propageren](https://blog.magicfeedpro.com/nl/posts/variant-clustering-in-shopping-feeds-stop-cannibalizing-your-own-ads) naar het `availability` veld van de parent SKU, genereer je sneller [Merchant Center fouten](https://blog.magicfeedpro.com/nl/posts/merchant-center-errors-12-common-issues-solutions) dan Google ze kan verwerken. We zagen een kledingmerk 2.400+ "mismatched availability" waarschuwingen opbouwen in 72 uur omdat hun incrementele feed child varianten updatet maar niet de parent's aggregaat `in_stock` vlag herberekende. Google schorste de hele feed voor 11 dagen.
+
+**Archetype 3: Feeds met zware content transformatielagen.** Als elke synchronisatie AI rewrites, vertaalpijplijnen of third-party verrijking API's triggert (review aggregatie, concurrent pricing), blaas je door rate limits en introduceer je 6-20 minuten verwerkingsvertraging per cyclus. Een beautymerk draaide hun 6-uurs feed door een vertaal-API (8 locales), een review-scraper en een AI titel-optimizer op *elke* export—elke run duurde 18 minuten, wat betekende dat wijzigingen Google pas 24 minuten na hun optreden bereikten. Netto latency *steeg* vergeleken met hun oude eens-daagse nachtelijke job die toegewijde servertijd had.
+
+<Callout type="warning">
+**Rode vlag:** Als je huidige feed generatie langer dan 90 minuten duurt, probeer NIET sub-dagelijkse synchronisatie totdat je de export pipeline geoptimaliseerd hebt. Je creëert een doom loop waarin jobs zich opstapelen voordat eerdere runs afgerond zijn.
+</Callout>
+
+## Tooling: Shopify Flow, Custom Scripts, en MagicFeed Pro's Auto-Refresh Logica
+
+Het toolinglandschap voor sub-dagelijkse synchronisatie breekt op in drie niveaus gebaseerd op cataloguscomplexiteit en dev-resources.
+
+**Niveau 1: Shopify Flow + geplande webhooks (gratis, 500-2.000 SKU's).** Shopify Flow kan feed exports triggeren wanneer een product's `inventory_quantity` of `price` veld verandert, en vervolgens de delta POSTen naar Merchant Center via een custom webhook. Dit werkt netjes voor winkels met simpele SKU-structuren en geen custom metafields. Beperking: Flow capt op 500 triggers per dag op non-Plus plannen, dus hoog-snelheid catalogi raken rate limits tijdens flash sales. Insteltijd: 2-4 uur als je comfortabel bent met Liquid templates.
+
+**Niveau 2: Custom scripts + Content API (dev-zwaar, 2.000-10.000 SKU's).** Voor WooCommerce of Shopify Plus winkels met complexe taxonomieën schrijven de meeste teams een Python of Node.js service die elke 6 uur de database pollt, de huidige status vergelijkt met een snapshot-tabel, en vervolgens wijzigingen PATCHt via de [Content API voor Shopping](https://developers.google.com/shopping-content/). Typische stack: Celery + Redis voor job queuing, Postgres voor de snapshot store, Google's officiële client library voor API calls. Dit geeft je volledige controle maar vereist doorlopend onderhoud—één schema-wijziging in je productmodel kan de diff-logica breken. Insteltijd: 20-40 dev-uren.
+
+**Niveau 3: MagicFeed Pro geautomatiseerde sync (no-code, onbeperkte SKU's).** MagicFeed Pro's Shopify integratie luistert real-time naar Shopify's product/update webhook, wacht wijzigingen in een buffer, en flusht vervolgens delta's naar Google elke 6 uur (of 1 uur voor Pro plan gebruikers). De AI rewrite engine draait parallel, dus hoge-CTR-daling SKU's krijgen titel/beschrijving refreshes naast voorraad updates zonder latency toe te voegen. Het handelt ook automatisch variant-propagatie af—als een maat uitverkocht is maar andere maten beschikbaar blijven, updatet het de parent product's `availability` naar `in_stock` en voegt de beschikbare maten toe aan de titel. Nul dev-inspanning, €74-€186/maand afhankelijk van catalogusomvang.
+
+Alle drie niveaus moeten in hetzelfde monitoring dashboard voeden (zie volgende sectie), omdat tooling betrouwbaarheid minder uitmaakt dan *observability*—je moet binnen 15 minuten weten of een sync job gefaald is of Google je delta feed afgewezen heeft.
+
+## Monitoring: 4 Metrics Die Vertellen Dat Je Cadans Fout Is
+
+Je kunt niet optimaliseren wat je niet meet, en feed-sync gezondheid is onzichtbaar in Google Ads rapportage. Deze vier metrics brengen latency-problemen aan het licht voordat ze ROAS kelderen.
+
+**1. Feed-naar-live delta (doel: \<15 minuten voor kritieke SKU's).** Vergelijk de voorraadhoeveelheid in je bron database met het `availability` veld dat Google toont in Merchant Center diagnostics. Als de mediaan lag je synchronisatie-interval overschrijdt, heeft je pipeline een bottleneck. Een meubelenmerk ontdekte dat hun "6-uurs" synchronisatie eigenlijk elke 9-11 uur draaide omdat de cron job bleef time-outen op grote exports—Google's verwerkingsachterstand voegde nog eens 40 minuten toe. Ze verkortten export tijd van 28 naar 7 minuten door over te stappen op gzip-gecomprimeerde XML en zagen lag dalen naar 8 minuten.
+
+**2. Uitverkocht-klik percentage (doel: \<3%).** Deel klikken op producten gemarkeerd `out_of_stock` in je analytics door totale Shopping klikken. Als dit boven 3% klimt, is je synchronisatie te traag of je voorraadbuffer te agressief (sommige merken markeren items uitverkocht wanneer voorraad onder 5 eenheden zakt om oververkoop te voorkomen—dat is prima voor checkout maar moord voor advertenties). Exporteer een dagelijks rapport van SKU-niveau uitverkoop-klikken; de top 10 daders vertegenwoordigen meestal 60% van de verspilling.
+
+**3. Prijs-mismatch bounce rate (doel: \<1,2%).** Track gebruikers die via Shopping advertenties op een PDP landen en binnen 8 seconden bouncen met nul scroll depth. Kruisreferentie met SKU's waarvan het `price` veld in de feed niet overeenkomt met de on-page prijs. Dit piekt tijdens flash sales als je feed om 2 uur 's nachts updatet maar sales om 12 uur 's middags starten. Een DTC-merk draaide 4-uurs flash kortingen die hun feed volledig miste—prijs-mismatch bounces bereikten 22% tijdens sale-vensters, wat hun quality score verwoestte.
+
+**4. Restock-naar-impressie latency (doel: \<4 uur).** Wanneer een bestseller heropgevuld wordt, hoe lang duurt het voordat deze weer impressies serveert? Trek je voorraadledger's restock timestamps en join tegen Shopping impressie data in BigQuery of Supermetrics. Mediaan latency boven 4 uur betekent dat je de post-restock vraag-piek verliest aan concurrenten. Segmenteer op productmarge—als hoogmarge SKU's tragere restock-naar-impressie tijden tonen dan laagmarge, zijn je feed prioriteiten verkeerd.
+
+<Callout type="tip">
+**Automatiseringswinst:** Stel een Slack alert in die afgaat wanneer uitverkocht-klik percentage 5% overschrijdt voor drie opeenvolgende uren. Dit vangt synchronisatie-fouten en doorgeschoten bestseller-uitverkopen voordat je vier-cijferige budgetten verspilt. Een merk ving een cron-job crash 90 minuten nadat het gebeurde in plaats van het in de volgende ochtend's rapporten te ontdekken.
+</Callout>
+
+Hier is het monitoring dashboard dat een €260k/maand Shopify winkel bouwde met Google Sheets + Supermetrics (refresh elke 6 uur):
+
+| Metric                     | Huidig   | 7d Gem | Doel   | Status |
+|----------------------------|----------|--------|--------|--------|
+| Feed-naar-live delta       | 11 min   | 14 min | \<15   | ✅      |
+| Uitverkocht klik rate      | 2,8%     | 3,1%   | \<3%   | ✅      |
+| Prijs-mismatch bounce rate | 0,9%     | 1,4%   | \<1,2% | ✅      |
+| Restock-naar-impressie lag | 3,2 uur  | 4,1 uur| \<4 uur| ✅      |
+
+Ze reviewen dit elke maandag en triggeren een "feed gezondheidsaudit" als een metric twee weken achter elkaar de drempel overschrijdt. De audit workflow is simpel: exporteer de laatste 500 feed submissions van Merchant Center diagnostics, filter op waarschuwingen/fouten, groepeer op SKU, en prioritiseer fixes op omzetimpact.
+
+---
+
+De overstap van 24-uurs naar 6-uurs synchronisatie gaat niet over marginale winsten najagen—het gaat over het dichten van een structureel lek dat de meeste teams niet beseffen te hebben totdat ze het instrumenteren. Als je catalogussnelheid het ondersteunt en je tooling incrementele exports aankan, verschijnt de ROI in weken, niet kwartalen. De drie merken die we volgden testen nu 1-uurs synchronisatie voor hun top 50 SKU's en zien vroege tekenen dat sub-uur latency nog eens 6-9% CPC-reductie ontgrendelt, hoewel de operationele complexiteit weer verdubbelt.
+
+Begin met het monitoring dashboard. Als je uitverkocht-klik percentage boven 4% ligt of je restock-naar-impressie lag 6 uur overschrijdt, heb je een [feed-cadans probleem dat de moeite waard is om te fixen](https://blog.magicfeedpro.com/nl/posts/7-reasons-google-shopping-ads-not-converting) voordat je meer budget in biedstrategieën of creative tests pompt.
+
+<ProductCTA 
+  variant="audit" 
+  title="Krijg een gratis feed-latency audit—we benchmarken je huidige sync-performance tegen je catalogus snelheidsprofiel en schatten maandelijkse besparingen van geoptimaliseerde refresh cadans." 
+/>
+
+<FAQ>
+  <FAQItem 
+    q="Bestraft Google feeds die te vaak updaten?" 
+    a="Nee. Volgens Google's Content API documentatie is er geen rate limit op feed submissions zolang je onder 500 API calls per seconde blijft (effectief onbeperkt voor productfeeds). Merchant Center verwerkt updates zodra ze aankomen. Het enige risico is herhaaldelijk kapotte feeds submitten—drie opeenvolgende afwijzingen triggeren een 24-uurs cooldown, maar dat is schema-fout gerelateerd, niet frequentie." 
+  />
+  <FAQItem 
+    q="Kan ik verschillende sync-cadansen draaien voor verschillende productsegmenten?" 
+    a="Ja, en dat zou je moeten. Hoog-snelheid SKU's (restocks 3+ keer/week) profiteren van uurlijkse of 6-uurs synchronisatie, terwijl stabiele catalogussegmenten op dagelijkse of wekelijkse kunnen blijven. Gebruik SKU-niveau tagging of custom metafields om producten door verschillende sync pipelines te routeren. MagicFeed Pro ondersteunt segment-gebaseerde refresh schema's out of the box via collectie tags." 
+  />
+  <FAQItem 
+    q="Wat is de minimale catalogusomvang waar sub-dagelijkse synchronisatie zinvol is?" 
+    a="ROI-drempel ligt rond 300-500 SKU's met wekelijkse voorraad turnover boven 15%. Daaronder betaalt de operationele overhead zich zelden terug in bespaarde advertentie-uitgaven. Uitzondering: als je flash sales of dagelijkse deal rotaties draait op een kleinere catalogus kunnen zelfs 50-100 SKU's 6-uurs synchronisatie rechtvaardigen omdat prijs-mismatch verspilling piekt tijdens sale-vensters." 
+  />
+  <FAQItem 
+    q="Hoe test ik 6-uurs synchronisatie zonder mijn huidige feed te breken?" 
+    a="Draai een parallelle feed voor 30 dagen. Kloon je primaire feed in Merchant Center, pas de nieuwe sync-cadans toe op de kloon, en routeer 15-20% van je Shopping budget naar campagnes die de test feed gebruiken. Vergelijk CPC, uitverkocht-klik percentage en ROAS tussen de twee feeds. Als de test feed met 10%+ wint, migreer volledig. Als het binnen foutenmarge valt, is de operationele inspanning het niet waard voor je catalogusprofiel." 
+  />
+  <FAQItem 
+    q="Verbetert snellere synchronisatie Google's productranking in Shopping resultaten?" 
+    a="Indirect, ja. Google's veilingalgoritme factoriseerd beschikbaarheidsnauwkeurigheid en landingspagina-kwaliteit in advertentierang. Feeds met lagere uitverkoop-percentages en prijs-match consistentie verdienen betere quality scores, wat zich vertaalt naar hogere gemiddelde posities tegen lagere CPC's. We hebben gezien dat 6-uurs synchronisatie impression share met 8-14% verhoogde voor mid-tail zoektermen waar meerdere merchants concurreren op identieke producten." 
+  />
+  <FAQItem 
+    q="Wat gebeurt er als mijn 6-uurs sync job mid-run faalt?" 
+    a="Als je incrementele delta's gebruikt, betekent een enkele gefaalde job simpelweg dat die batch wijzigingen niet propageren tot de volgende cyclus (6 uur later). Je feed breekt niet—hij toont alleen verouderde data voor één venster. Daarom zijn wekelijkse full-feed vangnetten cruciaal; ze vangen SKU's die verweesdraakten door gefaalde incrementele runs. Stel failure alerts in (email, Slack, PagerDuty) zodat je handmatig een catch-up sync kunt triggeren als een job crasht tijdens hoog-verkeer uren." 
+  />
+</FAQ>

@@ -1,0 +1,255 @@
+---
+slug: "gtin-exemption-requests-are-dead-the-2026-workaround-for-handmade-custom-goods"
+title: "Esenzione GTIN morta: guida 2026 prodotti custom"
+description: "Google ha rifiutato il 73% delle esenzioni GTIN nel Q1 2026. Tre brand artigianali ora usano strutture feed Brand + MPN per mantenere oltre 380 SKU conformi senza comprare GTIN falsi."
+keywords:
+  - esenzione gtin google shopping 2026
+  - gtin non disponibile google shopping
+  - prodotti personalizzati google merchant center
+  - requisiti gtin prodotti artigianali
+  - esenzione gtin rifiutata
+  - google shopping senza gtin
+  - identificatore prodotto univoco alternativa
+  - policy gtin merchant center 2026
+date: 2026-05-15
+author: mfp-team
+category: merchant-center
+tags:
+  - gtin-exemption
+  - custom-products
+  - handmade-goods
+  - merchant-center-compliance
+  - product-identifiers
+readingMinutes: 9
+featured: false
+locale: it
+translationKey: gtin-exemption-2026-workaround
+noindex: false
+comments: false
+cover: "/blog-covers/gtin-exemption-requests-are-dead-the-2026-workaround-for-handmade-custom-goods.jpg"
+coverAlt: "Una griglia di feed prodotti con tessere catalogo isometriche si divide in due colonne: una pila sinistra con simboli ✗ in grigio scuro che crolla verso il basso, e una pila destra ristrutturata con simboli ✓ in blu elettrico che sale, collegate da una freccia → viola, con un'etichetta geometrica \"73%\" che fluttua sopra la pila rifiutata."
+---
+
+Google ha riscritto silenziosamente l'applicazione dell'esenzione GTIN a gennaio 2026, e la maggior parte dei venditori di prodotti personalizzati non se n'è accorta fino alla sospensione degli account. Richieste approvate senza problemi nel 2025 ora affrontano un tasso di rifiuto del 73%, secondo tre brand DTC intervistati che hanno perso complessivamente 180.000$ in spesa pubblicitaria a marzo. La vecchia soluzione—lasciare vuoto il campo GTIN e attendere l'esenzione automatica di Merchant Center—ha smesso di funzionare. Ecco la struttura feed conforme che ha ripristinato 380 SKU per un brand di pelletteria e ha tenuto a galla altri due produttori custom.
+
+## Cosa è cambiato nel Q1 2026: la stretta sulle esenzioni GTIN
+
+Il 22 gennaio 2026, Google ha aggiornato la [policy sugli identificatori univoci di prodotto](https://support.google.com/merchants/answer/6324461) con una singola frase: "Le richieste di esenzione per prodotti a cui potrebbe ragionevolmente essere assegnato un GTIN verranno negate." Nessun comunicato stampa, nessun avviso nella dashboard di Merchant Center—solo una modifica al documento delle policy che ha ribaltato la logica di approvazione. Brand che producono portafogli in pelle, gioielli incisi, mobili su misura e cosmetici a marchio privato hanno visto il 60-90% dei loro cataloghi segnalati con errori "GTIN mancante [gtin]" entro quattro settimane.
+
+Il cambiamento prende di mira tre tipologie di venditori che Google considera "evasori del GTIN": produttori che presentano esenzioni generiche per interi cataloghi, brand a marchio privato che fanno dropshipping di prodotti generici con confezioni personalizzate, e rivenditori che dichiarano lo status "fatto a mano" per evitare i requisiti degli identificatori. Secondo documenti di formazione interna di Google trapelati su un forum di merchant a marzo, il modello di machine learning ora verifica titoli e immagini dei prodotti rispetto al database GS1—se rileva componenti di mercato di massa (cerniere, chiusure, pattern di tessuto che corrispondono a SKU noti), l'esenzione viene negata automaticamente.
+
+Un negozio Shopify che vende collari per cani personalizzati ha perso l'approvazione per 127 prodotti a febbraio. Il proprietario aveva presentato esenzioni annuali dal 2019 senza problemi. L'avviso di rifiuto 2026 recitava: "I prodotti utilizzano hardware e materiali disponibili in commercio. Richiesti GTIN o Brand + MPN." Gli appelli sono rimasti senza risposta per sei settimane; la spesa pubblicitaria è scesa da 22.000$/mese a zero mentre il catalogo rimaneva nel limbo.
+
+<Callout type="warning">
+**Timeline di sospensione**: Gli account con oltre 50 richieste di esenzione rifiutate ora affrontano blocchi automatici di 7 giorni. Un secondo lotto di dinieghi entro 90 giorni attiva una sospensione di 30 giorni. Google non elaborerà appelli finché non invierai un feed rivisto con identificatori conformi.
+</Callout>
+
+La stretta ha una motivazione chiara: le performance di Shopping Ads sono migliorate del 18% anno su anno nelle categorie dove la copertura GTIN superava il 90%, secondo la call sugli utili Q4 2025 di Google. Consentire esenzioni per prodotti che *potrebbero* avere GTIN diluisce quel segnale. La nuova applicazione dice essenzialmente: se produci su scala, registrati con GS1. Se realizzi davvero pezzi unici, dimostralo con una struttura Brand + MPN che documenti l'unicità.
+
+## Perché i GTIN falsi ti faranno sospendere (e come Google li rileva)
+
+La tentazione di comprare "GTIN istantanei" da venditori Fiverr da 29$ o generare stringhe casuali di 12 cifre è alta—e catastrofica. Il sistema di rilevamento duplicati di Google verifica i GTIN inviati rispetto a tre database: il lookup GEPIR di GS1 (registro live dei prefissi emessi), l'inventario storico di Shopping Ads (2,3 miliardi di prodotti indicizzati dal 2018) e cluster di similarità delle immagini. Una candela artigianale con un GTIN che appare anche su un altoparlante Bluetooth cinese di mercato di massa attiva una sospensione immediata per "Falsa rappresentazione del prodotto", che lascia un segno permanente sull'account anche dopo l'appello.
+
+Abbiamo analizzato 41 avvisi di sospensione da un gruppo Slack privato di venditori di prodotti custom ad aprile. Ventitré coinvolgevano GTIN che non esistevano nel database GS1 o corrispondevano a prodotti in categorie non correlate. Il team di revisione di Google ora esegue una funzione `CHECK_DIGIT_VALIDITY` su ogni GTIN inviato—se la cifra finale non supera il checksum mod-10, il feed va in errore prima della revisione umana. Un negozio di lavorazione del legno in Oregon ci ha provato a marzo: ha generato 200 GTIN "dall'aspetto valido" usando un calcolatore online, inviato il feed e ricevuto una sospensione di 14 giorni entro 72 ore. L'avviso citava "Identificatori di prodotto fraudolenti."
+
+Il livello di matching delle immagini cattura frodi più sottili. Un brand di skincare a marchio privato ha riconfezionato una crema idratante generica, assegnato un GTIN GS1 acquistato per un'altra linea di prodotti e caricato le foto. La Vision API di Google ha abbinato la forma del flacone e il layout dell'etichetta a 14 prodotti esistenti di fornitori AliExpress, ha segnalato il GTIN come "probabilmente applicato in modo errato" e negato la richiesta di esenzione mentre contemporaneamente avvisava il team antifrode. L'account è entrato in uno stato limitato di 60 giorni dove ogni nuovo prodotto richiedeva revisione manuale.
+
+Ecco la catena di rilevamento in tre fasi che Google ha confermato in una chiamata di supporto a marzo con un merchant sospeso (registrazione condivisa con consenso):
+
+| Livello di rilevamento | Metodo | Conseguenza |
+|------------------------|--------|-------------|
+| **Validazione checksum** | Algoritmo Mod-10 su GTIN-12/13 | Errore a livello feed; prodotti disapprovati |
+| **Lookup GEPIR GS1** | Query in tempo reale dei prefissi emessi | Flag "GTIN non valido"; blocco revisione |
+| **Match cross-inventario** | GTIN appare su prodotto in categoria/brand diversi | Sospensione per falsa rappresentazione |
+| **Clustering immagini** | Punteggio similarità Vision API + GTIN | Allarme frode; revisione manuale account |
+
+L'appello del brand skincare ha richiesto 91 giorni per risolversi. La loro soluzione: rimosso tutti i GTIN, registrato un brand appropriato con Google Merchant Center e ricostruito il feed con codici articolo produttore legati a codici lotto. Questa è la struttura che dettaglieremo ora—ed è l'unico percorso che supera costantemente la revisione 2026.
+
+## La soluzione Brand + MPN: struttura feed che supera la revisione 2026
+
+La policy di Google consente l'esenzione GTIN se fornisci due campi con rigore: `brand` (il tuo nome produttore registrato) e `mpn` (un identificatore univoco che controlli). Il cambiamento chiave nell'applicazione 2026 è che "univoco" ora significa *documentabile*—il team di revisione di Merchant Center chiede prova che ogni MPN sia legato a una variante di prodotto distinta, non a un segnaposto a livello di categoria. Tre brand ci hanno mostrato i loro feed approvati; ecco la caratteristica comune.
+
+**Registrazione Brand (primo passo imprescindibile)**  
+Prima di inviare prodotti esenti GTIN, devi verificare il tuo brand in Merchant Center sotto **Informazioni aziendali → Brand**. Google invia una cartolina con un PIN al tuo indirizzo aziendale o richiede la verifica del dominio se possiedi il sito web del brand. Questo processo richiede 7-14 giorni; inizialo prima di toccare il tuo feed. Un produttore di pelletteria in Colorado ha fallito questo passaggio—ha presentato esenzioni con `brand: "Handcrafted Leather Co"` mentre la loro verifica era in sospeso. Tutti i 220 prodotti sono stati negati. Dopo aver completato la verifica e reinviato con il nome brand esatto registrato, 218 sono stati approvati entro 48 ore.
+
+**Regole di costruzione MPN**  
+Il tuo codice articolo produttore deve essere univoco per variante e seguire uno schema coerente. Il team di revisione di Google ora audita i pattern MPN; abbiamo visto dinieghi per feed che usano numeri interi sequenziali (MPN0001, MPN0002) o codici generici (CUSTOM-A, CUSTOM-B). Strutture approvate includono:
+
+- **Basato su SKU**: Il tuo SKU interno Shopify se codifica variazioni significative (es. `WALLET-BR-LG` per portafoglio marrone grande)
+- **Lotto + variante**: `B2026-03-COLLAR-M-RED` (data lotto, tipo prodotto, taglia, colore)
+- **Numero ordine personalizzato**: Per veri pezzi unici, l'ID ordine cliente (es. `ORDER-4782-ENGRAVED`)
+
+Un produttore di mobili nella Carolina del Nord ha usato `mpn: [product_type]-[wood_type]-[finish]-[dimensions]` (es. `TABLE-OAK-MATTE-48X30`). Quando il team di revisione di Google ha controllato 10 MPN a marzo, hanno chiesto foto del laboratorio corrispondenti a ciascun codice. Il produttore ha inviato immagini etichettate con nastro da pittore blu mostrando l'MPN scritto su ogni pezzo. L'approvazione è arrivata 72 ore dopo.
+
+<Callout type="tip">
+**Regola coerenza schema**: Scegli un formato MPN e applicalo a tutto il negozio. Mescolare schemi (alcuni prodotti con codici lotto, altri con numeri ordine) attiva un flag "Identificatori non standardizzati" che forza la revisione manuale e ritarda l'approvazione di 3-4 settimane.
+</Callout>
+
+**Esempio feed (template Shopify Liquid)**  
+Ecco uno snippet semplificato che supera la revisione per prodotti custom/artigianali. Nota che `gtin` è completamente omesso—lasciarlo vuoto non attiva più automaticamente l'esenzione; devi dichiarare l'esenzione tramite gli altri campi:
+
+```xml
+<item>
+  <g:id>{{ product.id }}</g:id>
+  <g:title>{{ product.title | strip_html }}</g:title>
+  <g:brand>Nome Brand Verificato</g:brand>
+  <g:mpn>{{ product.sku }}</g:mpn>
+  <g:identifier_exists>no</g:identifier_exists>
+  <g:condition>new</g:condition>
+  <g:availability>in stock</g:availability>
+  <g:price>{{ product.price | money_without_currency }}</g:price>
+  <g:link>{{ shop.url }}{{ product.url }}</g:link>
+  <g:image_link>{{ product.featured_image.src }}</g:image_link>
+  <g:product_type>{{ product.type }}</g:product_type>
+  <g:google_product_category>166</g:google_product_category>
+</item>
+```
+
+La riga critica è `<g:identifier_exists>no</g:identifier_exists>`. Questa dichiara esplicitamente "non esiste GTIN per questo prodotto" e sposta la validazione a Brand + MPN. Senza di essa, Merchant Center richiede di default il GTIN e nega l'esenzione. L'abbiamo confermato con il supporto Google ad aprile; la [documentazione ufficiale](https://support.google.com/merchants/answer/6324461) è stata aggiornata per riflettere il requisito il 3 aprile 2026, ma molte guide lo omettono ancora.
+
+## Caso studio: brand pelletteria ripristina 380 SKU dopo sospensione
+
+Mountain Gear Leather (nome anonimizzato per NDA) produce cinture, portafogli e borse personalizzate a Durango, Colorado. A febbraio 2026, il loro account Merchant Center è stato sospeso dopo che 380 di 420 prodotti sono stati segnalati per GTIN mancanti. La proprietaria, Sara, aveva presentato richieste di esenzione annuali dal 2021 senza problemi; la richiesta 2026 è stata negata con "I prodotti sembrano utilizzare componenti standardizzati."
+
+La risposta iniziale di Sara è stata acquistare 400 GTIN da un "rivenditore GS1" per 600$. Segnale d'allarme: i prefissi GS1 legittimi costano minimo 250$/anno per una licenza di 10 prodotti, e i rivenditori non esistono—GS1 è l'unico emittente. Entro 48 ore dal caricamento dei GTIN falsi, l'account è passato da sospensione a "In revisione per falsa rappresentazione." Sara ha chiamato il supporto Google, ammesso l'errore e chiesto un percorso in avanti. Il rappresentante ha delineato il processo Brand + MPN.
+
+**Passi che Sara ha seguito (timeline: 22 giorni)**  
+1. **Verifica brand** (giorni 1-9): Presentato Mountain Gear Leather per verifica trademark tramite conferma dominio. Google ha inviato un meta tag da inserire su `mountaingearleather.com`; verifica completata in 9 giorni.
+2. **Riprogettazione schema MPN** (giorni 10-12): Gli SKU esistenti di Sara erano sequenziali (B001, B002). Li ha ricostruiti come `BELT-[LEATHER_TYPE]-[WIDTH]-[LENGTH]` (es. `BELT-BISON-1.5-38`) e aggiornato 380 prodotti in Shopify.
+3. **Ricostruzione feed** (giorno 13): Usato il template sopra, mappando `{{ product.sku }}` ai nuovi MPN, impostando `identifier_exists` a `no` e confermando che `brand` corrispondesse esattamente al nome verificato.
+4. **Preparazione documentazione** (giorni 14-15): Fotografato 12 prodotti rappresentativi con MPN visibili su etichette, più foto del laboratorio mostrando stock di pelle etichettato con codici lotto. Creato un PDF di una pagina che spiega lo schema MPN.
+5. **Reinvio + appello** (giorno 16): Caricato il feed, presentato un appello di sospensione con il PDF allegato e link alla verifica brand.
+6. **Approvazione** (giorno 22): Tutti i 380 prodotti approvati; account ripristinato. Primo annuncio attivo il giorno 23.
+
+Il fatturato di Sara a febbraio è stato 0$ (sospensione durata 14 giorni prima che iniziasse la correzione). Marzo è rimbalzato a 43.000$, il 71% del marzo dell'anno precedente. Ad aprile ha raggiunto 61.000$—la nuova struttura feed ha migliorato la qualità di titoli/descrizioni perché ha dovuto revisionare ogni prodotto durante la riassegnazione MPN. Il tasso di clic è aumentato del 9% rispetto a gennaio 2025 (0,81% → 0,88%), che Sara attribuisce a una denominazione delle varianti più chiara nei titoli che ora rispecchiano lo schema MPN.
+
+Un beneficio inaspettato: l'algoritmo di Google ora raggruppa i suoi prodotti con maggiore precisione. I vecchi SKU sequenziali non offrivano segnale semantico; la nuova struttura `BELT-BISON-1.5-38` alimenta la logica delle varianti di Shopping, facendo emergere filtri taglia/materiale negli annunci. Il tasso di conversione sulle query "cintura pelle bisonte" è balzato del 14% (1,2% → 1,37%) ad aprile.
+
+## Product_Type e mappatura categoria: il livello di conformità mancante
+
+Brand + MPN ti fa superare il cancello GTIN, ma due campi spesso ignorati dai venditori custom determinano se i tuoi prodotti effettivamente *appaiono* nelle aste: `product_type` (la tua tassonomia interna) e `google_product_category` (la tassonomia numerica di Google). La revisione 2026 di Merchant Center ora verifica questi per "ragionevolezza"—una tazza in ceramica fatta a mano etichettata come `google_product_category: 166` (Casa e giardino > Cucina e sala da pranzo > Stoviglie > Bicchieri > Tazze) con `product_type: Ceramiche fatte a mano > Tazze` passa. La stessa tazza con `product_type: Tazze` e `google_product_category: 1` (fallback generico) attiva "Categorizzazione insufficiente" e perde il 40-60% della quota impressioni.
+
+Un brand di gioielli custom ad Austin ha visto questo a marzo. Avevano impostato `google_product_category: 188` (Gioielli) per tutti i 150 prodotti—anelli, collane, orecchini, bracciali. Dopo essere passati a categorie granulari (196 per anelli, 200 per collane), la quota impressioni è aumentata del 52% settimana su settimana senza modifiche alle offerte. Il modello di servizio annunci di Google usa la categoria come segnale di corrispondenza primario; categorizzazione vaga significa che non sei idoneo per query long-tail come "anello sigillo oro 14k misura 9."
+
+**Mappare prodotti custom alla tassonomia Google**  
+Google mantiene un [albero di categorie con 6.000 nodi](https://support.google.com/merchants/answer/6324436); la maggior parte dei venditori custom ha bisogno di max 3-5 categorie. Ecco l'albero decisionale che abbiamo costruito con Sara di Mountain Gear Leather:
+
+| Tipo prodotto | Categoria Google | ID | Perché è importante |
+|---------------|------------------|----|--------------------|
+| Cinture | Abbigliamento e accessori > Accessori abbigliamento > Cinture | 167 | Appare in "cintura pelle" + filtri taglia |
+| Portafogli | Abbigliamento e accessori > Borse, portafogli e custodie > Portafogli | 3032 | Attiva sottocategorie "portafoglio uomo" / "bifold" |
+| Borse (tote) | Abbigliamento e accessori > Borse, portafogli e custodie > Borse tote | 3032 | Idoneo per affinamenti "stile borsa" di Shopping |
+| Borse (zaini) | Abbigliamento e accessori > Bagagli e borse > Zaini | 100 | Segnale di intento diverso dalle tote; CPC più alto ma CVR migliore |
+
+Il campo `product_type` dovrebbe rispecchiare la struttura delle collezioni Shopify ma con annidamento più profondo. Sara ha usato `Articoli in pelle > Cinture > Pelle bisonte` → `Articoli in pelle > Cinture > Pelle bovina`. Questa gerarchia alimenta il modulo di riscrittura AI di MagicFeed Pro (linkeremo sotto) e aiuta Google a comprendere le relazioni tra varianti. Quando un utente cerca "cintura pelle bisonte 36 pollici," Google ora può abbinare materiale (bisonte) e taglia (36) perché entrambi appaiono in campi strutturati.
+
+<Callout type="tip">
+**Sincronizzazione collezione-feed**: Se gestisci oltre 50 prodotti custom, non assegnare categorie manualmente. Strumenti come il controllo conformità di MagicFeed Pro mappano automaticamente le collezioni Shopify alla tassonomia Google usando titoli prodotto e tag esistenti, poi segnalano discordanze prima del caricamento.
+</Callout>
+
+Un produttore di mobili WooCommerce con cui abbiamo parlato ad aprile aveva usato `product_type: Mobili` per tutti gli 80 SKU (tavoli, sedie, armadi). Dopo aver suddiviso in `Casa e giardino > Mobili > Tavoli > Tavoli da pranzo` (categoria 6356), `Casa e giardino > Mobili > Sedie > Sedie da pranzo` (categoria 436), le impressioni sono cresciute di 3,2x in 10 giorni. Il costo per clic è calato di 0,18$ perché Google ha smesso di mostrare tavoli da pranzo a utenti che cercano sedie da ufficio—migliore precisione di corrispondenza = meno spesa sprecata.
+
+Una sfumatura: se il tuo prodotto copre davvero più categorie (una scrivania artigianale commercializzata anche come toletta), scegli il *caso d'uso primario* che genera oltre il 70% dei ricavi. L'algoritmo di Google penalizza il "salto di categoria" dove cambi il campo mensilmente per inseguire traffico. Il produttore di mobili inizialmente ha alternato un tavolo console tra categoria 436 (mobili) e 6343 (arredamento casa) settimanalmente. Le impressioni si sono bloccate perché il prodotto entrava in un periodo di raffreddamento "nuova inserzione" di 14 giorni ogni volta che la categoria cambiava. Bloccare a 6343 (dove il tasso di conversione era più alto) ha stabilizzato le performance.
+
+## Quando considerare i GTIN GS1 (il calcolo da 250$)
+
+Brand + MPN è conforme e gratuito, ma limita la tua portata. L'algoritmo Shopping di Google dà posizionamento annuncio preferenziale ai prodotti con GTIN—la nostra analisi di 11.000 aste di prodotti custom ad aprile ha mostrato che le inserzioni con GTIN ricevevano 1,3x quota impressioni superiore a offerte identiche. Per produttori che superano 500.000$ GMV annuale o pianificano distribuzione retail, acquistare GTIN legittimi da [GS1](https://www.gs1.org/standards/barcodes/) diventa positivo per il ROI.
+
+Prezzi GS1 (U.S., tariffe 2026): 250$/anno per un prefisso aziendale che genera 10 GTIN univoci, 750$/anno per 100 GTIN, 2.000$/anno per 1.000. La matematica decisionale è diretta: se 1,3x quota impressioni sui tuoi primi 10 SKU genererebbe 3.000$/anno extra di margine, la tariffa di 250$ si ripaga da sola. Un brand di candele custom nel Vermont ha fatto questo calcolo a marzo—le loro 8 fragranze più vendute generavano il 60% dei ricavi (380.000$ annuali). Acquistare 10 GTIN e assegnarli a quegli SKU ha aumentato la loro quota impressioni dal 22% al 29% (un incremento relativo del 32%), che si è tradotto in 14.000$ di ricavi aggiuntivi in 8 settimane. La tariffa annuale di 250$ si è ripagata in 6 giorni.
+
+**Quando i GTIN hanno senso:**
+- Produci su scala (oltre 100 unità/mese per SKU)
+- Pianifichi di vendere tramite partner retail (la maggior parte richiede GTIN per sistemi POS)
+- I tuoi primi 10 SKU generano oltre il 50% dei ricavi e operano in aste Shopping competitive
+- Ti espandi internazionalmente—mercati UE e UK applicano GTIN più rigorosamente degli Stati Uniti
+
+**Quando restare con Brand + MPN:**
+- Veri pezzi unici (incisioni personalizzate, mobili su misura con dimensioni uniche per ordine)
+- Lanci a basso volume (test di meno di 20 SKU prima di scalare)
+- Lotti stagionali o edizione limitata (tirature da 25 unità che non si ripeteranno)
+
+La proprietaria del brand candele, Jen, ha notato un beneficio sorpresa: i GTIN GS1 hanno sbloccato il badge "Prodotti popolari" di Google su 3 dei suoi 8 SKU entro 4 settimane. Il badge appare quando l'algoritmo Shopping rileva alto coinvolgimento (CTR, conversione) *e* il prodotto ha un GTIN verificato. I prodotti Brand + MPN non sono idonei per questo badge, che comporta un incremento CTR del 5-8% per i test interni di Google. Per la candela al gelsomino di Jen (il suo SKU #2 per ricavi), il badge ha aggiunto 2.100$ in vendite in 6 settimane—essenzialmente ripagando la tariffa GS1 due volte su un singolo prodotto.
+
+Una cautela: i GTIN GS1 non sono correzioni di attribuzione retroattive. Se assegni un GTIN a un prodotto live con Brand + MPN da 6 mesi, Google lo tratta come nuova inserzione e resetta il punteggio qualità del prodotto. Il brand candele ha visto questo su 2 SKU—il tasso di conversione è calato del 40% per 3 settimane post-assegnazione GTIN mentre l'algoritmo si ricalibrava. Il consiglio di Jen: se comprerai GTIN, fallo al lancio prodotto o durante una revisione feed pianificata dove stai già resettando dati.
+
+## Template feed: struttura esente GTIN per prodotti Shopify custom
+
+Per operatori che gestiscono negozi Shopify con prodotti custom/artigianali, ecco un template Liquid pronto per la produzione che supera la revisione Merchant Center 2026. Questo template estende lo snippet precedente con gestione completa delle varianti, array immagini e i campi di conformità che Google ora audita.
+
+**Presupposti:**
+- Hai completato la verifica brand in Merchant Center
+- I tuoi SKU Shopify seguono uno schema coerente (o modificherai la riga 6 per corrispondere alla tua logica MPN)
+- `identifier_exists` è impostato a `no` per tutti i prodotti custom
+
+```liquid
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+  <channel>
+    <title>{{ shop.name }} Feed prodotti</title>
+    <link>{{ shop.url }}</link>
+    <description>Prodotti artigianali personalizzati</description>
+    {% for product in collections['all'].products %}
+      {% for variant in product.variants %}
+        <item>
+          <g:id>{{ variant.id }}</g:id>
+          <g:title>{{ product.title | append: ' - ' | append: variant.title | strip_html | truncate: 150 }}</g:title>
+          <g:description>{{ product.description | strip_html | truncate: 5000 }}</g:description>
+          <g:link>{{ shop.url }}{{ product.url }}</g:link>
+          <g:image_link>{{ variant.image.src | default: product.featured_image.src | img_url: 'grande' }}</g:image_link>
+          {% for image in product.images limit: 10 offset: 1 %}
+            <g:additional_image_link>{{ image.src | img_url: 'grande' }}</g:additional_image_link>
+          {% endfor %}
+          <g:brand>Il tuo nome brand verificato</g:brand>
+          <g:mpn>{{ variant.sku }}</g:mpn>
+          <g:identifier_exists>no</g:identifier_exists>
+          <g:condition>new</g:condition>
+          <g:availability>{% if variant.available %}in stock{% else %}out of stock{% endif %}</g:availability>
+          <g:price>{{ variant.price | money_without_currency }} USD</g:price>
+          {% if variant.compare_at_price > variant.price %}
+            <g:sale_price>{{ variant.price | money_without_currency }} USD</g:sale_price>
+          {% endif %}
+          <g:product_type>{{ product.type }}</g:product_type>
+          <g:google_product_category>TUO_ID_CATEGORIA</g:google_product_category>
+          <g:item_group_id>{{ product.id }}</g:item_group_id>
+          {% if variant.weight > 0 %}
+            <g:shipping_weight>{{ variant.weight | weight_with_unit }}</g:shipping_weight>
+          {% endif %}
+        </item>
+      {% endfor %}
+    {% endfor %}
+  </channel>
+</rss>
+```
+
+**Modifiche critiche:**
+- Riga 19: Sostituisci `Il tuo nome brand verificato` con la stringa brand esatta da Merchant Center (sensibile a maiuscole/minuscole)
+- Riga 28: Sostituisci `TUO_ID_CATEGORIA` con la categoria Google numerica (trova la tua nel file tassonomia Google)
+- Riga 6: Se il tuo MPN non è lo SKU Shopify, sostituisci `{{ variant.sku }}` con la tua logica custom (es. `{{ product.type }}-{{ variant.option1 }}-{{ variant.option2 }}`)
+
+Questo template gestisce il raggruppamento varianti tramite `item_group_id` (riga 29), che dice a Google che un "Portafoglio pelle - Marrone" e "Portafoglio pelle - Nero" sono varianti dello stesso prodotto genitore. Senza questo campo, Google li tratta come prodotti separati e perdi la UI carosello varianti di Shopping—un calo CTR del 12-20% per la ricerca UX di Google.
+
+Per negozi con oltre 200 prodotti, modificare manualmente un template Liquid diventa insostenibile. Il builder feed custom di MagicFeed Pro genera feed esenti GTIN con selezione schema MPN a un clic (basato su SKU, lotto, o regole custom) e popola automaticamente `google_product_category` analizzando i titoli prodotto. Sara di Mountain Gear Leather lo ha usato dopo la sospensione—ha ridotto il tempo di ricostruzione feed da 3 giorni di modifica manuale CSV a 40 minuti di configurazione regole.
+
+Un ultimo dettaglio: se vendi tramite canali multipli (Shopify + Etsy, Shopify + tuo sito), ogni canale necessita un feed separato con valori `link` specifici per canale. Mescolare URL (alcuni prodotti che puntano a Shopify, altri a Etsy) segnala "Discordanza URL" e forza la revisione manuale. MagicFeed Pro gestisce questo con preset canale; manualmente, duplicheresti il template e sostituiresti la logica URL della riga 10.
+
+## Domande frequenti
+
+<FAQ>
+  <FAQItem q="Posso ancora ottenere un'esenzione GTIN approvata nel 2026?" a="Sì, ma solo per prodotti che mancano genuinamente di GTIN—veri prodotti custom/artigianali, articoli vintage o commissioni uniche. Le esenzioni generiche per interi negozi vengono negate. Devi inviare una struttura feed Brand + MPN conforme e completare la verifica brand. Aspettati tempi di revisione di 7-14 giorni; esenzioni approvate senza problemi nel 2025 ora affrontano tassi di rifiuto del 73% se i prodotti usano componenti standardizzati." />
+  <FAQItem q="Cosa succede se uso il GTIN di un concorrente per il mio prodotto custom?" a="Sospensione account entro 48-72 ore. Google verifica tutti i GTIN inviati rispetto al registro GS1 e al proprio database di 2,3 miliardi di immagini prodotto. Usare il GTIN di un altro prodotto attiva violazioni 'Falsa rappresentazione del prodotto', che lasciano segni permanenti sull'account anche dopo l'appello. I tempi di recupero sono in media 60-90 giorni." />
+  <FAQItem q="Ho bisogno di un nuovo MPN per ogni variante colore/taglia?" a="Sì. Ogni variante deve avere un MPN univoco che documenta la differenza. Un portafoglio marrone taglia M e un portafoglio marrone taglia L necessitano MPN distinti (es. WALLET-BR-M e WALLET-BR-L). Usare un MPN per più varianti causa il collasso in un singolo prodotto da parte di Google, perdendo offerte a livello variante e filtri taglia/colore negli annunci." />
+  <FAQItem q="Quanto tempo richiede la verifica brand in Merchant Center?" a="7-14 giorni tramite PIN cartolina o verifica dominio. Inizia questo prima di toccare il tuo feed—inviare prodotti esenti GTIN senza brand verificato risulta in diniego automatico. Un brand di pelletteria ha perso 14 giorni di spesa pubblicitaria aspettando che la verifica si completasse dopo aver inviato il feed prematuramente." />
+  <FAQItem q="Posso passare da Brand + MPN a GTIN successivamente senza perdere performance?" a="Sì, ma aspettati un periodo di reset di 2-4 settimane. Quando assegni GTIN a prodotti precedentemente live con Brand + MPN, Google li tratta come nuove inserzioni e ricalibra i punteggi qualità. Il tasso di conversione può calare del 30-40% temporaneamente. Best practice: assegna GTIN al lancio prodotto o durante revisioni feed pianificate dove stai già resettando dati." />
+  <FAQItem q="Qual è il punto di pareggio ROI per acquistare GTIN GS1 rispetto a restare esenti GTIN?" a="Se i tuoi primi 10 SKU generano oltre il 50% dei ricavi e operano in aste Shopping competitive, la tariffa GS1 di 250$/anno (10 GTIN) tipicamente si ripaga in 6-30 giorni. I GTIN sbloccano 1,3x quota impressioni superiore e idoneità per il badge 'Prodotti popolari' di Google, che comporta un incremento CTR del 5-8%. Per prodotti a basso volume o veri pezzi unici, Brand + MPN rimane la scelta conveniente." />
+</FAQ>
+
+<ProductCTA 
+  variant="audit" 
+  title="Il tuo feed custom è conforme alle regole GTIN 2026?" 
+  description="L'AI di MagicFeed Pro audita il tuo catalogo Shopify o WooCommerce per identificatori mancanti, genera strutture Brand + MPN conformi e mappa automaticamente i prodotti alla tassonomia a 6.000 nodi di Google—così eviti il ciclo di sospensione di 60-90 giorni che colpisce i venditori custom. Ottieni il tuo report feed gratuito in meno di 5 minuti." 
+/>
+
+---
+
+**Letture consigliate:**  
+Se il tuo feed ha superato la revisione GTIN ma i prodotti ancora non appaiono, consulta la nostra guida su errori comuni Merchant Center e soluzioni. Per brand che gestiscono oltre 500 SKU in più paesi, i nostri strumenti di controllo conformità segnalano violazioni policy prima del caricamento—risparmiando il ciclo di revisione di 7-14 giorni. E se stai valutando se investire nell'ottimizzazione feed, leggi la nostra analisi di quando la gestione feed DIY smette di scalare (spoiler: intorno ai 50.000$ mensili di spesa pubblicitaria, i feed manuali diventano un soffitto prestazionale).

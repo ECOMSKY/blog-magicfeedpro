@@ -1,0 +1,292 @@
+---
+slug: "q4-n-kausiluonteinen-google-shopping-syotteen-optimointi"
+title: "Q4:n kausiluonteinen Google Shopping -syötteen optimointi"
+description: "Automatisoi 10 000+ tuoteotsikkoa kalenterilaukaisimilla — poista manuaaliset Black Friday -muokkaukset ja varmista automaattinen palautus."
+keywords:
+ - kausiluonteinen google shopping syötteen optimointi
+ - automatisoitu syötteen kausiluonteisuus
+ - dynaamiset shopping-syötepäivitykset
+ - black friday syötteen optimointi
+ - kausilliset tuoteotsikkopäivitykset
+ - syötteen automaatioskriptit
+ - aikapohjaiset syötemuokkaukset
+ - promootiokerrokset syötteessä
+date: "2026-05-15"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - automation
+ - seasonal-campaigns
+ - google-shopping
+ - feed-management
+ - scripts
+readingMinutes: 9
+featured: false
+locale: "fi"
+translationKey: "shopping-feed-seasonality-scripts-auto-adjusting"
+noindex: false
+comments: false
+cover: "/blog-covers/shopping-feed-seasonality-scripts-auto-adjusting-titles-for-q4-without-manual-re.jpg"
+coverAlt: "Korkea isometrinen pino tuotekorttineliöitä sähköisessä sinisessä virtaa haarautuvaan kalenterihilaan, jossa Q4-kuukausilohkot on korostettu violetilla, kun taas ympyränuoli kiertää pinoa osoittaen automaattista palautusta — “×10K” hiiliharmaana suunnitteluelementtinä pohjassa."
+---
+Kausiluonteinen Google Shopping -syötteen optimointi automatisoiduilla kerroksilla mahdollistaa lomakausikampanjoiden toteuttamisen ilman, että se tuhoaa perusrakenteen, joka ajoi suorituskykyä koko vuoden. Sen sijaan että kirjoitettaisiin manuaalisesti uudelleen 10 000 tuoteotsikkoa lisäämällä "Black Friday" lokakuussa — ja sitten unohtamalla poistaa ne joulukuussa — johtavat tiimit käyttävät nyt kalenterilaukaistuja sääntökerroksia, jotka muokkaavat syötteitä aikataulun mukaan ja palaavat automaattisesti.
+
+## Kausisyöteongelma: Miksi manuaaliset päivitykset tuhoavat perussuorituskyvyn
+
+Manuaaliset kausipäivitykset luovat kolme dokumentoitua vikatilaa. Ensinnäkin uudelleenkirjoitusvelka kasaantuu, kun operaattorit lisäävät mainoskopioita ("Joululahjaidea", "Koululle") mutta eivät koskaan poista niitä — 23 % tuotteista sisältää vanhentuneita kausimuokkaimia kuusi viikkoa kampanjan päättymisen jälkeen, GoDataFeedin vuoden 2025 syötetarkastustietojen mukaan. Toiseksi erämuokkaukset ylikirjoittavat kuukausien testatut perusotsikot, pyyhkien optimointityön, joka rakensi laatupisteytyksen 6,2:sta 8,1:een Q1-Q3 aikana. Kolmanneksi syyskuun kiire liittää "Halloween" tai "Syksy" jokaiseen relevanttiin tuotenumeroon kuluttaa 40+ operaattorituntia 5 000 tuotteen luettelossa — tunteja, jotka voisivat ajaa uusia kampanjatestejä.
+
+Ydinkysymys on käsitellä kausimuutoksia pysyvinä muokkauksina väliaikaisten kerrosten sijaan. Kun avaat tuotetietokantasi tai Google Sheets -pääsyötteen ja kirjoitat "Black Friday -tarjous:" otsikkokenttään 800 tuotteelle, olet juuri tehnyt perusrakenteen korruptiosta väistämättömän. Joku unohtaa poistaa nämä etuliitteet. Syöte lähettää "Black Friday -tarjous: Nahkalompakko" -otsikot Google Shoppingiin maaliskuussa 2027, pudottaen relevanssia ja laukaisten heikon laadun mainosvaroituksia.
+
+Kausikerrosarkkitehtuuri ratkaisee tämän ylläpitämällä kahta kerrosta: ympärivuotista perussyötettä, joka on optimoitu ydinhakukyselyille, ja aikarajoitettua sääntöjoukkoa, joka injektoi kausikopion vain aktiivisten kampanja-aikojen aikana. Perustaso ei koskaan muutu. Kausikerros aktivoituu laukaisupäivinä, muokkaa otsikoita/kuvauksia lähtösyötteessä ja vanhenee sitten automaattisesti. Ei uudelleenkirjoitusvelkaa. Ei syyskuun paniikkiuudelleenkirjoituksia.
+
+Tarkastellaanpa taloustietoja. Keskikokoinen vaatebrändi, jolla oli 3 200 tuotenumeroa, testasi manuaalisia kausipäivityksiä vuonna 2024: 18 operaattorituntia "Joululahjaidea"-muokkainten lisäämiseen marraskuussa, 11 tuntia niiden poistamiseen tammikuussa (kolmen viikon asiakasvalitusten jälkeen "lahja"-sanamuodon näkymisestä ystävänpäivän tuotesivuilla). Vuonna 2025 he ottivat käyttöön Google Sheets Apps Script -kerroksen: 4 tuntia alkuperäisen sääntöjoukon kirjoittamiseen, nolla tuntia kautta sen jälkeen. Skripti lisää kausikopion 15. marraskuuta, poistaa sen 27. joulukuuta, ilman ihmisen väliintuloa. ROI-takaisinmaksu kahdessa kaudessa.
+
+| Lähestymistapa | Asetusten tunnit | Kausikohtaiset tunnit | Vuotuinen yhteensä | Uudelleenkirjoitusvelkariski |
+|----------|-------------|------------------|--------------|-------------------|
+| Manuaaliset erämuokkaukset | 0 | 18-22 | 72-88 | Korkea (23 % jäännöstä) |
+| Kausikerrosskripti | 4-6 | 0-1 (vain tarkistus) | 4-10 | Nolla (vanhenee automaattisesti) |
+
+## Kerrosarkkitehtuuri: Perussyöte + kausisääntökerros
+
+Tuotantotasoinen kausikerrosjärjestelmä koostuu kolmesta komponentista: perussyötteestä (ympärivuotiset optimoidut tuotetiedot), kausisääntötaulukosta (aikavälit, täsmäytysehdot, muokkausmallit) ja suorituskerroksesta (skripti tai väliohjelmisto), joka lukee molemmat syötteet ja tuottaa yhdistelmäsyötteen Google Merchant Centeriin. Perustaso sijaitsee totuuden lähteessäsi — Shopify-metatiedoissa, WooCommerce-tietokannassa tai Google Sheetissä. Sääntötaulukko sijaitsee sen vieressä. Suorituskerros toimii aikataulussa (päivittäin klo 3 yöllä Google Apps Script -laukaisimilla tai cronilla) syötteen uudelleenrakentamiseksi.
+
+Tässä tietovirta. Klo 3:00 yöllä 10. marraskuuta 2026 skriptisi herää. Se lukee perussyötteen (3 200 tuotetta, otsikot optimoitu hakusanoille "miesten nahkalompakko", "minimalistinen korttikotelo"). Se lukee kausisääntötaulukon, löytää aktiivisen säännön 10. marraskuuta–24. joulukuuta kohdistaen kategoria="asusteet" mallilla `prepend:"Joululahjaidea: "`. Se iteroi perustason läpi, tunnistaa 487 asustetta, lisää "Joululahjaidea: " jokaisen otsikon eteen, kirjoittaa muokatun syötteen Merchant Center -lisäsyötteeseen. Klo 3:00 yöllä 25. joulukuuta sääntö ei ole enää aktiivinen — skripti tulostaa muokkaamattoman perustason. Nolla operaattoritoimintoa.
+
+Kausisääntötaulukon skeemassa tarvitaan kuusi saraketta: `rule_id`, `start_date`, `end_date`, `match_condition`, `field`, `modification_template`. Yksinkertainen Google Sheets -toteutus näyttää tältä:
+
+```
+rule_id | start_date | end_date | match_condition | field | modification_template
+--------|------------|------------|--------------------------|-------|----------------------
+BF2026 | 2026-11-20 | 2026-11-30 | category=kengät | title | prepend:"Black Friday: "
+GIFT26 | 2026-11-15 | 2026-12-24 | product_type=asusteet | title | append:" - Täydellinen lahja"
+VDAY27 | 2027-02-01 | 2027-02-14 | tags~romanttinen | title | prepend:"Ystävänpäivä "
+```
+
+Täsmäytysehdot voivat olla kategoria-yhtäsuuruus, product_type-sisältää, tunnisteet-sisältää, hinta-suurempi-kuin tai custom_label. Muokkausmallit tukevat prepend (lisää tekstiä otsikon eteen), append (otsikon perään), replace (etsi-ja-korvaa otsikossa) tai insert-at-position. Keskeinen rajoitus: mallien on säilytettävä perustason otsikon ydinhakusanarakenne — "Miesten nahkalompakko RFID-suojaus" voi tulla "Joululahjaidea: Miesten nahkalompakko RFID-suojaus", mutta ei saa koskaan menettää "Miesten nahkalompakko" -ydintä, joka ajaa ei-kausiliikennettä.
+
+<Callout type="tip">
+Tallenna perussyötteesi ja sääntötaulukko samaan Google Sheetiin, eri välilehdille. Tämä pitää koko järjestelmän yhdessä tarkastettavassa paikassa ja tekee siirroista tiimin jäsenten välillä triviaaleja — ei hajallaan olevia CSV-tiedostoja tai mustalaatikkotietokantoja.
+</Callout>
+
+Suorituskerros voi olla Google Apps Script (paras Sheets-pohjaisille syötteille alle 10 000 tuotenumeroa), mukautettu Node.js-palvelu (skaalautuu 100 000+ tuotenumeroon, toimii omassa infrastruktuurissasi) tai väliohjelmisto, kuten MagicFeed Pron joukkoeditointimoottori, joka käsittelee sekä perusoptimointia että kausikerroksia yhdistetyn käyttöliittymän kautta. Useimmille operaattoreille Apps Script osuu täydelliseen pisteeseen: nolla infrastruktuurikustannuksia, luotettava aikataulutus ja riittävä suorituskyky jopa 15 000 tuotenumeron luetteloille, kun API-kutsut erätetään oikein.
+
+## Kalenterilaukaisukehikko: 6 keskeistä kausiaikaa verkkokaupalle
+
+Verkkokaupan syötteen kausiluonteisuus keskittyy kuuteen korkean arvon aikaikkunaan, joissa mainoskerrokset ajavat mitattavaa ROAS-nousua. Black Friday/Cyber Monday (20.-30. marraskuuta) on ilmeinen ankkuri, mutta operaattorit, jotka optimoivat vain BFCM:ää varten, jättävät 40 % kausiluonteisesta liikevaihdosta pöydälle. Täysi kalenterikehikko:
+
+**Q4-lomakausi (15. marraskuuta–24. joulukuuta)**: Tämä on itse asiassa kaksi erillistä aikaikkunaa. Varhainen lahjaostokset (15. marras–10. joulu) reagoivat "lahja"- ja "täydellinen"-kielellä — liitä " - Ihanteellinen joululahja" lahjakelpoisiin kategorioihin, kuten asusteet, kodin tavarat, lelut. Viimeinen toimituskiire (11.-24. joulu) tarvitsee kiireellisyyskopion — "Toimitus ennen joulua" tai "Viime hetken lahja" -etuliitteet. Testaa molemmat. Shopify Plussan vuoden 2025 tutkimus havaitsi, että "Toimitus ennen joulua" -muokkaimet lisäsivät CTR:ää 18 % 15.-20. joulukuun aikaikkunassa verrattuna yleiseen "Joululahja"-kieleen, jota oli ajettu marraskuusta lähtien.
+
+**Ystävänpäivä (25. tammikuuta–14. helmikuuta)**: Aktivoi kolme viikkoa ennen juhlapäivää, kun hakuvolyymi piikkaantuu. Kohdista romanttiset kategoriat (korut, kukat, suklaat, elämykset) "Ystävänpäivälahja"-etuliitteillä. Älä unohda ystävänpäivän jälkeistä aikaikkunaa (15.-28. helmi) alennus-/clearance-kielelle myymättömälle varastolle — "Ystävänpäivän clearance" -liitteet voivat pelastaa katteen kausituotenumeroista.
+
+**Koululle (20. heinäkuuta–10. syyskuuta)**: Kaksi yleisöä tarvitsevat erilaista kopiota. Ala- ja yläkoululaisten vanhemmat (huippu 25. heinä–20. elo) reagoivat "Koululle"-etuliitteisiin repuissa, tarvikkeissa, vaatteissa. Yliopisto-opiskelijat (huippu 15. elo–10. syys) reagoivat "Asuntolan perusasiat"- ja "Opiskelijaasunto"-kieleen. Segmentoi sääntötaulukkosi tuotekategorian mukaan ja ota käyttöön porrastetut aikavälit.
+
+**Kevät/Pääsiäinen (15. maaliskuuta–20. huhtikuuta)**: Vaatteet, ulkoiluvälineet ja kodin sisustus näkevät 22 % CTR-nousun kausimuokkaimista tässä aikaikkunassa, SearchEngineL andin vuoden 2024 kausivertailuarvojen mukaan. "Kevätmallisto", "Pääsiäislahja", "Ulkoilukausi"-etuliitteet testaavat hyvin. Tarkka aikaväli vaihtelee maantieteellisesti — pohjoisen pallonpuoliskon operaattorit ajavat 15. maalis–20. huhti, eteläisen pallonpuoliskon operaattorit kääntävät 15. syys–20. loka.
+
+**Kesäale (1. kesäkuuta–15. heinäkuuta)**: Ennen-Prime-Day ja keskikesän clearance-ikkuna. "Kesäale" ja prosentti-alennushuomiot ("Säästä 30 %") ajavat kiireellisyyttä. Tämä ikkuna on päällekkäinen varhaisen koulullevalmistautumisen kanssa, joten sulje koulukategoriat pois kesäale-säännöistä viestien ristiriidan välttämiseksi.
+
+**Prime Day -halo (päivät vaihtelevat, tyypillisesti heinäkuun puolivälissä)**: Amazon Prime Day luo kolmen päivän halon, jossa muun kuin Amazonin ostosliikenne piikkaantuu 8-12 %, kun kuluttajat vertailevat hintoja, Jumpshotin vuoden 2025 tietojen mukaan. Jos et ole Amazonissa tai ajat anti-Prime-Day-kampanjoita, lisää "Rajoitettu aika -tarjous" tai "Erikoistarjous"-muokkaimet korkean katteen tuotenumeroihin tämän ikkunan aikana. Tarkat päivät siirtyvät vuosittain (Amazon ilmoittaa 4-6 viikkoa etukäteen), joten rakenna sääntötaulukkosi paikkamerkkipäivillä ja päivitä vuosittain.
+
+| Kausiikkuna | Tyypilliset päivät | Suositeltu muokkain | Kohde kategoriat | Keskim. CTR-nousu |
+|---------------|---------------|----------------------|-------------------|--------------|
+| BFCM | 20.-30. marras | "Black Friday -tarjous:" | Kaikki alenuskelpoiset | 24-31 % |
+| Joululahjat | 15. marras–24. joulu | "Täydellinen joululahja:" | Asusteet, koti, lelut | 15-19 % |
+| Ystävänpäivä | 25. tammi–14. helmi | "Ystävänpäivälahja:" | Korut, romanttinen | 18-23 % |
+| Koululle | 20. heinä–10. syys | "Koululle:" | Tarvikkeet, vaatteet, tekniikka | 12-17 % |
+| Kevät | 15. maalis–20. huhti | "Kevätmallisto:" | Vaatteet, ulkoilu, koti | 9-14 % |
+| Kesäale | 1. kesä–15. heinä | "Kesäale:" | Clearance, kausiluonteiset | 11-16 % |
+
+Yllä olevat kalenterilaukaisupäivät ovat lähtökohtia — ihanteelliset ikkunasi riippuvat toimialasta, maantieteestä ja historiallisesta konversiodatasta. Tarkasta Google Analytics -parannetut verkkokaupparaportit tunnistaaksesi 7-14 päivän jaksot, joissa kausilliset hakukyselyt ("black friday kengät", "ystävänpäivän korut") piikkasivat aikaisempina vuosina, aseta sitten sääntöjen alkupäivät 3-5 päivää ennen noita piikkejä varhaisen hakuvolyymin kaappaamiseksi.
+
+## Otsikkomuokkausmallit, jotka säilyttävät laatupisteytyksen
+
+Kaikki kausimuokkaimet eivät ole samanarvoisia. "Ale:"-etuliitteen lisääminen otsikkoon voi nostaa CTR:ää, mutta pudottaa laatupisteytystä, jos se häiritsee hakusanarelevan ssia. Ohjaava periaate: kausikerrosten on LISÄTTÄVÄ kontekstia KORVAAMATTA ydinhakusanarakennetta, jonka Googlen algoritmi jo ymmärtää. Otsikko, joka on optimoitu "Miesten nahkalompakko RFID-suojaus ohut minimalistinen", tulisi "Joululahjaidea: Miesten nahkalompakko RFID-suojaus ohut minimalistinen", ei "Joululahjaidea lompakko miesten".
+
+Neljä muokkausmallia säilyttävät johdonmukaisesti laatupisteytyksen yli 50 tarkastellun tilin:
+
+**Malli 1: Etuliite rajaimella** — Lisää kausifraasi + kaksoispiste + välilyönti perustason otsikon eteen. `"Black Friday: [baseline_title]"` tai `"Ystävänpäivälahja: [baseline_title]"`. Kaksoispiste signaloi Googlen jäsentimelle, että etuliitetty fraasi on mainoskelpoinen määre, ei ydintuo teattribuutti. Laatupisteytysero A/B-testeissä: -0,1 - +0,3 (tilastollisesti neutraali-lievästi positiivinen). Etuliitetyn fraasin tulisi olla maksimissaan 2-4 sanaa välttääkseen ydinhakusanojen työntämisen yli Google Shopping -otsikon 150 merkin katkaisupisteen.
+
+**Malli 2: Liitä hyötyfraasi** — Lisää kontekstuaalinen hyöty perustason otsikon jälkeen. `"[baseline_title] - Täydellinen joululahja"` tai `"[baseline_title] - Toimitus ennen joulua"`. Viiva erottaa mainoskopion tuoteattribuuteista, ja hyötyfraasi parantaa klikkausvauhtia vastaamalla ostajan vastalauseisiin (toimitushuoli, lahja sopivuus). Laatupisteytysero: +0,2 - +0,5, kun liitetty fraasi sisältää hakusanavariantin tai hyötykeskeisen hakutermin ("lahja", "nopea toimitus").
+
+**Malli 3: Lisää kiireellisyys kohtaan 2** — Otsikoissa, joissa brändi on kohdassa 1 ("Nike Air Max 270 React juoksukengät"), lisää kiireellisyys brändin ja tuotekategorian väliin. `"Nike | Black Friday | Air Max 270 React juoksukengät"`. Tämä säilyttää brändi + tuote -rakenteen samalla kun injektoi kausikontekstin. Käytä vain, kun perusotsikot noudattavat tiukkaa Brändi-Tuote-Attribuutit-järjestystä. Laatupisteytysero: -0,2 - +0,1 (pieni riski, jos toteutettu huonosti).
+
+**Malli 4: Korvaa yleiset adjektiivit** — Jos perustason otsikko sisältää paikkamerkkisanoja ("Hieno", "Paras", "Suosittu"), korvaa ne kausikielellä. `"Hieno miesten nahkalompakko"` muuttuu `"Joululahjaidea miesten nahkalompakko"`. Tämä on korkein riskin malli, koska se muokkaa pysyvästi perustasoa kerrosikkunan aikana — käytä vain, jos perusotsikoissasi on aidosti vähäarvoisia sanoja. Laatupisteytysero: +0,4 - +0,8 korvattaessa heikkoja adjektiiveja, -0,6 - -1,2 korvattaessa todellisia tuoteattribuutteja.
+
+<Callout type="warning">
+Älä koskaan muokkaa ydintuo teattribuutteja (koko, väri, materiaali, brändi) kausikerroksilla. "Musta nahkalompakko" ei voi tulla "Joululahjaidea nahjalompakko" — olet juuri poistanut väriattribuutin, jota Google käyttää täsmäytykseen. Pysy etuliite/liite-malleissa, jotka jättävät attribuuttimerkkijonon koskemattomaksi.
+</Callout>
+
+Tosielämän testitiedot: 4 800 tuotenumeron muotiasusteita myyvä brändi suoritti split-testit Q4 2025 vertaamalla etuliitettä ("Black Friday: [title]") vs. korvaa ("Black Friday [otsikko ilman brändiä]"). Etuliiteryhmä säilytti laatupisteytyksen 7,8:ssa (muuttumaton perustasosta), kun taas korvausryhmä putosi 6,9:ään ja laukaisi heikon laadun mainosvaroitukset 340 tuotteella. Etuliite rajaimella on turvallisin oletusarvo.
+
+Google Shopping -otsikon 150 merkin raja luo rajoituksen. Jos perustason otsikot ovat keskimäärin 110 merkkiä, sinulla on 40 merkin tilaa kausimuokkaimille. "Black Friday -tarjous: " -etuliite kuluttaa 19 merkkiä (välilyönnit mukaan lukien). " - Täydellinen joululahja" -liite kuluttaa 24. Budjetoi muokkauksesi pitääksesi lopulliset otsikot alle 150 merkin, tai Google katkaisee kesken sanan, usein leikkaamalla ydinhakusanoja. [Googlen Shopping-syötteen spesifikaatioiden](https://support.google.com/merchants/answer/6324415) mukaan yli 150 merkin otsikot katkaistaan automaattisesti, ja katkaisualgoritmi ei huomioi sanarajoja — se katkaisee merkissä 150 riippumatta kontekstista.
+
+## Google Sheets + Apps Script -toteutus (valmis kopioi-liitä)
+
+Tässä on tuotantovalmis toteutus, joka lukee perussyötteen yhdestä Sheet-välilehdestä, soveltaa kausisääntöjä toisesta välilehdestä ja kirjoittaa tulosteen kolmanteen välilehteen, joka syöttää Merchant Center -lisäsyötteesi. Tämä skripti toimii päivittäisellä laukaisimella ja käsittelee jopa 10 000 tuotenumeroa alle 60 sekunnissa.
+
+**Asetukset (kertaluonteinen, 15 minuuttia):**
+
+1. Luo Google Sheet kolmella välilehdellä: `Baseline`, `Rules`, `Output`
+2. Liitä `Baseline`-välilehteen tuotesyötteesi sarakkeilla: `id`, `title`, `description`, `category`, `product_type`, `price`, `link`
+3. Luo `Rules`-välilehteen sarakkeet: `rule_id`, `start_date`, `end_date`, `match_field`, `match_value`, `target_field`, `modification_type`, `modification_text`
+4. Täytä `Rules` kausikalenteri llasi (katso esimerkki alla)
+5. Avaa Script Editor (Laajennukset → Apps Script), liitä alla oleva koodi, tallenna
+6. Aseta päivittäinen laukaisin (Triggers → Add Trigger → Time-driven → Day timer → 3-4 yöllä)
+
+**Esimerkki Rules-välilehden tiedoista:**
+
+```
+rule_id | start_date | end_date | match_field | match_value | target_field | modification_type | modification_text
+BF2026 | 2026-11-20 | 2026-11-30 | product_type | kengät | title | prepend | Black Friday: 
+GIFT26 | 2026-11-15 | 2026-12-24 | category | asusteet | title | append | - Täydellinen lahja
+VDAY27 | 2027-02-01 | 2027-02-14 | product_type | korut | title | prepend | Ystävänpäivä: 
+```
+
+**Apps Script -koodi (valmis kopioi-liitä):**
+
+```javascript
+function applySeasonalOverlay() {
+ const ss = SpreadsheetApp.getActiveSpreadsheet();
+ const baselineSheet = ss.getSheetByName('Baseline');
+ const rulesSheet = ss.getSheetByName('Rules');
+ const outputSheet = ss.getSheetByName('Output');
+ 
+ const today = new Date();
+ today.setHours(0, 0, 0, 0);
+ 
+ // Lataa perustiedot
+ const baselineData = baselineSheet.getDataRange().getValues();
+ const headers = baselineData[0];
+ const products = baselineData.slice(1).map(row => {
+ let product = {};
+ headers.forEach((header, i) => product[header] = row[i]);
+ return product;
+ });
+ 
+ // Lataa ja suodata aktiiviset säännöt
+ const rulesData = rulesSheet.getDataRange().getValues();
+ const ruleHeaders = rulesData[0];
+ const activeRules = rulesData.slice(1)
+ .map(row => {
+ let rule = {};
+ ruleHeaders.forEach((header, i) => rule[header] = row[i]);
+ return rule;
+ })
+ .filter(rule => {
+ const start = new Date(rule.start_date);
+ const end = new Date(rule.end_date);
+ return today >= start && today \<= end;
+ });
+ 
+ // Sovella säännöt tuotteisiin
+ const output = products.map(product => {
+ let modified = Object.assign({}, product);
+ 
+ activeRules.forEach(rule => {
+ const matchField = rule.match_field;
+ const matchValue = rule.match_value;
+ const targetField = rule.target_field;
+ 
+ if (product[matchField] && 
+ product[matchField].toString().toLowerCase().includes(matchValue.toLowerCase())) {
+ 
+ const modType = rule.modification_type;
+ const modText = rule.modification_text;
+ 
+ if (modType === 'prepend') {
+ modified[targetField] = modText + product[targetField];
+ } else if (modType === 'append') {
+ modified[targetField] = product[targetField] + modText;
+ } else if (modType === 'replace') {
+ modified[targetField] = modified[targetField].replace(
+ new RegExp(rule.find_text, 'gi'), 
+ modText
+ );
+ }
+ 
+ // Pakota 150 merkin raja otsikoille
+ if (targetField === 'title' && modified[targetField].length > 150) {
+ modified[targetField] = modified[targetField].substring(0, 150);
+ }
+ }
+ });
+ 
+ return modified;
+ });
+ 
+ // Kirjoita output-välilehteen
+ outputSheet.clear();
+ const outputHeaders = headers;
+ const outputData = output.map(product => 
+ outputHeaders.map(header => product[header] || '')
+ );
+ 
+ outputSheet.getRange(1, 1, 1, outputHeaders.length).setValues([outputHeaders]);
+ if (outputData.length > 0) {
+ outputSheet.getRange(2, 1, outputData.length, outputHeaders.length).setValues(outputData);
+ }
+ 
+ Logger.log(`Sovellettiin ${activeRules.length} aktiivista sääntöä ${output.length} tuotteelle`);
+}
+```
+
+**Käyttöohjeet:**
+- Suorita `applySeasonalOverlay()` manuaalisesti testataksesi — tarkista `Output`-välilehti muokatuista otsikoista
+- Aseta päivittäinen laukaisin toimimaan klo 3 yöllä (syötteen tarjoajasi tulisi hakea `Output`-välilehti lisäsyötteenä)
+- Kun säännöt eivät ole aktiivisia (aikavälejen ulkopuolella), skripti kopioi `Baseline`-välilehden `Output`-välilehteen muuttumattomana
+- Lisää uusia sääntöjä `Rules`-välilehteen milloin tahansa — ne aktivoituvat automaattisesti alkupäivänään
+
+Tämä toteutus käsittelee yleisimmät täsmäytysehdot (category, product_type, yksinkertainen tekstisisältää). Edistyneille operaattoreille, jotka tarvitsevat regex-täsmäytysehtoja, hintavälitavoittelua tai monisääntöprioriteettijärjestystä, laajennat suodatuslogiikkaa `activeRules`-osiossa ja lisäät `priority`-sarakkeen `Rules`-välilehteen hallitaksesi soveltamisjärjestystä, kun useat säännöt täsmäävät samaan tuotteeseen. MagicFeed Pro -integraatiot käsittelevät tämän monimutkaisuuden valmiina, jos hallinnoit 20+ kausisääntöjoukkoa useilla brändeillä.
+
+<Callout type="tip">
+Versionhallitse Rules-välilehtesi. Ennen jokaista kautta, kopioi se (napsauta välilehteä hiiren kakkospainikkeella → Duplicate) ja nimeä se "Rules_2026Q4", jotta sinulla on historiallinen tallenne siitä, mitä ajettiin. Tämä tekee vuodesta-vuoteen-optimoinnista triviaalia — kopioi viime vuoden voittosäännöt, säädä päivämääriä, ota käyttöön.
+</Callout>
+
+Skriptin suoritusaika skaalautuu lineaarisesti tuotenumeromäärän mukaan: ~3 sekuntia 1 000 tuotenumerolle, ~30 sekuntia 10 000:lle, ~5 minuuttia 50 000:lle. Apps Scriptillä on 6 minuutin suoritusraja ilmaisilla tileillä, joten jos olet yli 50 000 tuotenumeron, eräkäsittele prosessointi (jaa `Baseline` osiin, prosessoi kukin, yhdistä tulokset) tai siirry itse isännöityyn Node.js-palveluun. Useimmat operaattorit pysyvät alle 10 000 tuotenumeron eivätkä koskaan saavuta rajaa.
+
+## Palautusstrategia: Lokakuun "Halloween-ale"-otsikoiden estäminen marraskuussa
+
+Automaattinen palautus on yksittäinen ominaisuus, joka erottaa tuotantotason kausikerrokset rikkinäisistä manuaalisista prosesseista. Yllä oleva Apps Script toteuttaa palautuksen aikavälisuodatuksen kautta — kun `today` ylittää säännön `end_date`-arvon, sääntö lakkaa soveltumasta, ja seuraavan päivän syötteen generointi palautuu perustasoon näille tuotteille. Mutta kolme vikatilaa vaativat silti eksplisiittisen palautuslogiikan:
+
+**Vikatila 1: Vanhentuneet sääntörivit.** Joku lisää Black Friday -säännön lokakuussa 2025, se toimii onnistuneesti, mutta kukaan ei poista tai poista käytöstä sääntöriviä. Lokakuussa 2026 skripti näkee `start_date: 2025-11-20` ja `end_date: 2025-11-30`, molemmat menneisyydessä, molemmat pienempiä kuin `today`, ja aikavälisuodatin sulkee sen pois. Turvallinen. Mutta jos joku kirjoitti vuoden väärin ja syötti `end_date: 2027-11-30`, sääntö pysyisi aktiivisena 13 kuukautta. Puolustus: Lisää `status`-sarake `Rules`-välilehteen, aseta manuaalisesti "active" tai "disabled". Päivitä suodatin `rule.status === 'active' && today >= start && today \<= end`. Tai lisää validointi: `if (end - start > 60 päivää) heitä virhe`.
+
+**Vikatila 2: Ohitettu suoritus.** Päivittäinen laukaisin epäonnistuu (Sheet-oikeudet peruutettu, kiintiö ylitetty, Googlen katkos) palautuspäivänä. Halloween-otsikoosi lähtevät marraskuun 2. päivään. Puolustus: Lisää Slack/sähköpostihälytys, kun skripti havaitsee aktiivisia sääntöjä yli 3 päivää niiden `end_date`-arvon jälkeen. Parempi: käytä dead-man's switch -kytkintä — kirjaa onnistuneet suoritukset `Last_Run`-soluun, valvo sitä solua ulkoisesti, hälytä, jos se on vanhentunut yli 26 tuntia.
+
+**Vikatila 3: Osittainen palautus.** Sääntö sovellettiin 800 tuotteelle aktivoinnissa, mutta kampanjan aikana poistit 50 näistä tuotteista `Baseline`-välilehdestä. Palautuspäivänä skripti ei voi palauttaa sitä, mitä ei enää ole olemassa. Ei todellinen epäonnistuminen (poistetut tuotteet eivät tarvitse palautusta), mutta se luo auditointiepäselvyyttä, kun lokisi sanovat "sovellettu 800:een, palautettu 750". Puolustus: Kirjaa sekä sovellus- että palautuslukumäärät, odota epäsymmetriaa, tutki vain, kun delta ylittää 10 %.
+
+Ydinvoimapalautusvaihtoehto: pidä tilannekuva ennen kautta olevasta `Baseline`-välilehdestä erillisessä välilehdessä nimeltä `Baseline_Backup_2026Q4`. Jos jotain menee katastrofaalisesti pieleen (väärät päivämäärät, väärät mallit, otsikot sanovat nyt "Black Friday Black Friday Black Friday"), palauta varmuuskopiosta. Tästä syystä puolustamme kerrosarkkitehtuuria — todellinen perustasosi ei koskaan muutu, joten palautus on aina mahdollinen.
+
+Operaattoreille, jotka hallitsevat syötteitä MagicFeed Pron AI-uudelleenkirjoitusmoottorin kautta, kausikerrokset ja perusoptimointi ovat erillisiä kerroksia — AI optimoi perustason otsikot ympärivuotiseen suorituskykyyn (korjaa tuoteattribuuttijärjestys, lisää puuttuvia hakusanoja), sitten kausisäännöt soveltuvat päälle aktiivisten ikkunoiden aikana. Kun kausiikkuna sulkeutuu, olet takaisin AI-optimoidussa perustasossa, ei alkuperäisessä optimoimattomassa lähteessä. Tämä kerrostuminen on miksi automatisoitu kausiluonteisuus toimittaa yhdistettyjä ROAS-voittoja: et valitse kausiluonteisuuden ja perustason laadun välillä, saat molemmat.
+
+Tosielämän palautuskalenteri: Aseta `end_date` 2-3 päivää todellisen kampanjan päättymisen jälkeen. Black Friday päättyy 30. marraskuuta, mutta aseta `end_date: 2026-12-02` kaappaaksesi viikonlopun jälkiliikenne. Sitten 3. joulukuuta syötteesi palautuu automaattisesti perustasoon, valmiina 15. joulukuun "Toimitus ennen joulua" -kampanjaan. Ei päällekkäisyyttä, ei vanhentuneita muokkaimia. 2-3 päivän puskuri ottaa huomioon aikavyöhykeviiveen ja myöhäiset ostajat, jotka hakivat perjantaina mutta klikkas ivat maanantaina.
+
+<FAQ>
+ <FAQItem 
+ q="Voinko ajaa useita kausisääntöjä samalla tuotteella samanaikaisesti?" 
+ a="Kyllä, mutta tarvitset prioriteettijärjestelmän. Jos sekä 'Black Friday' -sääntö että 'Ilmainen toimitus' -sääntö täsmäävät samaan tuotteeseen, kumpi muokkain voittaa? Yllä oleva skripti soveltaa säännöt järjestyksessä, jossa ne näkyvät Rules-välilehdessä — ensimmäinen osuma voittaa. Lisää 'priority'-sarake (1=korkein) ja lajittele activeRules-taulukko prioriteetin mukaan ennen soveltamista. Tai käytä muokkausketjutusta: Sääntö 1 lisää etuliitteeksi 'Black Friday', Sääntö 2 liittää 'Ilmainen toimitus', lopullinen otsikko on 'Black Friday: Nahkalompakko - Ilmainen toimitus'." 
+ />
+ <FAQItem 
+ q="Kuinka testaan kausiotsikoita ennen kampanjan alkupäivää?" 
+ a="Muuta väliaikaisesti skriptisi 'today'-muuttuja tulevaan päivämäärään aktiivisen ikkunan sisällä (esim. const today = new Date('2026-11-25')), suorita skripti manuaalisesti, tarkista Output-välilehti. Palauta päivämäärä testauksen jälkeen. Tai luo kopio Rules-välilehdestä nimeltä 'Rules_Test' tämän päivän päivämäärällä start_date:na, osoita skriptisi tuohon välilehteen, generoi tuloste, sitten vaihda takaisin tuotannon Rules-välilehteen." 
+ />
+ <FAQItem 
+ q="Nollaavatko kausiluonteiset otsikkomuutokset Google Shopping -oppimisjakson ja pudottavat suorituskyvyn?" 
+ a="Pienet otsikkomuokkaukset (etuliite/liite-muokkaimet) eivät tyypillisesti nollaa oppimista, jos ydinhakusanarakenne säilytetään. Googlen algoritmi näkee 'Joululahjaidea: Miesten nahkalompakko' varianttina 'Miesten nahkalompakko', ei uutena tuotteena. Suuret uudelleenkirjoitukset (sanojen järjestyksen vaihtaminen, ydinhakusanojen korvaaminen) voivat nollata oppimisen. Testaa konservatiivisesti: aja kausikerrokset ensin 20 % varastosta, valvo laatupisteytystä ja näyttöosuutta 3 päivää, sitten laajenna. Googlen parhaiden käytäntöjen dokumentaation mukaan otsikkomuokkaukset, jotka säilyttävät 5 ensimmäistä hakusanaa, harvoin laukaisevat uudelleentarkastelua." 
+ />
+ <FAQItem 
+ q="Pitäisikö minun soveltaa kausimuokkaimia jokaiseen tuotteeseen vai vain bestsellereille?" 
+ a="Aloita tuotteista, joilla on kausillinen hakuvolyymi. Käytä Google Merchant Centerin hakutermiraporttia tunnistaaksesi, mitkä tuotteistasi saavat kyselyitä, jotka sisältävät 'lahja', 'black friday', 'joulu' Q4:ssä. Sovella muokkaimia vain näihin tuotteisiin. Keittiövaaka, joka ei koskaan saa lahja-aiheisia hakuja, ei hyödy 'Täydellinen joululahja' -kielestä — poltat vain otsikko merkkibudjettia. Kohdista 20-40 % luettelosta, ei 100 %." 
+ />
+ <FAQItem 
+ q="Kuinka koordinoin kausisyötekerrokset sivuston mainosbannereiden ja sähköpostien kanssa?" 
+ a="Syötemuokkaimien tulisi vastata sivustosi viestintää 24-48 tunnin sisällä. Jos kotisivusi sanoo 'Black Friday: 30 % alennusta kaikesta' alkaen 22. marraskuuta, aseta syötesääntösi start_date 22. marraskuuta, ei 1. marraskuuta. Väärä kohdistus (syöte sanoo 'Ale', sivusto näyttää normaalihinnan) tuhoaa luottamuksen ja kasvattaa poistumisprosenttia. Rakenna yhden totuuden lähteen mainoskalenteri jaetussa Google Sheetissä, joka syöttää sekä sivuston CMS:n että syötteen automaatiosäännöt." 
+ />
+ <FAQItem 
+ q="Voinko käyttää tätä lähestymistapaa dynaamiseen personointiin (eri otsikot käyttäjäsegmenttiä kohden)?" 
+ a="Google Shopping -syötteet ovat käyttäjä-agnosttisia — et voi tarjota eri otsikoita eri käyttäjille suoraan. Mutta voit luoda useita lisäsyötteitä (yksi per segmentti) erilaisilla kausikerroksilla, sitten käyttää Shopping-kampanjan yleisötavoittelua tarjotaksesi eri tavalla kullekin syötteelle. Edistynyt asetukset: Perussyöte yleiselle liikenteelle, Lisäsyöte A 'Premium lahja' -muokkaimilla kohdistettuna arvokkaisiin uudelleenmarkkinointiyleisöihin, Lisäsyöte B 'Budjettitarjous'-muokkaimilla edullisia etsiviin yleisöihin. Tämä vaatii kampanjatason segmentointia, ei syötetasoa." 
+ />
+</FAQ>
+
+<ProductCTA 
+ variant="audit" 
+ title="Automatisoi kausisyötekerrokset AI-optimoiduilla perustasoilla" 
+/>

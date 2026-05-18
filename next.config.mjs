@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
@@ -30,6 +33,33 @@ const nextConfig = {
   // to the new SEO-localized slugs. Pre-existing inbound links + previously
   // indexed pages keep working without losing PageRank.
   async redirects() {
+    // 1) Load the auto-generated authoritative redirects FIRST. These
+    //    map old EN slugs (under non-EN locales) to the slug actually
+    //    on disk today. Each rename done by
+    //    backend/scripts/relocalize_blog_slugs.py appends here.
+    const out = [];
+    const seen = new Set();
+    try {
+      const here = dirname(fileURLToPath(import.meta.url));
+      const raw = readFileSync(join(here, 'data/legacy-slug-redirects.json'), 'utf8');
+      const legacy = JSON.parse(raw);
+      if (Array.isArray(legacy)) {
+        for (const r of legacy) {
+          if (r && r.source && r.destination && !seen.has(r.source)) {
+            out.push({ ...r, permanent: r.permanent !== false });
+            seen.add(r.source);
+          }
+        }
+      }
+    } catch (e) {
+      // First-build or missing file: fine, manual map still applies.
+    }
+
+    // 2) Legacy hand-curated map (pre-2026-05-18). Only entries whose
+    //    source isn't already covered by the JSON file above are kept,
+    //    so stale destinations stop generating 404s on disk-renamed
+    //    files. Safe to delete once every entry below has migrated into
+    //    the JSON.
     const map = [
       ["7-reasons-google-shopping-ads-not-converting", {
         de: "7-grunde-warum-google-shopping-nicht-konvertiert",
@@ -189,14 +219,11 @@ const nextConfig = {
         sv: "variantklustring-i-shoppingfloden-sluta-kannibalisera-dina-egna-annonser",
       }],
     ];
-    const out = [];
     for (const [oldSlug, byLocale] of map) {
       for (const [locale, newSlug] of Object.entries(byLocale)) {
-        out.push({
-          source: `/${locale}/posts/${oldSlug}`,
-          destination: `/${locale}/posts/${newSlug}`,
-          permanent: true,
-        });
+        const source = `/${locale}/posts/${oldSlug}`;
+        if (seen.has(source)) continue;  // JSON above is authoritative
+        out.push({ source, destination: `/${locale}/posts/${newSlug}`, permanent: true });
       }
     }
     return out;

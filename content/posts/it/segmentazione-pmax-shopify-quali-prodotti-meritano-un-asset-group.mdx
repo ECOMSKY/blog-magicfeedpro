@@ -1,0 +1,133 @@
+---
+slug: "segmentazione-pmax-shopify-quali-prodotti-meritano-un-asset-group"
+title: "Segmentazione PMax Shopify: Quali Prodotti Meritano un Asset Group"
+description: "Segmentazione feed Performance Max Shopify per margine, velocità e tasso di reso—non per intuito—ferma lo spreco di budget. Audita i tuoi asset group in meno di 30 minuti."
+keywords:
+ - shopify performance max feed segmentation
+ - pmax asset group product segmentation shopify
+ - performance max campaign structure shopify
+ - shopify pmax product group split
+ - google shopping pmax feed control
+ - performance max listing groups shopify
+ - shopify pmax budget allocation by product
+ - pmax vs standard shopping shopify feed
+date: "2026-05-18"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - performance-max
+ - shopify
+ - feed-segmentation
+ - asset-groups
+ - pmax-structure
+readingMinutes: 9
+featured: false
+locale: "it"
+translationKey: "shopify-pmax-feed-segmentation"
+noindex: false
+comments: false
+cover: "/blog-covers/shopify-pmax-feed-segmentation-which-products-deserve-their-own-asset-group.jpg"
+coverAlt: "Una griglia di catalogo prodotti con tessere isometriche si divide in cluster distinti — un grande gruppo blu elettrico di SKU ad alto margine si ramifica a sinistra con frecce audaci, un piccolo cluster grigio scuro di articoli a bassa velocità si ramifica a destra verso una ✗, con un grafico a barre di flusso di budget viola che sale ripidamente sopra il cluster blu."
+---
+
+La segmentazione del feed Shopify Performance Max è la singola decisione strutturale che determina se l'automazione di Google amplifica i tuoi migliori SKU o brucia silenziosamente il budget su inventario morto. Tra gli account ad alto spesa che gestiscono $30k–$150k/mese su PMax, il pattern è coerente: i merchant che segmentano per segnale di feed — livello di margine, velocità, AOV, tasso di reso — recuperano una media del 15–22% della spesa sprecata entro 60 giorni. Chi mantiene una sola campagna generica dà all'algoritmo di Google un mix di segnali contraddittori e si chiede perché il ROAS si blocca.
+
+## Perché Una Sola Campagna PMax per l'Intero Catalogo Shopify È uno Spreco di Budget
+
+Una singola campagna PMax con un asset group e «Tutti i Prodotti» nel gruppo di listing è la struttura più comune che audtiamo con spesa $30k+/mese — ed è quasi sempre la causa radice del ROAS erratico. L'algoritmo PMax di Google alloca il budget tra gli asset group prima, poi ai singoli prodotti all'interno di un gruppo. Quando 12.000 SKU condividono un unico pool di budget, l'algoritmo si orienta verso l'ottimizzazione per il percorso di minor resistenza: prodotti ad alto volume di clic che non sono necessariamente i tuoi a margine più alto.
+
+La conseguenza pratica è brutale. Un accessorio da $4,99 con margine del 12% può cannibalizzare impression share da un prodotto hero da $249 con margine del 58% semplicemente perché ha più dati di clic storici. Secondo la [documentazione ufficiale di Google Performance Max](https://support.google.com/google-ads/answer/10724817), gli asset group funzionano come unità primaria di allocazione del budget, non come singoli prodotti. Quella realtà architettonica significa che la tua logica di segmentazione a livello di asset group è l'unica leva che controlli completamente.
+
+Abbiamo visto negozi Shopify perdere il 28% del loro ROAS effettivo per questa stessa dinamica. Un DTC fashion che gestiva $80k/mese aveva 9.400 SKU in una sola campagna. I loro 40 prodotti a margine più alto — con AOV medio di $310 e margine lordo del 61% — ricevevano il 6% delle impression totali. Gli articoli di liquidazione a fine catalogo con prezzi di $19 consumavano il 44% della spesa. La soluzione non era un aggiustamento di offerta. Era una ricostruzione della segmentazione del feed.
+
+## I 4 Segnali di Feed Che Dovrebbero Guidare le Tue Suddivisioni di Asset Group
+
+Le strutture PMax con migliore performance che abbiamo gestito usano esattamente quattro segnali derivati dal feed per definire i confini dei segmenti: livello di margine lordo, velocità a 90 giorni, banda di valore medio dell'ordine e tasso di reso dei 30 giorni precedenti. Questi quattro segnali possono essere codificati direttamente in `custom_label_0` attraverso `custom_label_3` nel tuo feed prodotto Shopify, dando all'algoritmo di Google confini duri entro cui lavorare.
+
+Il **livello di margine lordo** è il segnale più importante e il più frequentemente mancante dai feed Shopify. La maggior parte dei negozi esporta il costo del venduto (COGS) dal loro sistema di inventario ma non lo mappa mai a un attributo di feed. Senza un'etichetta di margine, Google non può distinguere un prodotto a margine del 70% da uno al 10% — sembrano identici a livello di feed. Consigliamo tre livelli: `margin-high` (>50%), `margin-mid` (25–50%), e `margin-low` (\<25%).
+
+La **velocità a 90 giorni** separa i tuoi segnali di domanda provati dall'inventario non testato. I prodotti con meno di 50 clic in 90 giorni hanno dati insufficienti per la modellazione di conversione di PMax; metterli insieme agli SKU ad alta velocità forza l'algoritmo a fare la media verso il basso. Il **tasso di reso** è quello sottovalutato. Un prodotto con tasso di reso del 35% e un numero ROAS forte sta in realtà distruggendo il margine di contribuzione — ma PMax vede solo la conversione, non l'inversione. Codificare il tasso di reso come etichetta personalizzata ti permette di creare un segmento dedicato a bassa spesa o escluso per i cronici resi.
+
+Usando il builder di etichette personalizzate di MagicFeed Pro, puoi automatizzare l'assegnazione di tutte e quattro le etichette da una singola configurazione di regole, estraendo dati COGS, dati ordini e dati di reso dal tuo negozio Shopify senza un ciclo di esportazione manuale.
+
+| Segnale | Attributo di Feed | Valori di Esempio | Azione su Asset Group |
+|---|---|---|---|
+| Margine lordo | custom_label_0 | margin-high, margin-mid, margin-low | Campagne separate per livello |
+| Velocità a 90 giorni | custom_label_1 | fast-mover, slow-mover, new-sku | Isola nuovi SKU, proteggi fast mover |
+| Banda AOV | custom_label_2 | aov-high, aov-mid, aov-low | Abbina strategia di offerta ad AOV |
+| Tasso di reso | custom_label_3 | return-low, return-high | Sopprimi o escludi return-high |
+
+<Callout type="warning">
+Non usare mai il tipo di prodotto o la categoria di prodotto Google da sola come asse di segmentazione per PMax. Le categorie dicono a Google cosa il prodotto *è*, non cosa *vale* per la tua azienda. Un case per telefono da $9 e un case per telefono da $90 possono condividere la stessa categoria — e lo stesso asset group — senza alcun segnale a livello di feed per differenziare l'allocazione del budget.
+</Callout>
+
+## Passo per Passo: Esportare Dati Prodotto Shopify per Costruire una Matrice di Segmentazione
+
+Prima di ristrutturare una singola campagna, hai bisogno di una matrice di segmentazione: un foglio di calcolo che mappa ogni SKU ai suoi quattro valori di segnale. Costruirla da Shopify richiede circa 90 minuti la prima volta, e meno di 20 minuti al refresh una volta che hai il template di esportazione configurato.
+
+Inizia con un'esportazione di prodotti in bulk da Shopify Admin → Prodotti → Esporta (CSV, tutti i prodotti). Questo ti dà `SKU Variante`, `Prezzo Variante` e `Costo Variante` (se hai inserito COGS — se no, questa colonna sarà vuota e quello è il tuo primo problema da risolvere). Secondo la [documentazione stessa di Shopify su Google integration](https://help.shopify.com/en/manual/promoting-marketing/google), i dati di costo a livello di variante vanno direttamente nella capacità di feed supplementare dell'app canale Google.
+
+Successivamente, estrai la tua esportazione ordini a 90 giorni da Analytics → Report → Vendite per prodotto. Unisci su SKU usando un VLOOKUP o un semplice merge Python. Aggiungi una colonna resi dal tuo 3PL o portale resi Shopify — questo è lo strappo di dati più doloroso per negozi senza uno strumento di BI dedicato, ma è non negoziabile per l'etichetta di tasso di reso. Una volta uniti, applica la tua logica di soglia: contrassegna il livello di margine, il livello di velocità, la banda AOV e il livello di reso di ogni SKU.
+
+L'output è un feed supplementare a quattro colonne. Caricalo in Google Merchant Center come fonte di dati supplementare, o usa l'integrazione Shopify di MagicFeed Pro per sincronizzare le etichette automaticamente su base giornaliera, così la tua segmentazione resta attuale mentre l'inventario si muove e i tassi di reso cambiano.
+
+<Callout type="tip">
+Se i dati COGS in Shopify sono incompleti — comune dopo migrazioni di catalogo o cambi di fornitori — usa il tuo margine di categoria mediano come proxy conservativo per `custom_label_0` finché non puoi compilare i dati attuali. Un'etichetta di margine approssimativa è significativamente migliore di nessuna etichetta di margine per il controllo dell'asset group di PMax.
+</Callout>
+
+## Logica di Listing Group vs. Logica di Asset Group — Cosa la Maggior Parte delle Guide Sbaglia
+
+La maggior parte delle guide di PMax trattano «listing group» e «asset group» come termini intercambiabili. Non lo sono, e la confusione costa ai merchant Shopify soldi veri. Un asset group è il contenitore creativo e di audience — contiene i tuoi headline, immagini, segnali di audience e un contesto di allocazione del budget. Un listing group è il filtro di prodotto *all'interno* di un asset group che definisce quali prodotti dal tuo feed sono idonei a servire.
+
+Puoi avere un asset group ben strutturato con la giusta creatività per prodotti ad alto AOV ma un listing group che inadvertentemente include SKU a basso margine perché la logica del filtro non era abbastanza stretta. La creatività e il segnale di audience dell'asset group vengono poi sprecati sui prodotti sbagliati. Al contrario, puoi avere un listing group perfettamente segmentato ma creatività generica e generica che non corrisponde all'intento dell'acquirente della fascia di prodotto.
+
+L'architettura corretta impila entrambi i livelli. Per un asset group ad alto margine: il listing group filtra su `custom_label_0 = margin-high`, E l'asset group contiene asset creativi — headline, descrizioni, immagini — scritti specificamente per l'intento dell'acquirente premium. Per un gruppo di incubazione SKU nuovo: listing group filtra su `custom_label_1 = new-sku`, asset group usa segnali di audience più ampi e una strategia di offerta Target CPA per raccogliere dati senza bruciare margine.
+
+Questo è anche dove la riscrittura del feed AI di MagicFeed Pro crea valore composto — quando la qualità del tuo titolo e descrizione corrisponde all'intento dell'asset group, il punteggio di rilevanza degli annunci di PMax migliora e la tua quota di impression idonea aumenta. La qualità del feed e la struttura della campagna non sono workstream separati; si amplificano a vicenda.
+
+## Un Account Reale: Come un Negozio Shopify con 12.000 SKU è Passato da 1 a 9 Asset Group
+
+Un negozio di articoli per la casa con base nel Regno Unito ($2.100M ricavi annuali, £65k/mese spesa PMax) è venuto da noi in Q3 2025 con una singola campagna PMax, un asset group e un ROAS di 4,1x — che sembrava bene finché non abbiamo scomposto il margine di contribuzione. Il loro ROAS effettivo aggiustato per margine era 1,8x perché articoli di liquidazione a basso margine consumavano il 51% della spesa.
+
+Abbiamo ricostruito la loro struttura in 9 asset group in tre settimane, usando il framework a quattro segnali sopra. I gruppi erano: (1) Margine-Alto / Prodotto Fast-Mover hero, (2) Margine-Alto / Slow-Mover per articoli ad alto valore che necessitano generazione di domanda, (3) Margine-Medio / Fast-Mover gamma core, (4) Margine-Medio / Slow-Mover, (5) Incubazione SKU nuovo, (6) Articoli stagionali / promozionali, (7) Liquidazione basso margine — budget limitato, solo target CPA, (8) Quarantena tasso reso alto — spesa minima, (9) Esclusioni ricerca brand catch-all.
+
+I risultati dopo 60 giorni: il ROAS segnalato è passato da 4,1x a 5,6x. Più importante, il ROAS aggiustato per margine è andato da 1,8x a 3,9x — un miglioramento del 117% nella redditività effettiva. Il gruppo di prodotti hero (Gruppo 1, ~340 SKU) è passato dall'8% di impression share al 31%. Gli articoli di liquidazione sono scesi dal 51% della spesa al 14%.
+
+L'abilitatore chiave era il feed di dati puliti. Prima della ricostruzione, abbiamo gestito un audit completo degli attributi di feed e abbiamo trovato il 23% degli SKU con dati COGS mancanti, il 41% con titoli non descrittivi che sopprimevano Quality Scores, e 1.200 prodotti con GTIN contrassegnati come non corrispondenti in Merchant Center. Fissare prima il feed ha reso il funzionamento della segmentazione; la segmentazione senza dati puliti è solo riordinare segnali cattivi.
+
+## Requisiti di Attributo di Feed per Ogni Segmento per Funzionare Effettivamente in PMax
+
+Una strategia di segmentazione regge solo se gli attributi del feed sottostanti sono completi e accurati. Ognuno dei nove tipi di segmento sopra ha una diversa priorità di attributo, e i gap in campi specifici causeranno ai prodotti di cadere fuori dai segmenti idonei o servire con qualità degradata.
+
+Per i **segmenti hero ad alto margine**, gli attributi non negoziabili sono: `price` e `sale_price` accurati (le discrepanze causano disapprovazioni), `GTIN` o `MPN` corretto (i GTIN mancanti riducono l'idoneità all'asta secondo la specifica dei dati prodotto di Google), e `title` ottimizzato con brand + tipo di prodotto + specifica chiave nei primi 70 caratteri. Un titolo debole in un segmento hero è denaro lasciato sul tavolo — il titolo è il segnale di rilevanza primaria per le query Shopping.
+
+Per i **segmenti di incubazione SKU nuovo**, l'attributo più critico è `product_type` — senza una tassonomia di tipo di prodotto ben strutturata, l'algoritmo di Google non ha segnale categorico per far partire il targeting iniziale di impression. Secondo la copertura di Search Engine Land delle best practice di PMax, i prodotti senza un tipo di prodotto definito richiedono 3–5x più tempo per uscire dalla fase di «apprendimento», bruciando il budget di incubazione senza generare dati di conversione utilizzabili.
+
+Per i **segmenti di quarantena tasso reso alto**, audita la tua `description` e `title` per gap di accuratezza — titoli e descrizioni fuorvianti sono il #1 driver dei resi prevenibili, soprattutto in abbigliamento ed elettronica. I prodotti che ritornano al tasso >25% quasi sempre hanno un problema di accuratezza del feed a monte. Fissare i dati del feed, non solo mettere in quarantena i prodotti, è la soluzione duratura.
+
+L'elenco di controllo completo degli attributi per ogni tipo di segmento si mappa strettamente a ciò che un audit di feed strutturato affronta. Se non ne hai gestito uno di recente, il framework di elenco di controllo nella guida di audit degli attributi di feed di MagicFeed Pro ti guida attraverso ogni attributo richiesto e consigliato per categoria di prodotto e tipo di segmento.
+
+<ProductCTA variant="audit" title="Ottieni un Audit Gratuito di Segmentazione Feed per la Tua Campagna Shopify PMax" />
+
+<FAQ>
+ <FAQItem
+ q="Quanti asset group dovrebbe avere una campagna Shopify PMax?"
+ a="Non c'è un numero universale, ma i dati da account Shopify medio-grandi ($30k+/mese) mostrano coerentemente che 5–9 asset group superano 1–3. Il numero giusto è determinato da quanti livelli di margine distinti, bucket di velocità e bande AOV ha il tuo catalogo — non dal conteggio SKU. Un negozio di 500 SKU può aver bisogno di 7 gruppi; uno da 20.000 SKU può correre su 6 se i segmenti sono puliti."
+ />
+ <FAQItem
+ q="Posso usare etichette personalizzate per i listing group di PMax in Shopify?"
+ a="Sì. Le etichette personalizzate (custom_label_0 attraverso custom_label_4) sono pienamente supportate nei feed Google Shopping connessi a Shopify tramite l'app canale Google o uno strumento di feed di terze parti. Assegni i valori nel tuo feed supplementare e appaiono come attributi filtrabili nel builder del listing group all'interno di Google Ads. Non influenzano i listing di prodotti organici o le collezioni di Shopify stesso."
+ />
+ <FAQItem
+ q="Quanto tempo impiega Performance Max per imparare dopo una ristrutturazione?"
+ a="La guida ufficiale di Google afferma che le campagne PMax hanno bisogno di un minimo di 6 settimane per uscire dalla fase di apprendimento dopo un cambiamento strutturale significativo. In pratica, gli account con dati di feed puliti e una forte storia di conversione tendono a stabilizzarsi in 3–4 settimane. Evita di fare cambiamenti di strategia di offerta durante le prime 21 giorni dopo una ristrutturazione — i cambiamenti sovrapposti estendono il periodo di apprendimento e rendono impossibile isolare cosa ha causato i turni di performance."
+ />
+ <FAQItem
+ q="Qual è la differenza tra i listing group di PMax e i product group in Standard Shopping?"
+ a="In Standard Shopping, i product group sono il meccanismo primario di controllo del budget e dell'offerta — assegni i CPC a livello di product group. In PMax, i listing group sono puramente un filtro per quali prodotti sono idonei a servire all'interno di un asset group; l'allocazione effettiva del budget è controllata dalla strategia di offerta della campagna e dalla struttura dell'asset group. Questo è il motivo per cui la logica di segmentazione che ha funzionato in Standard Shopping non si trasferisce direttamente a PMax senza ripensare attorno ai asset group."
+ />
+ <FAQItem
+ q="Dovrei escludere completamente i prodotti a basso margine da PMax o solo limitare il loro budget?"
+ a="Escludere completamente i prodotti a basso margine è raramente la scelta giusta a meno che il loro tasso di reso o margine non sia negativo dopo i resi. Un approccio migliore è isolarli in un asset group dedicato con un Target CPA o Target ROAS conservativo che riflette il loro effettivo contributo di margine. Questo li mantiene idonei alla condivisione di impression durante i periodi ad alta domanda (vendite, picchi stagionali) senza cannibalizzare il budget dai segmenti hero."
+ />
+</FAQ>

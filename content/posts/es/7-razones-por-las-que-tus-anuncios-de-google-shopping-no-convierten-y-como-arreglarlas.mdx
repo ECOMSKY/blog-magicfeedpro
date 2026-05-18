@@ -1,0 +1,114 @@
+---
+slug: "7-razones-por-las-que-tus-anuncios-de-google-shopping-no-convierten-y-como-arreglarlas"
+translationKey: "7-reasons-google-shopping-ads-not-converting"
+locale: "es"
+title: "7 Razones Por Las Que Tus Anuncios de Google Shopping No Convierten (Y Cómo Arreglarlas)"
+description: "Tus impresiones están bien pero tu tasa de conversión está plana. Aquí están los 7 diagnósticos más comunes — y la solución de 30 minutos para cada uno — basados en cientos de auditorías de e-commerce."
+keywords:
+  - tasa conversión google shopping
+  - anuncios shopping no convierten
+  - diagnóstico performance max
+date: 2026-05-08
+updated: 2026-05-08
+author: "mfp-team"
+category: "google-shopping"
+tags:
+  - google-shopping
+  - tasa-conversion
+  - performance-max
+  - troubleshooting
+featured: false
+comments: false
+cover: ""
+coverAlt: "Lista de verificación de diagnóstico de anuncios de Google Shopping en una pantalla de portátil"
+---
+
+> Versión en español — traducción inicial pendiente de revisión humana.
+
+Estás recibiendo clics. Tu CTR está bien. Tu CPC no se ha disparado. Pero las conversiones no llegan, y el ROAS de tu tienda está sangrando.
+
+Este es el patrón más común que vemos en auditorías de feed — y casi siempre se rastrea a una de siete fallas específicas. Aquí está cómo diagnosticar cada una en 30 minutos y desplegar la corrección.
+
+## 1. Desalineación título-consulta
+
+**Síntoma**: llegan clics, pero el click-through es seguido por un rebote de 3 segundos.
+
+**Por qué**: tu título es lo suficientemente genérico como para coincidir con un conjunto amplio de consultas, pero los compradores específicos que aterrizan en la PDP se dan cuenta de que no es lo que querían.
+
+**Arreglo (30 min)**: extrae tus 50 consultas principales con > 100 clics y \< 1% de conversión. Para cada una, compara la consulta con el título coincidente. Si no son una coincidencia ajustada, [reescribe el título con IA para mejorar la relevancia](https://blog.magicfeedpro.com/es/posts/ai-rewrites-improve-google-shopping-ctr-40-percent).
+
+## 2. Falla de competitividad de precio
+
+**Síntoma**: tus impresiones cayeron de la noche a la mañana en SKUs específicos.
+
+**Por qué**: la señal de competitividad de precio de Merchant Center compara tu precio listado con el mismo producto (matched por GTIN/marca+MPN) en la web.
+
+**Arreglo (30 min)**: abre [Merchant Center → Productos → Competitividad de precio](https://blog.magicfeedpro.com/es/posts/merchant-center-errors-12-common-issues-solutions). Ordena por "Sobre el benchmark". Para cada SKU de alto tráfico por encima del benchmark, o bien iguala el benchmark, o eleva la oferta (envío gratis, paquete, garantía).
+
+<Callout type="tip" title="El precio no tiene que ser el más bajo">
+Varias tiendas grandes en nuestra cartera operan 5–10% *por encima* del benchmark y aún así convierten. El truco es hacer la oferta visible en los primeros 160 caracteres.
+</Callout>
+
+## 3. Imagen hero débil
+
+**Síntoma**: estás recibiendo impresiones pero el CTR está por debajo del 0,8% incluso en consultas de marca.
+
+**Arreglo (30 min)**: extrae tus 20 SKUs de mayor impresión. Abre cada imagen. Califica cada una sí/no en estos 4 criterios:
+
+- ¿Es el producto el 75%+ del encuadre?
+- ¿Es el fondo limpio (blanco o tono único)?
+- ¿Hay *cero* texto superpuesto, marca de agua o borde?
+- ¿Es ≥ 1200px en el lado más largo?
+
+## 4. Señales de reseñas faltantes o desactualizadas
+
+**Síntoma**: el CTR está bien, la conversión es pobre, y el comprador rebota desde la PDP sin desplazarse.
+
+**Arreglo (30 min)**: asegúrate de que el marcado de reseñas de producto ([schema Product](https://schema.org/Product) con `aggregateRating`) se dispara en cada PDP.
+
+## 5. Página de producto lenta
+
+**Síntoma**: el CTR está bien, el comprador llega, pero rebota en menos de 2 segundos.
+
+**Arreglo (30 min)**: ejecuta [PageSpeed Insights](https://pagespeed.web.dev/) en tus 5 PDPs principales. LCP móvil \< 2,5s es el umbral.
+
+## 6. Señal de stock rota
+
+**Síntoma**: las impresiones oscilan salvajemente día a día.
+
+**Arreglo (30 min)**: cambia a **push de Content API** en lugar de fetch programado. Esto asegura que [tu feed se sincroniza en tiempo real](https://blog.magicfeedpro.com/es/posts/google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test) con los niveles de inventario actuales.
+
+## 7. PMax sirviendo a la audiencia equivocada
+
+**Síntoma**: alto gasto, baja conversión. La pestaña Insights muestra tráfico de consultas no relacionadas con tu categoría.
+
+**Arreglo (30 min)**:
+
+- Separa campañas por categoría de producto usando [etiquetas personalizadas para segmentación avanzada](https://blog.magicfeedpro.com/es/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas).
+- Proporciona **señales de audiencia fuertes**.
+- Configura **exclusiones de marca**.
+- Si tu objetivo es solo retail, usa la variante **Shopping-only PMax** para evitar [canibalización entre grupos de activos](https://blog.magicfeedpro.com/es/posts/performance-max-asset-groups-are-killing-your-feed-a-200k-audit-breakdown).
+
+## Cómo priorizar
+
+Ejecuta cada corrección en este orden y encontrarás la que realmente está rota:
+
+1. Revisa [Merchant Center → Diagnóstico](https://blog.magicfeedpro.com/es/posts/merchant-center-errors-12-common-issues-solutions). (5 min)
+2. Extrae las top-50 consultas por gasto, ordena por tasa de conversión ascendente. (10 min)
+3. Auditoría de imagen y velocidad de PDP en los 10 SKUs peores. (30 min)
+4. Verificación de competitividad de precio. (15 min)
+5. Revisión de [estructura de audiencia y campaña](https://blog.magicfeedpro.com/es/posts/google-shopping-bid-modifiers-vs-feed-segmentation-roi-test). (60 min)
+
+Las tres primeras casi siempre revelan el problema. Si prefieres no hacerlo manualmente, MagicFeedPro audita los 7 en 5 minutos gratis.
+
+<ProductCTA variant="audit" title="Ejecuta la auditoría de 7 puntos en tu feed en vivo">
+Puntuamos tus 50 SKUs principales contra cada diagnóstico arriba y te damos una lista de correcciones priorizada.
+</ProductCTA>
+
+## FAQ
+
+<FAQ>
+  <FAQItem q="¿Cuán rápido debería mejorar la tasa de conversión después de una corrección?" a="Las correcciones de título e imagen suelen mostrar mejora medible en 7–10 días. Los cambios de precio en 24–48 horas. Los cambios estructurales de PMax necesitan 14 días para salir de la fase de aprendizaje." />
+  <FAQItem q="¿Debo pausar SKUs de bajo rendimiento?" a="Pausa el 20% inferior si está canibalizando presupuesto de tus mejores. Pero primero intenta una pasada de calidad de feed — muchos SKUs 'malos' son en realidad buenos productos con títulos rotos." />
+  <FAQItem q="¿Cuál es una tasa de conversión sana de Google Shopping?" a="Altamente dependiente de la categoría. Apparel: 1–2,5%. Electrónica: 1,5–4%. Hogar: 2–5%. Belleza: 2,5–6%." />
+</FAQ>

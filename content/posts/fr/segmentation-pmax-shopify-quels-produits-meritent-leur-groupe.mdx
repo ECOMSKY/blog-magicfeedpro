@@ -1,0 +1,133 @@
+---
+slug: "segmentation-pmax-shopify-quels-produits-meritent-leur-groupe"
+title: "Segmentation PMax Shopify : quels produits méritent leur groupe"
+description: "Segmentation flux PMax Shopify par marge, vélocité et taux de retour — pas l'intuition — arrête la fuite budgétaire. Auditez vos groupes d'actifs en moins de 30 minutes."
+keywords:
+ - shopify performance max feed segmentation
+ - pmax asset group product segmentation shopify
+ - performance max campaign structure shopify
+ - shopify pmax product group split
+ - google shopping pmax feed control
+ - performance max listing groups shopify
+ - shopify pmax budget allocation by product
+ - pmax vs standard shopping shopify feed
+date: "2026-05-18"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - performance-max
+ - shopify
+ - feed-segmentation
+ - asset-groups
+ - pmax-structure
+readingMinutes: 9
+featured: false
+locale: "fr"
+translationKey: "shopify-pmax-feed-segmentation"
+noindex: false
+comments: false
+cover: "/blog-covers/shopify-pmax-feed-segmentation-which-products-deserve-their-own-asset-group.jpg"
+coverAlt: "Une grille de catalogue de produits avec des tuiles isométriques se divise en clusters distincts — un grand groupe bleu électrique de SKU à marge élevée s'embranchant à gauche via des flèches audacieuses, un petit cluster gris foncé d'articles à faible vélocité s'embranchant à droite vers un ✗, avec un graphique à barres de flux budgétaire violet montant en pente raide au-dessus du cluster bleu."
+---
+
+La segmentation de flux Performance Max Shopify est la décision structurelle unique qui détermine si l'automatisation de Google amplifie vos meilleurs SKU ou brûle silencieusement le budget sur l'inventaire mort. Parmi les comptes à gros volume exécutant 30k–150k$/mois en PMax, le schéma est cohérent : les marchands qui segmentent par signal de flux — marge, vélocité, panier moyen, taux de retour — récupèrent en moyenne 15–22 % des dépenses gaspillées en 60 jours. Ceux qui conservent une campagne fourre-tout donnent à l'algorithme de Google un mélange de signaux contradictoires et se demandent pourquoi le ROAS plafonne.
+
+## Pourquoi une seule campagne PMax pour tout votre catalogue Shopify est une fuite budgétaire
+
+Une seule campagne PMax avec un groupe d'actifs et « Tous les produits » dans le groupe de listes est la structure la plus courante que nous auditemos à un dépense de 30k$/mois+ — et c'est presque toujours la cause profonde d'un ROAS erratique. L'algorithme PMax de Google alloue d'abord le budget entre les groupes d'actifs, puis jusqu'aux produits individuels au sein d'un groupe. Quand 12 000 SKU partagent un seul pool budgétaire, l'algorithme se rabat par défaut sur l'optimisation selon la voie de moindre résistance : les produits à fort volume de clics qui ne sont pas nécessairement vos plus hautes marges.
+
+La conséquence pratique est brutale. Un accessoire à 4,99 $ avec une marge de 12 % peut cannibaliser la part d'impressions d'un produit vedette à 249 $ avec une marge de 58 % simplement parce qu'il a plus de données de clics historiques. Selon [la documentation officielle Performance Max de Google](https://support.google.com/google-ads/answer/10724817), les groupes d'actifs fonctionnent comme l'unité d'allocation de budget principale, pas les produits individuels. Cette réalité architecturale signifie que votre logique de segmentation au niveau du groupe d'actifs est le seul levier que vous contrôlez complètement.
+
+Nous avons vu des magasins Shopify perdre 28 % de leur ROAS effectif à cause de cette dynamique exacte. Une DTC mode exécutant 80k$/mois avait 9 400 SKU dans une seule campagne. Ses 40 produits à marge supérieure — moyennant 310 $ de panier moyen et 61 % de marge brute — recevaient 6 % du total des impressions. Les articles de liquidation du bas du catalogue avec des prix de 19 $ consommaient 44 % des dépenses. La solution n'était pas un ajustement d'enchères. C'était une reconstruction de segmentation de flux.
+
+## Les 4 signaux de flux qui doivent piloter vos divisions de groupes d'actifs
+
+Les meilleures structures PMax avec lesquelles nous avons travaillé utilisent exactement quatre signaux dérivés du flux pour définir les limites de segment : palier de marge brute, vélocité sur 90 jours, bande de panier moyen et taux de retour des 30 derniers jours. Ces quatre signaux peuvent être codés directement dans `custom_label_0` à `custom_label_3` de votre flux de produit Shopify, donnant à l'algorithme de Google des frontières dures pour travailler.
+
+Le **palier de marge brute** est le signal le plus important et le plus fréquemment absent des flux Shopify. La plupart des magasins exportent le coût des marchandises vendues (COGS) de leur système d'inventaire mais ne l'associent jamais à un attribut de flux. Sans un label de marge, Google ne peut pas distinguer un produit à 70 % de marge d'un produit à 10 % — ils sont identiques au niveau du flux. Nous recommandons trois niveaux : `margin-high` (>50 %), `margin-mid` (25–50 %) et `margin-low` (\<25 %).
+
+La **vélocité sur 90 jours** sépare vos signaux de demande prouvés de l'inventaire non testé. Les produits avec moins de 50 clics en 90 jours ont des données insuffisantes pour la modélisation de conversion de PMax ; les regrouper avec des SKU à forte vélocité force l'algorithme à faire la moyenne vers le bas. Le **taux de retour** est celui qui est sous-estimé. Un produit avec un taux de retour de 35 % et un nombre ROAS fort détruit en fait la marge de contribution — mais PMax ne voit que la conversion, pas l'annulation. L'encodage du taux de retour comme label personnalisé vous permet de créer un segment de faible dépense dédié ou exclu pour les retours chroniques.
+
+Avec le générateur de label personnalisé de MagicFeed Pro, vous pouvez automatiser l'attribution des quatre labels à partir d'une configuration de règles unique, en tirant les données COGS, de commande et de retour de votre magasin Shopify sans cycle d'export manuel.
+
+| Signal | Attribut de flux | Valeurs d'exemple | Action du groupe d'actifs |
+|---|---|---|---|
+| Marge brute | custom_label_0 | margin-high, margin-mid, margin-low | Campagnes distinctes par niveau |
+| Vélocité 90 jours | custom_label_1 | fast-mover, slow-mover, new-sku | Isoler les nouveaux SKU, protéger les mouvements rapides |
+| Bande panier moyen | custom_label_2 | aov-high, aov-mid, aov-low | Adapter la stratégie d'enchères au panier moyen |
+| Taux de retour | custom_label_3 | return-low, return-high | Supprimer ou exclure return-high |
+
+<Callout type="warning">
+N'utilisez jamais le type de produit ou la catégorie de produit Google seuls comme axe de segmentation pour PMax. Les catégories disent à Google ce que le produit *est*, non ce qu'il *vaut* pour votre entreprise. Un étui de téléphone à 9 $ et un étui de téléphone à 90 $ peuvent partager la même catégorie — et le même groupe d'actifs — sans aucun signal au niveau du flux pour différencier l'allocation budgétaire.
+</Callout>
+
+## Étape par étape : exporter les données de produit Shopify pour construire une matrice de segmentation
+
+Avant de restructurer une seule campagne, vous avez besoin d'une matrice de segmentation : une feuille de calcul qui mappe chaque SKU à ses quatre valeurs de signal. La construire à partir de Shopify prend environ 90 minutes la première fois, et moins de 20 minutes au rafraîchissement une fois que vous avez votre modèle d'export configuré.
+
+Commencez par un export en masse de produits depuis Shopify Admin → Produits → Exporter (CSV, tous les produits). Cela vous donne `SKU variant`, `Prix variant` et `Coût variant` (si vous avez entré COGS — si non, cette colonne sera vide et c'est votre premier problème à corriger). Selon [la documentation propre de Shopify sur l'intégration Google](https://help.shopify.com/en/manual/promoting-marketing/google), les données de coût au niveau des variantes alimentent directement la capacité de flux supplémentaire de l'application du canal Google.
+
+Ensuite, tirez votre export de commandes des 90 derniers jours depuis Analytique → Rapports → Ventes par produit. Joignez sur SKU en utilisant une VLOOKUP ou une fusion Python simple. Ajoutez une colonne de retours de votre 3PL ou portail de retours Shopify — c'est l'extraction de données la plus difficile pour les magasins sans outil BI dédié, mais elle est non négociable pour le label de taux de retour. Une fois jointe, appliquez votre logique de seuil : identifiez le palier de marge, le palier de vélocité, la bande de panier moyen et le palier de retour de chaque SKU.
+
+Le résultat est un flux supplémentaire à quatre colonnes. Téléchargez-le sur Google Merchant Center comme source de données supplémentaire, ou utilisez l'intégration Shopify de MagicFeed Pro pour synchroniser les labels automatiquement selon un calendrier quotidien, afin que votre segmentation reste actuelle à mesure que l'inventaire se renouvelle et que les taux de retour évoluent.
+
+<Callout type="tip">
+Si vos données COGS dans Shopify sont incomplètes — fréquent après les migrations de catalogue ou les changements de fournisseur — utilisez votre marge de catégorie médiane comme proxy conservateur pour `custom_label_0` jusqu'à ce que vous puissiez remplir les données réelles. Un label de marge approximatif est considérablement mieux qu'aucun label de marge pour le contrôle du groupe d'actifs PMax.
+</Callout>
+
+## Logique de groupe de listes vs logique de groupe d'actifs — ce que la plupart des guides oublient
+
+La plupart des guides PMax traitent « les groupes de listes » et « les groupes d'actifs » comme des termes interchangeables. Ils ne le sont pas, et la confusion coûte de l'argent réel aux marchands Shopify. Un groupe d'actifs est le conteneur créatif et d'audience — il contient vos titres, images, signaux d'audience et un contexte d'allocation budgétaire. Un groupe de listes est le filtre de produit *à l'intérieur* d'un groupe d'actifs qui définit quels produits de votre flux sont éligibles pour servir.
+
+Vous pouvez avoir un groupe d'actifs bien structuré avec la bonne créativité pour les produits à haut panier moyen mais un groupe de listes qui inclut accidentellement des SKU à faible marge parce que la logique du filtre n'était pas assez serrée. Le signal créatif et d'audience du groupe d'actifs est alors gaspillé sur les mauvais produits. Inversement, vous pouvez avoir un groupe de listes parfaitement segmenté mais une créativité générique fourre-tout qui ne correspond pas à l'intention de l'acheteur du niveau de produit.
+
+L'architecture correcte superpose les deux couches. Pour un groupe d'actifs à marge élevée : le groupe de listes filtre vers `custom_label_0 = margin-high`, ET le groupe d'actifs contient des actifs créatifs — titres, descriptions, images — spécifiquement écrits pour l'intention d'acheteur premium. Pour un groupe d'incubation de nouveau SKU : le groupe de listes filtre vers `custom_label_1 = new-sku`, le groupe d'actifs utilise des signaux d'audience plus larges et une stratégie d'enchères Target CPA pour recueillir des données sans brûler la marge.
+
+C'est aussi là où la réécriture de flux par IA de MagicFeed Pro crée une valeur composée — quand la qualité de votre titre et description correspond à l'intention du groupe d'actifs, le score de pertinence des annonces PMax s'améliore et votre part d'impressions éligibles augmente. La qualité du flux et la structure de campagne ne sont pas des flux de travail séparés ; ils s'amplifient mutuellement.
+
+## Un compte réel : comment un magasin Shopify de 12 000 SKU est passé de 1 à 9 groupes d'actifs
+
+Un magasin Shopify de biens pour la maison basé au Royaume-Uni (2,1 M £ de revenus annuels, 65k £/mois en dépenses PMax) est venu nous voir au Q3 2025 avec une seule campagne PMax, un groupe d'actifs et un ROAS de 4,1x — ce qui semblait bien jusqu'à ce que nous décomposions la marge de contribution. Leur ROAS effectif ajusté par marge était 1,8x parce que les articles de liquidation à faible marge consommaient 51 % des dépenses.
+
+Nous avons reconstruit leur structure en 9 groupes d'actifs en trois semaines, en utilisant le cadre de quatre signaux ci-dessus. Les groupes étaient : (1) Marge-Élevée / Fast-Mover produits vedettes, (2) Marge-Élevée / Slow-Mover pour les articles de valeur élevée nécessitant une génération de demande, (3) Marge-Moyenne / Fast-Mover gamme essentielle, (4) Marge-Moyenne / Slow-Mover, (5) Incubation SKU nouveau, (6) Articles saisonniers / promotionnels, (7) Liquidation à marge faible — budget plafonné, Target CPA uniquement, (8) Quarantaine taux de retour élevé — dépense minimale, (9) Exclusions recherche marque fourre-tout.
+
+Les résultats après 60 jours : le ROAS rapporté est passé de 4,1x à 5,6x. Plus important encore, le ROAS ajusté par marge est passé de 1,8x à 3,9x — une amélioration de 117 % de la rentabilité réelle. Le groupe de produits vedettes (Groupe 1, ~340 SKU) est passé de 8 % de part d'impressions à 31 %. Les articles de liquidation ont chuté de 51 % à 14 % des dépenses.
+
+L'activateur clé était les données de flux propres. Avant la reconstruction, nous avons exécuté un audit complet d'attribut de flux et avons trouvé 23 % des SKU sans données COGS, 41 % avec des titres non descriptifs qui supprimaient les scores de qualité, et 1 200 produits avec des GTIN signalés comme mal appariés dans Merchant Center. Fixer le flux d'abord a fait fonctionner la segmentation ; la segmentation sans données propres est juste réarranger les mauvais signaux.
+
+## Exigences d'attribut de flux pour que chaque segment fonctionne réellement en PMax
+
+Une stratégie de segmentation ne tient que si les attributs de flux sous-jacents sont complets et précis. Chacun des neuf types de segment ci-dessus a une priorité d'attribut différente, et les lacunes dans les champs spécifiques entraîneront des produits à sortir des segments éligibles ou à servir avec une qualité dégradée.
+
+Pour les **segments vedettes à marge élevée**, les attributs non négociables sont : `price` et `sale_price` précis (les décalages causent des désapprobations), `GTIN` ou `MPN` correct (les GTIN manquants réduisent l'éligibilité aux enchères selon la spécification de données de produit de Google), et `title` optimisé avec marque + type de produit + spécification clé dans les 70 premiers caractères. Un titre faible dans un segment vedette est de l'argent laissé sur la table — le titre est le signal de pertinence principal pour les requêtes Shopping.
+
+Pour les **segments d'incubation de nouveau SKU**, l'attribut le plus critique est `product_type` — sans une taxonomie de type de produit bien structurée, l'algorithme de Google n'a pas de signal catégorique pour ensemencer l'ensemble initial d'impressions. Selon la couverture de Search Engine Land sur les meilleures pratiques de PMax, les produits sans type de produit défini prennent 3–5 fois plus longtemps pour sortir de la phase « d'apprentissage », brûlant le budget d'incubation sans générer de données de conversion utilisables.
+
+Pour les **segments de quarantaine taux de retour élevé**, auditez votre `description` et `title` pour les lacunes de précision — les titres et descriptions trompeurs sont le #1 moteur des retours évitables, surtout dans les vêtements et électronique. Les produits qui retournent à un taux >25 % ont presque toujours un problème de précision de flux en amont. Fixer les données de flux, pas juste mettre en quarantaine les produits, est la solution durable.
+
+La liste de contrôle d'attribut complet pour chaque type de segment cartographie étroitement ce qu'un audit de flux structuré surface. Si vous n'en avez pas exécuté un récemment, le cadre de liste de contrôle au guide d'audit d'attribut de flux de MagicFeed Pro parcourt tous les attributs requis et recommandés par catégorie de produit et type de segment.
+
+<ProductCTA variant="audit" title="Obtenez un audit de segmentation de flux gratuit pour votre campagne PMax Shopify" />
+
+<FAQ>
+ <FAQItem
+ q="Combien de groupes d'actifs une campagne PMax Shopify devrait-elle avoir ?"
+ a="Il n'y a pas de nombre universel, mais les données des comptes Shopify de taille moyenne à grande (30k+$/mois) montrent régulièrement que 5–9 groupes d'actifs surpassent 1–3. Le bon nombre est déterminé par le nombre de paliers de marge distincts, de segments de vélocité et de bandes de panier moyen que votre catalogue a — non par le nombre de SKU. Un magasin de 500 SKU peut avoir besoin de 7 groupes ; un magasin de 20 000 SKU peut fonctionner sur 6 si les segments sont propres."
+ />
+ <FAQItem
+ q="Puis-je utiliser les labels personnalisés pour les groupes de listes PMax dans Shopify ?"
+ a="Oui. Les labels personnalisés (custom_label_0 à custom_label_4) sont entièrement supportés dans les flux Google Shopping connectés à Shopify via l'application du canal Google ou un outil de flux tiers. Vous assignez les valeurs dans votre flux supplémentaire, et elles apparaissent comme attributs filtrables dans le générateur de groupe de listes à l'intérieur de Google Ads. Ils n'affectent pas les listes de produits organiques ou les collections propres de Shopify."
+ />
+ <FAQItem
+ q="Combien de temps faut-il à Performance Max pour apprendre après une restructuration ?"
+ a="L'orientation officielle de Google stipule que les campagnes PMax ont besoin d'un minimum de 6 semaines pour sortir de la phase d'apprentissage après une modification structurelle importante. En pratique, les comptes avec des données de flux propres et un historique de conversion fort tendent à se stabiliser en 3–4 semaines. Évitez de faire des modifications de stratégie d'enchères au cours des 21 premiers jours après une restructuration — les changements superposés prolongent la période d'apprentissage et rendent impossible l'isolation de ce qui a causé les changements de performance."
+ />
+ <FAQItem
+ q="Quelle est la différence entre les groupes de listes PMax et les groupes de produits dans Shopping standard ?"
+ a="Dans Shopping standard, les groupes de produits sont le mécanisme de budget et de contrôle d'enchères principal — vous assignez les CPC au niveau du groupe de produits. Dans PMax, les groupes de listes sont purement un filtre pour quels produits sont éligibles à servir au sein d'un groupe d'actifs ; l'allocation budgétaire réelle est contrôlée par la stratégie d'enchères de campagne et la structure du groupe d'actifs. C'est pourquoi la logique de segmentation qui a fonctionné dans Shopping standard ne se transfère pas directement à PMax sans repenser autour des groupes d'actifs."
+ />
+ <FAQItem
+ q="Devrais-je exclure entièrement les produits à marge faible de PMax ou juste plafonner leur budget ?"
+ a="L'exclusion entière des produits à marge faible est rarement le bon appel sauf si leur taux de retour ou leur marge est négatif après les retours. Une meilleure approche est de les isoler dans un groupe d'actifs dédié avec un Target CPA ou Target ROAS conservateur qui reflète leur contribution de marge réelle. Cela les maintient éligibles à la part d'impressions pendant les périodes de haute demande (ventes, pics saisonniers) sans cannibaliser le budget des segments vedettes."
+ />
+</FAQ>
