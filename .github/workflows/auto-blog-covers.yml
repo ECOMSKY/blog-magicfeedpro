@@ -3,14 +3,14 @@ name: Auto-generate blog covers
 # Trigger when MDX content or the cover script changes on main.
 # Generates missing covers, commits + pushes back via the bot token.
 
-# push trigger disabled 2026-05-19 — was spamming failure emails every
-# commit while ANTHROPIC_API_KEY went dead. Re-enable by uncommenting:
-#   push:
-#     branches: [main]
-#     paths:
-#       - 'content/posts/**/*.mdx'
-#       - 'scripts/generate-blog-cover.py'
+# Trigger when MDX content or the cover script changes on main.
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'content/posts/**/*.mdx'
+      - 'scripts/generate-blog-cover.py'
   workflow_dispatch:
     inputs:
       force:
