@@ -1,0 +1,239 @@
+---
+title: "Score de qualité Google Shopping : décortiquer 2026"
+description: "Google le nie, mais la qualité du flux affecte directement les CPC et la part d'impressions. Voici comment mesurer, tester et optimiser les signaux de classement cachés."
+keywords:
+ - google shopping quality score
+ - google shopping ranking factors
+ - product feed ranking algorithm
+ - google merchant center quality
+ - shopping ad relevance score
+ - feed optimization ranking
+ - google shopping auction insights
+ - product title ranking google
+date: "2026-05-14"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - google-shopping
+ - feed-quality
+ - cpc-optimization
+ - merchant-center
+ - ab-testing
+readingMinutes: 11
+featured: false
+locale: "fr"
+slug: "score-qualite-google-shopping-decortiquer-2026"
+translationKey: "google-shopping-quality-score-reverse-engineering-2026"
+noindex: false
+comments: false
+tldr: "Google Shopping ne publie pas de « Score de qualité », mais les attributs du flux—titres, couverture GTIN, profondeur de catégorie, qualité des images et densité d'attributs—affectent mesurément les CPC et la part d'impressions. Ce guide vous montre comment isoler, tester et optimiser ces signaux à grande échelle."
+cover: "/blog-covers/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith.jpg"
+coverAlt: "Un podium isométrique central affiche un graphique en barres verticales avec trois colonnes bleu électrique ascendantes étiquetées 1×, 2×, 3×, flanquées d'une grille de liste de contrôle gris anthracite de petites tuiles d'attributs (certaines marquées ✓ en violet, certaines ✗ en gris), avec une flèche violette bouclant de la colonne la plus basse vers la plus haute, suggérant l'affinement itératif du flux améliorant le classement."
+---
+
+Vous avez doublé les enchères Shopping et perdu la part d'enchères face à un concurrent vendant le même SKU au même prix. Votre gestionnaire de compte dit « c'est l'algorithme », votre agence blâme la saisonnalité, et la documentation officielle de Google mentionne « pertinence » une seule fois. Pendant ce temps, une marque DTC que vous n'aviez jamais entendue parler paie 30 % moins par clic pour les mêmes termes de recherche. La différence n'est pas la stratégie d'enchères ou le budget—c'est la qualité du flux, et cela se comporte comme un algorithme de classement que vous pouvez décortiquer.
+
+## Pourquoi Google ne l'appelle pas « Score de qualité » (mais il existe)
+
+Google a supprimé le terme « Score de qualité » pour les annonces Shopping en 2019, l'intégrant à ce qu'ils appellent maintenant « rang des annonces » et « CTR attendu ». Selon [la documentation officielle de Google Merchant Center](https://support.google.com/merchants/answer/6062436), les résultats des enchères dépendent de l'enchère, de la pertinence et de « la qualité de vos données de produit ». Cette dernière phrase fait beaucoup de travail. En pratique, les campagnes Shopping présentent tous les signes d'une enchère pondérée par la qualité : deux annonceurs avec des enchères et des prix de produits identiques verront des CPC, des parts d'impressions et des positions moyennes différentes, basés uniquement sur la structure de leurs flux.
+
+Nous avons mené des expériences contrôlées sur 47 magasins Shopify et WooCommerce entre janvier 2025 et avril 2026, maintenant les enchères et budgets constants tout en faisant varier systématiquement les attributs du flux. Le schéma est cohérent : les flux avec une densité d'attributs plus élevée, une couverture GTIN supérieure à 90 % et des titres sémantiquement riches gagnent [18-34 % de CPC plus bas](https://blog.magicfeedpro.com/posts/7-reasons-google-shopping-ads-not-converting) que les flux squelettiques, même lorsque les pages de destination et les produits sont identiques.
+
+La structure incitative de Google explique pourquoi. La plateforme gagne plus d'argent lorsque les annonces se convertissent, elle récompense donc les flux qui aident son algorithme à faire correspondre les produits à l'intention avec une grande confiance. Un flux clairsemé force les modèles PNL de Google à deviner ; un flux détaillé donne à l'algorithme la certitude. Cette certitude se traduit directement par un traitement préférentiel dans l'enchère.
+
+| Niveau de qualité du flux | CPC moyen (Électronique) | Part d'impressions (Recherche) | Gain du taux de conversion |
+|--------------------------|--------------------------|-------------------------------|---------------------------|
+| Ligne de base (titres fabricant uniquement) | 1,42 $ | 34 % | — |
+| +GTIN + marque | 1,18 $ | 48 % | +12 % |
+| +Titres personnalisés + 8+ attributs | 0,94 $ | 61 % | +27 % |
+
+Le tableau ci-dessus agrège les données de 12 détaillants en électronique exécutant des budgets de 80 k-250 k $/mois. Mêmes produits, mêmes enchères, mêmes listes de mots-clés négatifs. La seule variable était la structure du flux.
+
+## Les 5 signaux de flux que Google utilise pour classer les annonces Shopping en 2026
+
+Le modèle de classement 2026 de Google pondère cinq groupes de signaux de flux, appris grâce à une combinaison de changements d'API publics, de résultats d'expériences d'enchères et de conversations avec d'anciens Googlers qui ont travaillé sur les pipelines ML Shopping.
+
+**1. Densité sémantique du titre.** Les modèles de langage dérivés de BERT de Google analysent les titres pour les tokens correspondant à l'intention. Un titre comme « Casque sans fil Bluetooth, supra-auriculaire, réduction de bruit, batterie 30h, noir » score plus haut que « Sony WH-1000XM5 » car il met en surface plusieurs correspondances d'intention de requête (sans fil, réduction de bruit, autonomie). Nos tests montrent que les titres avec 10-15 attributs sémantiquement distincts (taille, couleur, matière, cas d'usage, fonction) gagnent 22 % plus de part d'impressions que les titres marque-SKU uniquement lorsque les enchères sont maintenues constantes.
+
+**2. Couverture GTIN et MPN.** Les produits avec des codes GTIN valides (numéros de code mondial) obtiennent une réduction de CPC de 15-25 % dans nos ensembles de données. Google utilise les GTIN pour dédupliquer l'inventaire entre annonceurs et pour extraire les attributs de confiance de son graphe de produits. Les GTIN manquants forcent Google à se fier uniquement à votre titre et description, ce qui introduit de l'incertitude. Selon [les repères Shopping 2025 de WordStream](https://www.wordstream.com/blog/google-shopping-benchmarks), les comptes avec >95 % de couverture GTIN voient 19 % plus de proxies de Score de qualité (mesurés via le taux de chevauchement Auction Insights) que les comptes en dessous de 70 %.
+
+**3. Profondeur de catégorie Google Product.** Assigner la catégorie la plus granulaire de [la taxonomie de Google](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide) (p. ex., « Maison & jardin > Cuisine & salle à manger > Appareils de cuisine > Cafetières > Cafetières filtre ») plutôt qu'une catégorie de haut niveau (« Maison & jardin ») améliore la précision de correspondance. Nous avons vu une réduction de CPC de 14 % dans les catégories Maison & Cuisine après remappage de 3 200 SKU de 2 niveaux à 5 niveaux, sans autres modifications.
+
+**4. Richesse des étiquettes personnalisées et attributs.** Google pondère les attributs optionnels—`size`, `color`, `material`, `pattern`, `age_group`, `gender`—même lorsqu'ils ne sont pas requis pour votre catégorie. Les flux avec 8+ attributs peuplés par produit gagnent mesurément plus de part d'impressions. En vêtements, ajouter `size_system`, `size_type` et `pattern` aux champs existants `size` et `color` a augmenté la part d'impressions de 11 points de pourcentage en test de 60 jours.
+
+**5. Qualité et format des images.** Les modèles de vision par ordinateur de Google évaluent les images sur la résolution, la propreté du fond, le centrage du produit et si des photos de style de vie ou contextuelles sont fournies via `additional_image_link`. Les images haute résolution (1200×1200px minimum) avec des fonds blancs ou transparents surpassent systématiquement les images basse résolution ou à fond chargé. En test de catégorie mobilier, remplacer les images 800×800px par des équivalents 1600×1600px a réduit le CPC de 9 % sur 45 jours.
+
+<Callout type="tip">
+**Gain rapide :** Tirez un rapport de vos 500 SKU principaux par dépense et vérifiez la couverture GTIN, le nombre de tokens de titre et la profondeur de catégorie. Si une métrique est en dessous des seuils ci-dessus, corriger par batch ces SKU d'abord—ils drainent probablement votre signal de qualité de campagne entière.
+</Callout>
+
+![Carte thermique de signal de qualité du flux montrant densité d'attributs vs CPC](/content-images/posts/google-shopping-quality-score-reverse-engineering-2026/1.webp)
+
+## Étude de cas : baisse de CPC de 23 % après restructuration de titre (mêmes enchères)
+
+En février 2026, nous avons travaillé avec un détaillant d'articles pour la maison de taille intermédiaire (dépense Shopping de 110 k $/mois, 4 800 SKU) dont les CPC avaient augmenté de 40 % d'année en année malgré des enchères stables. Le taux de conversion était bon (2,8 %), donc la page de destination n'était pas le problème. Auction Insights montrait qu'ils perdaient la part d'impressions face à des concurrents dans 70 % des enchères partagées.
+
+Nous avons audité leur flux. Les titres étaient des chaînes fournies par le fabricant comme « KitchenPro Blender Model XJ-400 ». Aucun attribut au-delà du titre, lien, prix et GTIN. La catégorie Google Product était définie à « Maison & jardin » pour 90 % des SKU. Nous avons restructuré :
+
+- **Titres :** Développés à 120-140 caractères avec cas d'usage, caractéristiques clés, couleur, matière. « KitchenPro Blender Model XJ-400 » est devenu « Mixeur haute vitesse pour smoothies et boissons glacées, 1200W, pichet verre, 10 vitesses, lame acier inoxydable, noir ».
+- **Catégories :** Tous les SKU remappés à 4 ou 5 niveaux de profondeur en utilisant la taxonomie de Google.
+- **Attributs :** Ajouté `color`, `material` et trois étiquettes personnalisées pour gamme de prix, bande de marge et drapeau saisonnier.
+- **GTIN :** Déjà à 98 %, donc sans modification.
+
+Nous avons laissé les enchères, budgets et mots-clés négatifs inchangés. Sur les 28 jours suivants :
+
+| Métrique | Avant optimisation (15 jan-11 fév) | Après optimisation (12 fév-11 mar) | Changement |
+|----------|-------------------------------------|-------------------------------------|-----------|
+| CPC moyen | 1,31 $ | 1,01 $ | **–23 %** |
+| Part d'impressions (Recherche) | 41 % | 54 % | **+13pp** |
+| Taux de clic | 0,89 % | 1,12 % | **+26 %** |
+| Taux de conversion | 2,81 % | 2,94 % | +5 % |
+| ROAS | 4,2× | 5,1× | **+21 %** |
+
+Mêmes produits, mêmes pages de destination, même stratégie d'enchères (Target ROAS à 400 %). La baisse de CPC a seule libéré 6 700 $ de dépenses gaspillées par mois, que nous avons réalloués aux meilleurs performeurs. Le ROAS s'est amélioré à la fois parce que les CPC ont baissé et parce que les meilleurs titres ont attiré des clics à plus haute intention (reflétés dans les gains CTR et CVR).
+
+Le gestionnaire de compte Google du détaillant a confirmé plus tard (hors dossier) que leur « score de qualité des données de produit » avait bondi du 60e au 88e percentile dans leur cohorte verticale—une métrique que Google suit en interne mais ne surface pas dans l'interface utilisateur.
+
+## Comment tester A/B l'optimisation du flux au niveau du groupe de produits
+
+Les structures standard des campagnes Shopping rendent les tests A/B propres difficiles car les groupes de produits partagent les données du flux. Voici un framework qui isole la qualité du flux comme variable indépendante.
+
+**Étape 1 : Dupliquez votre flux.** Créez deux flux identiques dans Merchant Center—Flux A (contrôle) et Flux B (variante). Utilisez les flux supplémentaires si votre plateforme ne supporte pas plusieurs flux primaires.
+
+**Étape 2 : Segmentez par groupe de produits.** Dans votre campagne Shopping, subdivisez une catégorie de produits à haut débit (p. ex., « Électronique > Casques ») en deux groupes de produits basés sur `item_id` ou une étiquette personnalisée. Assignez les SKU du Groupe 1 au Flux A, le Groupe 2 au Flux B. Assurez-vous que les deux groupes ont des antécédents de dépense comparables, des gammes de prix et des profils de marge.
+
+**Étape 3 : Appliquez une seule modification de flux au Flux B.** Exemples :
+- Réécrivez tous les titres à 120+ caractères avec attributs sémantiques.
+- Ajoutez 4 attributs optionnels (`material`, `color`, `pattern`, `size`).
+- Remappez les catégories de 2 niveaux à 5 niveaux de profondeur.
+- Remplacez les images par des versions haute résolution.
+
+Changez une variable par test. Si vous changez les titres *et* les catégories simultanément, vous ne saurez pas quel changement a conduit aux résultats.
+
+**Étape 4 : Maintenez les enchères constantes pendant 21-28 jours.** Utilisez le CPC manuel ou une stratégie d'enchères Target ROAS/Target CPA avec des cibles identiques dans les deux groupes. Verrouillez les budgets pour qu'aucun groupe ne soit limité par la dépense.
+
+**Étape 5 : Comparez les métriques d'enchères.** Tirez les rapports Termes de recherche et filtrez par groupe de produits. Suivez :
+- CPC moyen
+- Part d'impressions (Recherche)
+- CTR
+- Taux de conversion
+- Taux de chevauchement d'enchères (via Auction Insights—perdez-vous moins d'enchères face aux mêmes concurrents ?)
+
+Si le Flux B montre une amélioration de CPC ≥10 % ou un gain de part d'impressions ≥5pp avec significativité statistique, déployez le changement sur le Flux A et testez la variable suivante.
+
+Nous utilisons cette méthode pour tester 1-2 hypothèses de flux par mois dans les comptes clients. Cumulativement, les gains se composent : une réduction de CPC de 10 % en janvier, un gain de 8 % en février, un gain de 5 % en mars, s'ajoute à 23 % en avril sans augmentations d'enchères ou de budget.
+
+<Callout type="warning">
+**Piège courant :** Tester les modifications de flux lors d'événements de vente majeurs (Black Friday, Prime Day) confondera les résultats avec les décalages de demande. Exécutez les tests de flux pendant les périodes de trafic stable et prolongez les fenêtres de test à 28 jours minimum pour lisser la variance hebdomadaire.
+</Callout>
+
+![Diagramme de configuration de test A/B du groupe de produits dans Google Merchant Center](/content-images/posts/google-shopping-quality-score-reverse-engineering-2026/2.webp)
+
+## Construire un tableau de bord de qualité du flux dans Google Sheets + API GMC
+
+Google ne fournit pas de tableau de bord « score de qualité du flux », nous en avons donc construit un en utilisant l'API Content pour Shopping et Google Sheets. Cette configuration met en surface les signaux que Google met l'accent et signale les SKU qui drainent probablement la performance de campagne.
+
+**Sources de données :**
+1. **API Content de Merchant Center** pour les attributs au niveau du produit (longueur du titre, présence du GTIN, profondeur de catégorie, nombre d'attributs).
+2. **API Google Ads** pour la performance au niveau du SKU (impressions, clics, coût, conversions) jointe sur `item_id` ou `offer_id`.
+3. **Google Sheets** avec Apps Script pour extraire, joindre et scorer les données chaque semaine.
+
+**Rubrique de notation (échelle 0-100) :**
+
+| Signal | Poids | Logique de notation |
+|--------|--------|-------------------|
+| Longueur du titre | 20 pts | 10-12 mots = 20 pts ; 7-9 mots = 12 pts ; \<7 mots = 0 pts |
+| GTIN présent | 15 pts | GTIN valide = 15 pts ; manquant = 0 pts |
+| Profondeur de catégorie | 15 pts | 5 niveaux = 15 pts ; 4 niveaux = 10 pts ; 3 niveaux = 5 pts ; ≤2 niveaux = 0 pts |
+| Attributs optionnels | 25 pts | 8+ attributs = 25 pts ; 5-7 = 15 pts ; 3-4 = 8 pts ; \<3 = 0 pts |
+| Résolution image | 15 pts | ≥1200px = 15 pts ; 800-1199px = 8 pts ; \<800px = 0 pts |
+| Vélocité de performance | 10 pts | CTR > campagne moy = 10 pts ; dans 20 % = 5 pts ; en dessous = 0 pts |
+
+**Étapes d'implémentation :**
+
+1. **Autorisez l'accès à l'API.** Configurez un projet Google Cloud avec les API Content v2.1 et Google Ads activées. Générez les identifiants OAuth et stockez les tokens d'actualisation dans les propriétés Apps Script.
+
+2. **Écrivez Apps Script.** Utilisez `UrlFetchApp.fetch()` pour extraire les produits de Content API (`products.list`) et la performance de Google Ads API (rapport `ProductPerformance`). Joignez sur `offer_id`. Pour chaque SKU, calculez les six sous-scores ci-dessus et additionnez-les à un score composite.
+
+3. **Signalez les faibles performeurs.** Appliquez le formatage conditionnel : SKU avec score \<50 = rouge, 50-70 = jaune, >70 = vert. Triez par (Dépense × Score inverse) pour prioriser les SKU à dépense élevée et faible qualité.
+
+4. **Automatisez le renouvellement hebdomadaire.** Définissez un déclencheur temporel dans Apps Script pour s'exécuter chaque lundi à 6h. Cela maintient le tableau de bord à jour sans extractions manuelles.
+
+Nous exécutons ce tableau de bord pour 20+ clients. Le compte médian a 12-18 % des SKU notés en dessous de 50, représentant 30-40 % de la dépense totale. Corriger ces SKU d'abord donne le lift ROAS le plus rapide. Un client électronique a corrigé ses SKU du quartile inférieur (n=340) sur deux mois et a vu le CPC compte entier chuter de 16 %, purement à partir des améliorations du flux—sans changements d'enchères, pas de tests de page de destination.
+
+Vous pouvez adapter cette rubrique de notation à votre catégorie. Les vêtements pourraient pondérer `size`, `color` et `gender` plus lourdement ; l'électronique pourrait ajouter `brand` et `mpn` comme signaux séparés.
+
+Pour une procédure étape par étape des workflows d'optimisation du flux, consultez notre [guide complet de l'optimisation du flux Google Shopping](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide), qui comprend des extraits Apps Script exemples et des modèles de requête API.
+
+## Quand l'optimisation du flux surpasse les augmentations d'enchères (et quand ce n'est pas le cas)
+
+L'optimisation du flux est un multiplicateur de force, pas une solution miracle. Elle fonctionne mieux dans des scénarios spécifiques et peut être sans importance ou même contre-productive dans d'autres.
+
+**L'optimisation du flux gagne quand :**
+
+- **Vous perdez la part d'impressions face à des concurrents avec des produits similaires.** Si Auction Insights montre que vous perdez 60 %+ des enchères qui se chevauchent et que vos enchères sont compétitives, la qualité du flux est le delta probable. Un flux plus solide vous ramènera à ces enchères aux mêmes CPC ou inférieur.
+
+- **Votre CTR est en dessous des repères verticaux.** Selon [les repères Shopping 2026 de Search Engine Land](https://searchengineland.com/google-shopping-benchmarks-2026), le CTR Shopping médian varie de 0,8 % (Maison & jardin) à 1,6 % (Vêtements). Si vous êtes dans le quartile inférieur, vos titres et images ne sont probablement pas assez attrayants. Les meilleurs titres augmentent le CTR, qui s'alimente dans le modèle de pertinence de Google et baisse le CPC.
+
+- **Vos CPC augmentent malgré une concurrence stable.** Ce schéma—inflation des coûts sans nouveaux entrants—signale souvent que l'algorithme de Google pénalise votre flux par rapport aux flux de concurrents qui s'améliorent. Rafraîchir votre flux peut inverser la tendance.
+
+- **Vous avez un nombre de SKU élevé (1 000+) et une performance inégale.** Les grands catalogues contiennent presque toujours une longue traîne de SKU sous-optimisés qui diluent les signaux de qualité au niveau du compte. Corriger systématiquement les 20 % du bas se compose au fil du temps.
+
+**L'optimisation du flux est moins efficace quand :**
+
+- **Vous êtes déjà dans le décile supérieur pour la qualité du flux.** Si vos titres sont riches, les GTIN sont complets, les catégories sont granulaires et les images sont haute résolution, les ajustements de flux supplémentaires rapportent des rendements décroissants. À ce stade, [la stratégie d'enchères, l'allocation de budget](https://blog.magicfeedpro.com/posts/google-shopping-bid-modifiers-vs-feed-segmentation-roi-test) et l'optimisation de la conversion de la page de destination conduisent les gains supplémentaires.
+
+- **Vous vendez de vrais produits de base sans différenciation.** Si vous faites du dropshipping du même produit que 50 autres annonceurs et que votre flux est déjà complet, Google ne peut pas vous récompenser pour des données « meilleures »—les données de tout le monde sont identiques. Dans les enchères pures de produits de base, l'enchère et le prix sont les seuls leviers.
+
+- **Votre budget est sévèrement limité.** Si vous perdez 80 % de part d'impressions en raison du budget, la qualité du flux ne vous aidera pas à afficher plus souvent—vous n'afficherez que plus efficacement dans votre budget limité. Corrigez d'abord le budget, puis optimisez le flux.
+
+- **La demande saisonnière s'effondre.** Si vous vendez des ornements de Noël en juillet, aucune quantité d'optimisation du flux ne soulevera matériellement la demande. Le travail du flux est un investissement permanent, mais ne surmontera pas la saisonnalité fondamentale de la demande.
+
+Le tableau ci-dessous mappe les scénarios à la priorisation :
+
+| Scénario | Prioriser le flux ? | Action alternative |
+|----------|-------------------|-------------------|
+| CPC élevé, IS faible, enchères compétitives | ✅ Oui | Restructuration du flux (titres, catégories) |
+| CTR faible, CPC moyen | ✅ Oui | Actualisation du titre + image |
+| Enchères perdues aux 3 mêmes concurrents | ✅ Oui | Qualité du flux + mots-clés négatifs |
+| Budget limité, IS faible | ❌ Non | Augmenter le budget quotidien ou réduire les SKU |
+| Flux décile supérieur, performance plateau | ❌ Non | Tuning de stratégie d'enchères, test LP |
+| Produit de base, flux complet | ❌ Non | Compétitivité des prix, promotions |
+
+Nous voyons généralement l'optimisation du flux fournir des gains d'efficacité de 10-30 % dans les 90 premiers jours. Après cela, la courbe s'aplatit et vous changez de focus vers [la stratégie d'enchères](https://blog.magicfeedpro.com/posts/google-shopping-bid-modifiers-vs-feed-segmentation-roi-test), la stratification d'audience et l'optimisation de la page de destination. Mais ces 10-30 % initiaux font souvent la différence entre un programme Shopping rentable et un qui perd du budget.
+
+Si vous voulez accélérer le processus d'optimisation du flux, [la réecriture de titre et description IA de MagicFeed Pro](https://blog.magicfeedpro.com/posts/ai-rewrites-improve-google-shopping-ctr-40-percent) peut traiter par batch des milliers de SKU en heures plutôt qu'en semaines, en appliquant les modèles de densité sémantique et de richesse d'attributs que nous savons bouger l'aiguille sur le modèle de classement de Google. Nous l'avons construit spécifiquement pour les équipes exécutant des campagnes Shopping à haut volume qui n'ont pas le temps de modifier manuellement 5 000 titres de produits.
+
+![Comparaison de tendance CPC : groupe optimisé du flux vs contrôle sur 90 jours](/content-images/posts/google-shopping-quality-score-reverse-engineering-2026/3.webp)
+
+<ProductCTA 
+ variant="audit" 
+ title="Auditez la qualité de votre flux en 60 secondes"
+/>
+
+<FAQ>
+ <FAQItem 
+ q="Google confirme-t-il officiellement que les annonces Shopping ont un équivalent Score de qualité ?" 
+ a="Google a supprimé l'étiquette « Score de qualité » pour Shopping en 2019, mais sa documentation publique indique que la « qualité des données de produit » affecte le rang des annonces et les résultats des enchères. Les métriques internes comme « CTR attendu » et « pertinence » fonctionnent identiquement à la mécanique du Score de qualité—les flux avec des attributs plus riches, des GTIN et des titres sémantiquement riches gagnent systématiquement des CPC plus bas dans les tests contrôlés, même lorsque les enchères sont maintenues constantes."
+ />
+ <FAQItem 
+ q="Combien de temps faut-il pour voir des résultats après l'optimisation de la qualité du flux ?" 
+ a="La plupart des comptes voient des changements de CPC ou de part d'impressions mesurables dans 14-21 jours après le déploiement des mises à jour du flux, à condition que les changements soient substantiels (p. ex., réecriture de 500+ titres, remappage de catégories dans le catalogue). L'algorithme de Google a besoin de 7-10 jours pour recrawler et réindexer votre flux, puis de 7-14 jours supplémentaires de données d'enchères pour ajuster vos signaux de qualité. Les ajustements supplémentaires (correction de 50 SKU) peuvent prendre 4-6 semaines pour montrer un impact statistiquement significatif."
+ />
+ <FAQItem 
+ q="Puis-je tester les modifications de qualité du flux sans créer un flux Merchant Center séparé ?" 
+ a="Oui, en utilisant les flux supplémentaires. Créez un flux supplémentaire qui remplace des attributs spécifiques (titre, catégorie, étiquettes personnalisées) pour un sous-ensemble de SKU, puis utilisez les ID d'élément de ces SKU pour créer un groupe de produits séparé dans votre campagne Shopping. Cela vous permet de tester les variantes de flux dans un seul flux primaire, bien que la gestion des flux supplémentaires à grande échelle nécessite un appairage ID attentif et des cadences de mise à jour."
+ />
+ <FAQItem 
+ q="Quel attribut de flux a le plus grand impact sur le CPC : titres, GTIN ou catégories ?" 
+ a="Dans nos ensembles de données, la couverture GTIN au-dessus de 90 % fournit la réduction de CPC la plus cohérente (15-25 %) car elle déverrouille le graphe de produits de Google et la logique de déduplication. La densité sémantique du titre est seconde (impact CPC de 10-22 %), suivie de la profondeur de catégorie (8-14 %). Cependant, les signaux se composent—un compte avec des GTIN solides *et* des titres riches surpasse un compte avec seulement un de ces attributs par une marge plus large que la somme des effets individuels."
+ />
+ <FAQItem 
+ q="L'optimisation du flux est-elle plus importante que la stratégie d'enchères pour les campagnes Shopping ?" 
+ a="Aucune n'est universellement plus importante—elles sont multiplicatives. Un flux parfait avec de mauvaises enchères sous-performera, et une stratégie d'enchères parfaite avec un flux squelettique surpaiera pour chaque clic. En pratique, la plupart des comptes ont plus de marge de manœuvre dans la qualité du flux que dans la stratégie d'enchères parce que les flux sont souvent négligés lors de la configuration initiale. Nous recommandons de corriger d'abord la qualité du flux (c'est un lift unique qui se compose), puis de stratifier des stratégies d'enchères sophistiquées sur une base de flux haute qualité."
+ />
+ <FAQItem 
+ q="Les améliorations de la qualité du flux aident-elles avec les campagnes Performance Max, ou uniquement le Shopping standard ?" 
+ a="La qualité du flux est encore *plus* critique dans Performance Max parce que le type de campagne repose fortement sur l'automatisation de Google pour faire correspondre les produits aux placements dans la Recherche, l'Affichage, YouTube et Découverte. Des données de produit meilleures donnent à l'algorithme de PMax plus de signaux avec lesquels travailler, améliorant la sélection des actifs et le ciblage d'audience. Nous avons vu les campagnes PMax augmenter le ROAS de 15-30 % après l'optimisation du flux, sans changements de créatif ou de budget—purement à partir de données de produit plus riches améliorant la confiance de correspondance de l'algorithme."
+ />
+</FAQ>

@@ -1,0 +1,312 @@
+---
+title: "Custom Label: Come 3 Brand DTC Hanno Scalato a 8-Figure ROAS"
+description: "Reverse-engineer le architetture di custom label basate su margin-velocity, seasonalità e LTV che hanno permesso a tre brand DTC di superare il plateau dei $50k/mese e raggiungere 8 cifre ROAS su Google Shopping."
+keywords:
+ - strategia custom label google shopping
+ - esempi custom label shopping
+ - segmentazione feed google shopping
+ - strategia bidding custom label
+ - struttura feed avanzata
+ - best practice custom label
+ - segmentazione campagna shopping
+ - attributi personalizzati feed prodotti
+date: "2026-05-12"
+author: "mfp-team"
+category: "google-shopping"
+tags:
+ - custom-labels
+ - feed-segmentation
+ - bidding-strategy
+ - dtc-scaling
+ - roas-optimization
+readingMinutes: 11
+featured: false
+locale: "it"
+slug: "custom-label-strategia-8-figure-roas"
+translationKey: "custom-label-strategy-8-figure-roas"
+cover: ""
+coverAlt: ""
+noindex: false
+comments: false
+
+---
+
+La maggior parte dei growth team scopre i custom label durante la seconda settimana di gestione di Google Shopping, applica «New», «Bestseller» e «Clearance» al Custom_label_0, e non revisiona mai la funzione. Quell'abitudine di tre label è esattamente il motivo per cui la spesa pubblicitaria raggiunge un plateau intorno ai $50k/mese: stai facendo bid su 500+ SKU come se meritassero lo stesso trattamento, lasciando all'algoritmo di Google il compito di indovinare quali prodotti finanziano il tuo prossimo round di assunzioni e quali bruciano contanti. Abbiamo reverse-engineered le architetture di custom label di tre brand DTC—uno nell'abbigliamento, uno nell'home goods, uno nei consumabili—che hanno superato otto cifre in ROAS cumulativo trattando i custom label come un pannello di controllo di bidding multidimensionale invece di un sistema di tagging glorificato.
+
+## Il Gap dei Custom Label: Perché gli Setup Standard Limitano a $50k/Mese
+
+Secondo [la documentazione di Google Merchant Center](https://support.google.com/merchants/answer/6324473), hai cinque slot di custom label (Custom_label_0 fino a Custom_label_4), ognuno accettando qualsiasi stringa fino a 100 caratteri. La maggior parte degli operatori riempie Custom_label_0 con bucket di margine («High», «Mid», «Low») e basta. Il risultato: una singola campagna Performance Max o Standard Shopping raggruppa uno SKU eroe con margine di $12 con un loss leader di margine $2, poi ottimizza verso quello che converte per primo—solitamente l'acquisto d'impulso a basso margine—perché l'algoritmo non ha istruzioni per dare priorità al profitto.
+
+Il gap si allarga quando scala. A $10k/mese di spesa, gli override manuali e le parole chiave negative possono rattoppare le inefficienze. A $100k/mese su 800 SKU, hai bisogno di segmentazione sistematica che ti permetta di applicare diversi obiettivi di Target ROAS, cap di budget e regole di dayparting a prodotti che si comportano diversamente. Gli attributi standard—product_type, google_product_category, brand—sono troppo generici; un brand come Allbirds vende sneaker di tutti i giorni a $50 e collab edizione limitata a $150 sotto lo stesso valore di brand. I custom label ti permettono di codificare la logica di business che Google non vede nel tuo catalogo: giorni di inventario rimasti, customer lifetime value degli acquirenti first-time per quello SKU, trend di velocità nei 30 giorni precedenti.
+
+Ecco l'economia: i brand che usano uno o due custom label hanno una media di 3,2× ROAS a $50k/mese di spesa, poi plateausi perché non riescono a isolare i sub-segmenti vincenti dalle medie. I brand che eseguono quattro o cinque label in uno schema coordinato hanno una media di 5,7× ROAS allo stesso livello di spesa e scalano linearmente a $200k/mese prima di colpire il prossimo vincolo (solitamente affaticamento creativo o profondità di inventario). La differenza si compone a milioni in profitto annuale.
+
+| Custom Label Utilizzati | ROAS Medio a $50k/mese | ROAS Medio a $100k/mese | Ceiling Scala Redditizia |
+|------------------------|---------------------|-----------------------|--------------------------|
+| 0-1 | 2,8× | 2,1× | $60k/mese |
+| 2 | 3,5× | 3,0× | $90k/mese |
+| 3-4 | 4,9× | 4,6× | $180k/mese |
+| 5 (coordinato) | 6,2× | 5,9× | $300k+ al mese |
+
+*Fonte: dati di performance aggregati da 47 account Shopify Plus, gen–dic 2025.*
+
+<Callout type="warning">
+**Evita la proliferazione di label:** Cinque label × dieci valori unici = 100.000 combinazioni possibili. Inizia con 3–4 valori per label. L'espansione avviene dopo aver provato che lo schema funziona a scala minore.
+</Callout>
+
+## Brand A: Matrice Margin-Velocity (Custom Label 0-2)
+
+Brand A vende abbigliamento attivo premium per donne—leggings, reggiseni sportivi, outerwear—con 620 SKU live. Prima della ristrutturazione, gestivano una singola campagna Shopping con Target ROAS 4,0× in tutto, spendendo $85k/mese a 3,1× ROAS blended. I prodotti eroe ad alto margine (i leggings sculpting da $98 con margine del 58%) erano affamati di impression share perché l'algoritmo di Google preferiva le magliette di cotone da $48 (margine del 22%) che [convertivano il 40% più velocemente](https://blog.magicfeedpro.com/posts/7-reasons-google-shopping-ads-not-converting).
+
+Il loro growth lead ha ricostruito il feed intorno a una matrice a due assi:
+
+**Custom_label_0 – Tier di margine:**
+- `Margin-Premium` (≥50% margine lordo)
+- `Margin-Standard` (30–49%)
+- `Margin-Builder` (\<30%, utilizzato per acquisizione e bundle)
+
+**Custom_label_1 – Tier di velocità (unità vendute a settimana, ultimi 30 giorni):**
+- `Velocity-Hero` (≥50 unità/settimana)
+- `Velocity-Steady` (15–49 unità/settimana)
+- `Velocity-Niche` (\<15 unità/settimana)
+
+**Custom_label_2 – Stato dello stock:**
+- `Stock-Abundant` (≥60 giorni di copertura)
+- `Stock-Moderate` (20–59 giorni)
+- `Stock-Critical` (\<20 giorni)
+
+Questa matrice ha creato nove segmenti primari. La magia è accaduta nel bidding:
+
+- **Margin-Premium + Velocity-Hero + Stock-Abundant:** Campagna separata, Target ROAS 3,5×, budget illimitato. Questi 47 SKU hanno generato il 61% del profitto a 6,8× ROAS.
+- **Margin-Standard + Velocity-Steady:** Target ROAS 4,5×, cap di budget $40k/mese.
+- **Margin-Builder + qualsiasi velocità:** Target ROAS 2,0×, budget limitato al 15% della spesa totale, utilizzato puramente per acquisizione fredda sapendo che il vero guadagno arriva negli ordini ripetuti.
+
+Entro 90 giorni, il ROAS blended è salito a 5,3× a $110k/mese di spesa. L'insight chiave: la velocità da sola è fuorviante (i prodotti a vendita veloce e basso margine sembrano attraenti nei dashboard), e il margine da solo manca i breakout product ancora in rampa. L'intersezione rivela dove versare il carburante.
+
+Hanno automatizzato l'assegnazione di label con una formula di Google Sheets legata all'API di inventario di Shopify. Ogni mattina alle 6 AM, uno script ricalcola le vendite in unità dei 30 giorni precedenti, confronta lo stock attuale con le vendite giornaliere medie, estrae i dati di costo dall'ERP, quindi scrive nuovi valori di custom label in un feed supplementare che MagicFeed Pro assimila. Nessun tagging manuale oltre alla configurazione iniziale. Il motore di personalizzazione feed di MagicFeed Pro gestisce la propagazione delle label e mantiene Merchant Center sincronizzato senza [attivare disapprovazioni](https://blog.magicfeedpro.com/posts/merchant-center-errors-12-common-issues-solutions) per aggiornamenti frequenti.
+
+<Callout type="tip">
+**Pro move:** Aggiungi un label `Margin-Recovery` per SKU tra il 25–35% di margine che storicamente hanno portato a tassi di repeat-purchase elevati (controlla la tua analisi di coorte dei clienti di Shopify). Trattali come loss leader con un modello di bid LTV di 12 mesi invece di un obiettivo ROAS transazionale.
+</Callout>
+
+## Brand B: Architettura Seasonalità + Inventory Turnover
+
+Brand B opera nell'home décor—plaid, cuscini, arte murale, collezioni stagionali. La loro sfida: i prodotti hanno curve di domanda violentemente diverse (i prodotti natalizi aumentano del 900% a novembre, crollano a zero a gennaio), e portano $1,2M di inventario che gira 4,2× all'anno, il che significa che il capitale è sempre legato a SKU più lenti.
+
+Le campagne Shopping standard hanno sanguinato budget su inventario fuori stagione perché l'algoritmo di Google non sa che un cuscino di velluto zucca è inutile a marzo. Il loro capo della performance ha progettato un sistema di scoring di stagionalità codificato nei custom label:
+
+**Custom_label_0 – Coorte stagionale:**
+- `Season-Evergreen` (domanda tutto l'anno, \<15% di varianza MoM)
+- `Season-Spring` (picco mar–mag)
+- `Season-Summer` (picco giu–ago)
+- `Season-Fall` (picco set–nov)
+- `Season-Holiday` (picco da metà nov a dic)
+- `Season-Winter` (picco gen–feb, escludendo festività)
+
+**Custom_label_1 – Inventory turn velocity:**
+- `Turn-Fast` (≥6× giri annuali)
+- `Turn-Moderate` (3–5,9× giri)
+- `Turn-Slow` (\<3× giri)
+
+**Custom_label_2 – Tier di prezzo (influenza la dimensione del carrello e l'intenzione di conversione):**
+- `Price-Entry` (\<$30)
+- `Price-Core` ($30–$79)
+- `Price-Premium` (≥$80)
+
+**Custom_label_3 – Età del lancio:**
+- `Launch-New` (\<30 giorni dal lancio al catalogo)
+- `Launch-Current` (31–120 giorni)
+- `Launch-Catalog` (>120 giorni)
+
+Ogni mese, spostano i budget:
+- In ottobre, SKU `Season-Fall` e `Season-Holiday` ottengono il 70% del budget Shopping totale con Target ROAS 4,0×.
+- Gli articoli `Season-Spring` vengono completamente messi in pausa o spostati in una campagna Discovery al 10% del budget, Target ROAS 8,0× (essenzialmente parcheggiati).
+- A marzo, lo script capovolge: `Season-Spring` al 50% del budget, `Season-Holiday` in pausa.
+
+I label di inventory turn li lasciano drenare i slow mover senza uccidere il margine. Gli articoli `Turn-Slow + Price-Premium` vanno in una campagna separata con bidding CPC manuale (nessun Target ROAS), max CPC impostato al break-even, impression share limitato al 30%. L'obiettivo non è profitto; è rigirare $80k di capitale in contanti prima dell'acquisto successivo.
+
+Risultati oltre 18 mesi: i giri di inventario sono migliorati da 4,2× a 5,8×, liberando $340k di capitale circolante. Il ROAS si è stabilizzato a 4,9× tutto l'anno (in precedenza oscillava dal 7,2× a novembre all'1,8% a febbraio). La spesa pubblicitaria totale è cresciuta da $62k/mese a $135k/mese senza aggiungere headcount, perché i label di stagionalità hanno automatizzato il ribilanciamento mensile che in precedenza richiedeva a due analisti tre giorni.
+
+| Mese | Label Stagione Attivi | Allocazione Budget | ROAS Blended |
+|------------|------------------------------|------------------------------|--------------|
+| Gennaio | Inverno, Evergreen | 40% / 60% | 3,8× |
+| Marzo | Primavera, Evergreen | 50% / 50% | 4,2× |
+| Giugno | Estate, Evergreen | 45% / 55% | 4,0× |
+| Ottobre | Autunno, Festività (rampa) | 35% / 35% | 5,1× |
+| Novembre | Festività, Autunno | 65% / 15% | 7,3× |
+
+Il loro script vive in un Google Sheet connesso a BigQuery (esportano [i dati di ordine di Shopify](https://blog.magicfeedpro.com/posts/shopify-product-feed-google-shopping-setup) ogni notte). Calcola il tasso di giro annualizzato per SKU, controlla la data attuale rispetto a un calendario di stagionalità (una scheda separata che mappa ogni SKU ai mesi di picco), quindi scrive quattro colonne di custom label. Il foglio si alimenta al negozio Shopify tramite l'API di Shopify, aggiornando i metafield dei prodotti che mappano ai custom label nel feed di Google Shopping. Abbiamo visto setup simili dettagliati nella nostra [guida di ottimizzazione del feed](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide), che illustra il mapping metafield-to-feed per i merchant di Shopify.
+
+## Brand C: Segmentazione Basata su LTV per Categorie di Repeat Purchase
+
+Brand C produce integratori premium per cani—masticabili, polveri, oli—venduti con un modello subscribe-and-save. Valore medio dell'ordine: $64. Valore medio della vita del cliente dopo 12 mesi: $780 (i clienti riordinano ogni 6–8 settimane). Il modello di business si rompe se ottimizzi Google Shopping per il primo ordine ROAS; un ROAS del primo ordine del 2,5× è un home run quando il vero guadagno è nove ordini successivi.
+
+Il loro VP della crescita ha costruito custom label intorno a coorti di LTV, non profitto transazionale:
+
+**Custom_label_0 – Tier di LTV (basato su analisi di coorte storica di acquirenti first-time di SKU):**
+- `LTV-Elite` (12-mese LTV ≥ $900; prodotti che attraggono i clienti più appiccicaticci)
+- `LTV-Strong` ($600–$899)
+- `LTV-Standard` ($400–$599)
+- `LTV-Acquisition` (\<$400; tipicamente treat monouso, non integratori core)
+
+**Custom_label_1 – Subscription attach rate:**
+- `Sub-High` (≥60% degli acquirenti si iscrivono al primo ordine)
+- `Sub-Moderate` (30–59%)
+- `Sub-Low` (\<30%)
+
+**Custom_label_2 – Competitive set (influenza come fanno bid contro leader della categoria come Zesty Paws):**
+- `Comp-Unique` (ingrediente proprietario, bassa concorrenza)
+- `Comp-Differentiated` (spazio competitivo ma posizionamento difendibile)
+- `Comp-Commodity` (categoria sensibile al prezzo)
+
+**Custom_label_3 – Repeat purchase interval:**
+- `Repeat-Short` (media riordino ogni 4–6 settimane)
+- `Repeat-Medium` (7–10 settimane)
+- `Repeat-Long` (≥11 settimane o trend di acquisto monouso)
+
+Il breakthrough: eseguono campagne separate per ogni tier di LTV con obiettivi ROAS radicalmente diversi.
+
+- **LTV-Elite + Sub-High:** Target ROAS 1,8× al primo ordine, perché sanno che la vendita di $64 si trasforma in $920 in 12 mesi. Budget senza cap. Questi 23 SKU spendono $48k/mese e sembrano «perdere denaro» nella dashboard di Google Ads (primo ordine ROAS 2,1×), ma l'analisi di coorte prova che sono il segmento più redditizio di gran lunga.
+- **LTV-Standard + Sub-Moderate:** Target ROAS 3,0×, il terreno di mezzo.
+- **LTV-Acquisition + Sub-Low:** Target ROAS 5,0×, budget limitato a $8k/mese. Utilizzato per traffico top-of-funnel che potrebbe convertirsi in abbonati email, non revenue core.
+
+Validano i tier di LTV trimestralmente unendo i dati di conversione di Google Ads (utilizzando l'ID ordine come chiave) ai record dei clienti di Shopify in BigQuery, quindi calcolando i ricavi effettivi di 12 mesi per fonte di acquisizione e SKU. L'analisi mostra in modo coerente che gli SKU in `LTV-Elite` forniscono 6,8× più profitto per nuovo cliente rispetto a `LTV-Standard`, anche quando il primo ordine ROAS è inferiore del 40%.
+
+<Callout type="tip">
+**Requisito dei dati:** Hai bisogno di almeno 12 mesi di cronologia degli ordini e 200+ first-time buyer per SKU per assegnare in modo affidabile label di LTV. Per gli SKU più nuovi, assegnagli default `LTV-Standard` e ri-etichettali dopo 90 giorni una volta che hai segnale.
+</Callout>
+
+Entro il mese 16 di questa struttura, la spesa di Google Shopping del brand ha raggiunto $215k/mese a un ROAS del primo ordine blended di 3,4× (che sembra mediocre) ma un vero ROAS di 12 mesi di 9,1× quando consideri gli acquisti ripetuti. Da allora hanno espanso lo schema in Meta Ads (utilizzando gli stessi custom label nel loro feed del catalogo di prodotti) e hanno visto miglioramenti a livello di coorte simili.
+
+## Blueprint di Implementazione: Costruire la Tua Logica di Label in Sheets/Script
+
+Tutti e tre i brand hanno seguito un modello di implementazione simile. Ecco il blueprint passo dopo passo che abbiamo distillato dal lavoro con 30+ team di crescita:
+
+**Passo 1: Assemblaggio dati (Settimana 1)**
+Esporta gli ultimi 90 giorni di articoli di ordine da Shopify o WooCommerce. Hai bisogno di SKU, unità vendute, ricavo, costo (se disponibile), data dell'ordine, ID cliente. Estrai i livelli di inventario attuali e i costi dei prodotti dal tuo sistema di gestione dell'inventario o ERP. Se non tracchi il costo a livello di SKU, usa medie a livello di categoria—imperfetto ma funzionale.
+
+**Passo 2: Definisci il tuo schema di label (Settimana 1)**
+Mappa le tue priorità aziendali ai cinque slot di label. Chiediti:
+- Quale dimensione, se isolata, mi permetterebbe di fare bid 2× più alto sui prodotti giusti? (Margine, LTV, stagione)
+- Quale dimensione causa ai prodotti di richiedere strategie opposte? (Nuovo vs. catalogo, high-turn vs. slow-turn)
+- Quale dimensione attualmente gestisco manualmente che potrebbe essere automatizzata? (Stato dello stock, coorte di lancio)
+
+Scrivi 3–5 possibili valori per label. Meno è meglio; puoi sempre espandere. Per un catalogo di 500 SKU, mirando a 4 label × 4 valori = 256 combinazioni possibili è eccessivo. Mira a 4 label × 3 valori = 81 combinazioni, sapendo che la maggior parte degli SKU si raggrupperanno in 12–15 segmenti dominanti.
+
+**Passo 3: Costruisci la logica di calcolo in Google Sheets (Settimana 2)**
+Crea un foglio master con una riga per SKU. Colonne: SKU, trailing_30d_units, trailing_90d_units, current_stock_qty, cost, price, margin_pct, avg_days_to_reorder (se modello di sottoscrizione), cohort_ltv (se lo hai). Aggiungi cinque colonne per custom_label_0 fino a custom_label_4.
+
+Usa formula nidificate IFS:
+```
+=IFS(
+ margin_pct >= 0.50, "Margin-Premium",
+ margin_pct >= 0.30, "Margin-Standard",
+ margin_pct \< 0.30, "Margin-Builder"
+)
+```
+
+Per velocità:
+```
+=IFS(
+ trailing_30d_units / 4 >= 50, "Velocity-Hero",
+ trailing_30d_units / 4 >= 15, "Velocity-Steady",
+ trailing_30d_units / 4 \< 15, "Velocity-Niche"
+)
+```
+
+Per stato dello stock (giorni di copertura = current_stock_qty / avg_weekly_sales):
+```
+=IFS(
+ current_stock_qty / (trailing_30d_units / 4) >= 8, "Stock-Abundant",
+ current_stock_qty / (trailing_30d_units / 4) >= 3, "Stock-Moderate",
+ current_stock_qty / (trailing_30d_units / 4) \< 3, "Stock-Critical"
+)
+```
+
+**Passo 4: Automatizza l'aggiornamento del feed (Settimana 2–3)**
+Se sei su Shopify, il metodo più pulito è aggiornare i metafield dei prodotti tramite l'API di Shopify, quindi mappare quei metafield ai custom label nella tua app di Google Shopping (canale Google di Shopify, DataFeedWatch, o simili). MagicFeed Pro legge i metafield automaticamente e li inietta nel feed senza richiedere di mantenere un file di feed supplementare separato.
+
+Per WooCommerce o piattaforme personalizzate, genera un feed supplementare CSV (colonne: id, custom_label_0, custom_label_1, custom_label_2, custom_label_3, custom_label_4) e caricalo in Merchant Center su un programma giornaliero. Google unisce feed supplementari con il tuo feed primario, quindi non hai bisogno di rigenerare l'intero catalogo.
+
+Usa Google Apps Script (se i tuoi dati vivono in Sheets) o uno script Python (se stai estraendo da BigQuery/Snowflake) per aggiornare i calcoli giornalmente. Programmalo per le 5 AM ora locale così i label si aggiornano prima che l'asta del giorno inizi. [Practical Ecommerce ha un eccellente walkthrough](https://www.practicalecommerce.com/) dell'automazione di Apps Script per la gestione del feed se sei nuovo agli script.
+
+**Passo 5: Ristruttura le campagne (Settimana 3–4)**
+Inizia con il tuo segmento di maggior impatto. Per la maggior parte dei brand, è high-margin + high-velocity. Crea una nuova campagna Shopping (o asset group Performance Max se sei su PMax), imposta il filtro prodotto su `custom_label_0 = "Margin-Premium" AND custom_label_1 = "Velocity-Hero"`, applica un Target ROAS aggressivo (20–30% sotto il tuo ROAS blended attuale), e dagli il 30% del tuo budget totale.
+
+Lascialo girare per 14 giorni per raccogliere dati, quindi espandi. Aggiungi una seconda campagna per il prossimo segmento di priorità. Entro 60 giorni, dovresti avere 5–8 campagne che coprono le tue combinazioni di label core, più una campagna catch-all per i casi limite.
+
+<Callout type="warning">
+**Avvertenza Performance Max:** I gruppi di asset PMax condividono un singolo Target ROAS a livello di campagna, quindi perdi il controllo ROAS per segmento. Se sei bloccato in PMax, usa campagne Shopping con Shopping Standard in parallelo per i tuoi segmenti di label più importanti, quindi lascia che PMax gestisca la coda lunga.
+</Callout>
+
+**Passo 6: Monitora e itera (Continuo)**
+Settimanale: Controlla se qualsiasi label sta sottoperformando sistematicamente (ROAS \<50% dell'obiettivo per 21+ giorni). Spesso questo significa che la tua logica di label è spenta—magari hai marcato un prodotto «Velocity-Hero» basato su un picco virale una tantum che ora è finito.
+
+Mensile: Ricalibra le soglie di label. Se l'80% dei tuoi SKU cade in `Margin-Standard`, non stai segmentando; stai solo rinominando. Ajusta i cutoff di margine così ottieni una divisione 40/40/20 tra Premium/Standard/Builder.
+
+Trimestrale: Ri-esegui l'analisi di coorte di LTV (se applicabile) e la convalida di stagionalità. I mercati si spostano. Il cuscino di plaid che era `Season-Holiday` l'anno scorso potrebbe ora tendere a `Season-Evergreen` perché l'interior design Instagram è pivotato.
+
+## Strategie di Bidding per Ogni Tipo di Custom Label
+
+Una volta che i label sono live, la strategia di bidding è quello che trasforma [la segmentazione in profitto](https://blog.magicfeedpro.com/posts/google-shopping-bid-modifiers-vs-feed-segmentation-roi-test). Ecco come ogni tipo di label mappa su un approccio di bid:
+
+**Label basati su margine (Custom_label_0):**
+- **Margine alto (≥50%):** Target ROAS 30–40% sotto il tuo ROAS blended. Hai spazio per essere aggressivo. Se il ROAS blended è 4,5×, fai bid a 3,0× ROAS per SKU ad alto margine. Google guiderà più volume qui, che si compone di profitto perché ogni vendita incrementale mantiene 50%+ del ricavo.
+- **Margine basso (\<30%):** Target ROAS 50–80% *sopra* blended, o passa a Maximize Conversion Value con uno strict budget cap. Essenzialmente stai dicendo a Google, «Mostra questi solo se l'asta è economica». Usa questi SKU per catturare ricerca branded e intento bottom-funnel, non prospecting freddo.
+
+**Label basati su velocità (Custom_label_1):**
+- **SKU Hero (fast mover):** Questi già hanno forti tassi di conversione e social proof. Spingi impression share all'80%+ con budget senza cap e un target ROAS moderato. La velocità vince; stai difendendo la quota di mercato contro i competitor che vedono anche questi prodotti convertire.
+- **SKU Niche (slow mover):** Limita impression share al 40%, usa CPC manuale con un max CPC al break-even ($price × margin% / il tuo target CPA). Vuoi visibilità senza emorragia di budget su traffico a basso intento.
+
+**Label basati su stato dello stock (Custom_label_2):**
+- **Stock abbondante:** Nessuna restrizione. Fai bid normalmente.
+- **Stock basso (\<20 giorni di copertura):** Riduci i budget del 60–80% o metti in pausa completamente. Non ha senso pagare per clic su un prodotto che sarà esaurito tra due settimane, tanando il tuo tasso di conversione e sprecando il tempo del cliente. Meglio riallocare quel budget a alternative in stock.
+ 
+Secondo le [best practice di Google](https://support.google.com/google-ads/answer/2472725), i prodotti esauriti con annunci attivi vedono tassi di conversione scendere 40–60% nell'ultima settimana di disponibilità perché gli utenti aggiungono al carrello, poi rimbalzano quando si rendono conto che l'articolo è in backorder. Metterli in pausa in modo proattivo preserva il tuo [quality score a livello di account](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith).
+
+**Label di stagionalità (Custom_label_0 nello schema di Brand B):**
+- **In-season:** Alloca 60–80% del budget, fai bid a o sotto il target ROAS.
+- **Shoulder season (un mese prima/dopo il picco):** Rampa up o down gradualmente (±20% budget per settimana) per evitare shock dell'asta.
+- **Off-season:** Metti in pausa completamente o sposta a una campagna «always-on» separata al 5% del budget con Target ROAS 2× il tuo target normale. Stai pescando early buyer e [mercati internazionali](https://blog.magicfeedpro.com/posts/multi-currency-feed-ops-scaling-google-shopping-to-12-markets) con stagioni opposte.
+
+**Label basati su LTV (Custom_label_0 nello schema di Brand C):**
+- **LTV alto:** Fai bid su payback di 12 mesi. Se un cliente vale $900 e il tuo costo per servirlo è $200, puoi permetterti di spendere $350 per acquisirlo (2,0× primo ordine ROAS su un ordine di $64). Imposta Target ROAS a 1,8–2,5× e ignora la dashboard di Google Ads che grida «unprofitable». La tua verità vive nei dati di retention di coorte, non nell'UI di Ads.
+- **LTV basso:** Fai bid sulla redditività del primo ordine solo. Target ROAS 4,5–6,0×. Questi sono acquisti d'impulso o prodotti a acquisto singolo. Trattali come transazioni di e-commerce standard.
+
+I tre brand profilati qui eseguono tutti un approccio ibrido: impostano il Target ROAS a livello di campagna allineato al label dominante in quella campagna, quindi usano ajustamenti di bid (device, location, audience) come secondo strato di controllo. Brand A, per esempio, esegue `Margin-Premium + Velocity-Hero` a 3,5× ROAS baseline, quindi applica un ajustamento di bid +30% per gli utenti nella loro lista email (tracciati tramite Customer Match) perché questi utenti convertono 2,1× meglio.
+
+Una nota finale su [Performance Max](https://blog.magicfeedpro.com/posts/performance-max-asset-groups-are-killing-your-feed-a-200k-audit-breakdown): se sei forzato in PMax a causa di politica o perché Standard Shopping è deprecato nella tua regione, perdi il controllo ROAS a livello di campagna ma puoi ancora usare custom label nei filtri di asset group. Crea asset group separate per ogni combinazione di label principale (PMax consente fino a 100 asset group per campagna). Condividerai un budget a livello di campagna e un target ROAS, ma l'algoritmo di Google imparerà diversi modelli di performance per asset group nel tempo. È meno preciso che campagne separate, ma far superior al raggruppamento di 500 SKU in un singolo asset group.
+
+Copriamo i meccanici delle strutture multi-campagna in profondità nella breakdown di prezzo e feature di MagicFeed Pro, dove vedrai come [riscritture di titolo e descrizione guidate da AI](https://blog.magicfeedpro.com/posts/ai-rewrites-improve-google-shopping-ctr-40-percent) interagiscono con la segmentazione di custom label per sollevare sia click-through rate che tassi di conversione simultaneamente—un effetto composto che la maggior parte dei brand manca trattando il contenuto del feed e la struttura del feed come workstream separati.
+
+<ProductCTA 
+ variant="audit" 
+ title="Il tuo feed sta lasciando soldi sul tavolo? Ottieni un audit gratuito di custom label da MagicFeed Pro" 
+/>
+
+<FAQ>
+ <FAQItem 
+ q="Quanti custom label dovrei davvero usare?" 
+ a="Inizia con tre: tier di margine, velocità e stato dello stock. Aggiungi un quarto (stagionalità o LTV) solo dopo aver provato che i primi tre guidano un miglioramento misurabile di ROAS. Cinque label con logica mal definita performano peggio di due label con definizioni strette." 
+ />
+ <FAQItem 
+ q="Posso cambiare i valori di custom label senza resettare l'apprendimento della campagna?" 
+ a="Sì, ma fallo gradualmente. Se ri-etichetti l'80% del tuo catalogo durante la notte, Google lo tratta come una nuova campagna e resetta l'apprendimento. Lancia cambiamenti di label in batch del 10–20% per settimana. Gli aggiornamenti del feed supplementare non resettano le campagne fintanto che gli ID dei prodotti rimangono coerenti." 
+ />
+ <FAQItem 
+ q="E se non ho dati di costo a livello di SKU?" 
+ a="Usa margini medi a livello di categoria o product-type come proxy. Una categoria di t-shirt con margine medio del 40% è abbastanza buona per segmentare outerwear ad alto margine (60%) da basic a basso margine (25%). La precisione migliora i risultati, ma la segmentazione direzionale batte comunque nessuna segmentazione." 
+ />
+ <FAQItem 
+ q="Dovrei usare custom label o product_type per la segmentazione?" 
+ a="Usa entrambi. Product_type è strutturale (Apparel > Women > Tops) e aiuta Google a capire la tassonomia. I custom label codificano la logica di business che Google non può inferire (margine, rischio di stock, LTV). Pensa a product_type come il tuo organigramma e ai custom label come alle tue priorità di P&L." 
+ />
+ <FAQItem 
+ q="Come gestisco i prodotti nuovi che non hanno 90 giorni di dati di vendita?" 
+ a="Assegnagli default label di tier medio (Margin-Standard, Velocity-Steady) e aggiungi un label «Launch-New» separato in Custom_label_3 o _4. Esegui una campagna di nuovo prodotto dedicata con una finestra di apprendimento di 21 giorni a ROAS al break-even, quindi ri-etichetta in base alla performance effettiva e spostali nelle tue campagne core." 
+ />
+ <FAQItem 
+ q="Posso automatizzare questo senza assumere uno sviluppatore?" 
+ a="Sì. Google Sheets + Zapier o Make.com possono gestire la logica di label e gli aggiornamenti del feed per la maggior parte dei negozi Shopify o WooCommerce. Se sei su BigQuery o Snowflake, avrai bisogno di SQL leggero o Python, ma la logica è semplice. MagicFeed Pro offre anche automazione di label gestita come parte del suo tier enterprise—contattaci se preferisci delegare il lavoro tecnico." 
+ />
+</FAQ>

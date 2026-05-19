@@ -1,0 +1,158 @@
+---
+slug: "shopify-productfeed-google-shopping-setup"
+translationKey: "shopify-product-feed-google-shopping-setup"
+locale: "nl"
+title: "Shopify productfeed voor Google Shopping: stappenplan"
+description: "Stap-voor-stap handleiding voor het instellen van een Shopify productfeed voor Google Shopping die echt converteert met Google-kanaal, metavelden en variant-handling."
+keywords:
+ - shopify google shopping
+ - shopify product feed
+ - google merchant center shopify
+ - shopify metafields google shopping
+date: 2026-05-07
+updated: 2026-05-07
+author: "mfp-team"
+category: "shopify"
+tags:
+ - shopify
+ - google-shopping
+ - merchant-center
+ - setup
+featured: false
+comments: false
+cover: ""
+coverAlt: "Shopify admin met Google-kanaalinstallatie en Merchant Center-verbinding"
+---
+
+De Shopify → Google Shopping verbinding is een van die dingen die *simpel* lijken — een app installeren, een paar knoppen klikken, klaar. Zes maanden later vraag je je af waarom je CTR half zo hoog is als die van je concurrent.
+
+De waarheid is dat het officiële Google-kanaal standaard een minimale feed levert. Om in 2026 werkelijk hoog te ranken, moet je de feed verrijken met de attributen die Googles kwaliteitsalgoritme nu verwacht. Deze gids begeleidt je door de complete setup en vervolgens de verrijkingslaag die de meeste winkels missen.
+
+## Stap 1 — Bereid je Shopify-winkel voor
+
+Voordat je aan Google begint, moeten drie dingen in Shopify in orde zijn:
+
+1. **Producttitels bevatten het merk.** Als je private label produceert, gebruik je eigen merknaam. Als je andere merken doorverkoopt, moet de titel het merk bevatten. Open `Producten → Alle producten → bulkbewerken → Leverancier` en controleer dat het leveranciersveld op elke SKU is ingevuld.
+2. **Je hebt minstens één afbeelding per product.** Vierkante afbeeldingen (1:1) werken het beste voor Shopping. Minimaal 800px; ideaal 1500–2000px.
+3. **Je verzendtarieven zijn gedefinieerd en actief voor de doellanden.** Google weigert producten waarvan de verzendkosten niet naar het doelland kunnen worden berekend.
+
+<Callout type="warning" title="Varianten hebben hun eigen GTIN nodig">
+Een veel gemaakte Shopify-fout: de GTIN opslaan op het moederproduct. Google leest GTIN per variant. Gebruik het variant-niveau `barcode`-veld, geen metaveld op het hoogste niveau.
+</Callout>
+
+## Stap 2 — Installeer het Google & YouTube-kanaal
+
+In Shopify admin → **Apps → Bezoek Shopify App Store** → zoek naar „Google & YouTube". Installeer. Dit is het officiële Google-kanaal; negeer de third-party feed-apps die ernaast verschijnen voor nu (we komen er in stap 5 op terug voor verrijking).
+
+Verbind je Google-account, vervolgens je Merchant Center-account. Als je die nog niet hebt, maakt de app er een voor je aan in dezelfde flow.
+
+Controleer:
+
+- De verbindingspagina toont „Verbonden" voor zowel Google als Merchant Center.
+- Belasting- en verzendinstellingen zijn toegewezen.
+
+## Stap 3 — Configureer categorietoewijzing
+
+Het kanaal stelt automatisch een Google-productcategorie voor elke product voor. Automatische suggesties zijn meestal voor 60–80% accuraat. Open de weergave **Productstatus** en controleer een steekproef van 20 producten.
+
+Voor producten die aan de verkeerde categorie zijn toegewezen, bewerk `Google-productcategorie` rechtstreeks op de productpagina in Shopify, of bewerk in bulk via CSV-import. **Kies altijd de meest specifieke (vijfde niveau) categorie die beschikbaar is** — `Kleding & accessoires > Kleding > Shirts & tops > Dresshemd` rankt dramatisch beter dan `Kleding & accessoires > Kleding`.
+
+## Stap 4 — Wijs de basisattributen toe
+
+In de Google-kanaalinstellingen gaat u naar **Productfeed → Attributen**. Wijs minimaal toe:
+
+| Google-attribuut | Shopify-bron |
+|---|---|
+| `title` | Producttitel |
+| `description` | Productbeschrijving (HTML verwijderd) |
+| `link` | Product-URL |
+| `image_link` | Hoofdproductafbeelding |
+| `availability` | Inventaris > 0 → in_stock |
+| `price` | Variant-prijs |
+| `brand` | Leverancier |
+| `gtin` | Variant-barcode |
+| `mpn` | Variant-SKU |
+| `condition` | Standaard „new"; overschrijven voor refurbished |
+| `google_product_category` | Handmatige toewijzing |
+
+Dit is het minimum om [Merchant Center-validatie](https://blog.magicfeedpro.com/posts/merchant-center-errors-12-common-issues-solutions) te doorstaan. Het is **niet** voldoende om competitief hoog te ranken.
+
+## Stap 5 — Verrijken met metavelden
+
+Dit is waar de meeste Shopify-winkels geld laten liggen. Het standaardkanaal levert `product_highlight`, `material`, `pattern`, `age_group`, `gender`, `size_type` of aangepaste labels niet — attributen die [Googles 2026-kwaliteitsscore](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith) beloont.
+
+Er zijn twee manieren om ze toe te voegen:
+
+### Optie A — Native Shopify Markets Pro / Metavelden
+
+Shopify voegde in 2024 native Google Shopping-metaveldtoewijzingen toe. Instellingen → Aangepaste gegevens → Producten → Definitie toevoegen:
+
+- Naamruimte: `google`
+- Sleutel: `product_highlights`
+- Type: Lijst met eenregelige tekst (max. 5)
+
+Vul vervolgens op elk product de 5 highlights-slots in. Het Google-kanaal zal ze automatisch oppikken.
+
+Herhaal dit voor `material`, `pattern`, `age_group`, `gender`, `custom_label_0` tot en met `custom_label_4`.
+
+### Optie B — Third-party feed-app
+
+Als je meer controle nodig hebt (transformatieregels, multi-feed, aparte feeds per land, dynamische titelherschrijvingen), gebruik je een speciale feed-app zoals Simprosys, DataFeedWatch, of onze eigen [MagicFeedPro](https://magicfeedpro.com/) die [AI-herschrijvingen](https://blog.magicfeedpro.com/posts/ai-rewrites-improve-google-shopping-ctr-40-percent) bovenop de verrijking toevoegt.
+
+Het compromis: third-party apps kosten $20–80/maand maar verhogen de CTR consistent met 20–40% ten opzichte van het standaard Shopify-kanaal omdat de herschrijvingen querybewust zijn.
+
+<ProductCTA variant="audit" title="Beoordeel je huidige Shopify-feed">
+We pullen je feed via de Merchant Center API en laten je precies zien welke attributen ontbreken op je top 50 SKU's.
+</ProductCTA>
+
+## Stap 6 — Behandel varianten correct
+
+Shopify-varianten en Google-varianten wijzen niet 1:1 toe.
+
+**Regel**: elke Shopify-variant wordt een afzonderlijk Google-product met dezelfde `item_group_id` (de product-handle van het moederproduct werkt goed als groeps-ID). Elke variant moet zijn eigen `color`, `size`, `image_link` (indien verschillend) hebben en ideaal ook een eigen `gtin`.
+
+Veel gemaakte fouten:
+
+- **Alle varianten delen de moederfoto.** Fout — Google straft dit af voor mode/kleurvarianten. Stel per-variant afbeeldingen in Shopify in (elke variant → Afbeeldingen → wijs toe).
+- **Varianten in de titel stoppen.** Fout — `Katoen T-shirt - Rood, Blauw, Groen` moet 3 aparte Shopping-advertenties zijn, niet één.
+- **Geen `item_group_id`.** Fout — zonder groepering kan Google variant-carousels niet weergeven en verlies je impressie-efficiëntie. Lees meer over [best practices voor variantclustering](https://blog.magicfeedpro.com/posts/variant-clustering-in-shopping-feeds-stop-cannibalizing-your-own-ads).
+
+## Stap 7 — Test voordat je live gaat
+
+Stel een **test Merchant Center-account** in (gratis) en wijs je feed daar eerst naar. Of gebruik het productie-account maar filter eerst naar één product via een Shopify-collectie.
+
+Voer je top 5 SKU's door:
+
+1. **Merchant Center → Diagnostiek** — moet 0 fouten en ideaal 0 waarschuwingen tonen.
+2. **Rich Results Test** op de live PDP-URL — verifieert dat je gestructureerde gegevens op de landingspagina overeenkomen met de feed.
+3. **Pre-flight afbeeldingscontrole** — open elke hoofdafbeelding, controleer schone achtergrond en geen overlay-tekst.
+
+Schakel de campagne pas in nadat die 5 SKU's schoon zijn.
+
+## Stap 8 — Plan en controleer
+
+Het Google-kanaal synct automatisch ongeveer elke 4 uur (Shopify-kant) en Merchant Center haalt ongeveer elke 24 uur opnieuw op. Voor strakker controle, vooral bij voorraadarme launches:
+
+- Schakel **Content API push** in voor beschikbaarheidwijzigingen (Instellingen → Voorraadupdates).
+- Stel een **Google Sheets-aanvullende feed** in Merchant Center in voor elk attribuut dat het kanaal niet kan leveren.
+- Controleer Merchant Center → Diagnostiek **wekelijks**, niet maandelijks. Overweeg [aangepaste labelstrategieën](https://blog.magicfeedpro.com/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas) te implementeren voor betere performance-segmentatie.
+
+Het begrijpen van [feed-vernieuwingscadence](https://blog.magicfeedpro.com/posts/google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test) kan aanzienlijk invloed hebben op hoe snel je inventaris- en prijswijzigingen via Google Shopping propageren.
+
+## Veelgemaakte Shopify-specifieke valkuilen
+
+<FAQ>
+ <FAQItem q="Waarom worden sommige van mijn varianten afgewezen als duplicaten?" a="Meestal omdat ze dezelfde `gtin` delen (Shopify laat je varianten kopiëren zonder barcodes te wijzigen). Google handhaaft GTIN-uniciteit — elke variant heeft zijn eigen code nodig. Repareer de barcodes of verwijder de GTIN op de dubbele varianten volledig." />
+ <FAQItem q="Waarom wordt mijn productbeschrijving op Google afgekapt weergegeven?" a="Shopify-productbeschrijvingen worden vaak opgeslagen met HTML-opmaak. Het Google-kanaal verwijdert de meeste tags maar laat enkele artefacten achter. Voor het beste resultaat schrijf je een schone platte-tekst beschrijving in een metaveld (google.description_override) en wijs je dat in plaats daarvan toe." />
+ <FAQItem q="Kan ik Shopify Markets gebruiken voor multi-country Shopping?" a="Ja, en het is de schoonste manier. Elke Shopify Market wordt een aparte feed in Merchant Center met gelokaliseerde prijzen, valuta en belastingen. Combineer met hreflang op PDP's en je hebt een schone multi-country setup. Verken voor geavanceerde regionale targeting feed-lokalisatietechnieken." />
+ <FAQItem q="Moet ik het Shopify-kanaal of een third-party feed-app gebruiken?" a="Begin met het Shopify-kanaal omdat het gratis is en betrouwbaar voor de verbinding zelf. Voeg zodra je live bent een third-party feed-app of feed-optimalisatietool erbovenop — het is niet ofwel/ofwel. Het kanaal zorgt voor de leidingen; de feed-app zorgt voor de optimalisatie." />
+</FAQ>
+
+## Wat deze week doen
+
+1. Installeer het Google & YouTube-kanaal als je dat nog niet hebt.
+2. Voeg de 5 metavelden (`product_highlights`, `material`, `pattern`, `age_group`, `gender`) toe en vul je top 50 SKU's in met [feed-optimalisatie best practices](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide).
+3. Controleer je variantstructuur — zorg dat elke variant zijn eigen afbeelding en `gtin` heeft.
+4. Plan een wekelijkse controle van Merchant Center-diagnostiek in.
+
+Dat is het hele verschil tussen een gemiddelde Shopify Shopping-setup en een high-performance setup.

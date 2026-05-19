@@ -1,0 +1,221 @@
+---
+slug: "bledy-merchant-center-12-problemow-rozwiazania"
+translationKey: "merchant-center-errors-12-common-issues-solutions"
+locale: "pl"
+title: "Błędy Merchant Center: 12 problemów i rozwiązania"
+description: "Wszystkie błędy Merchant Center wyjaśnione. 12 najczęstszych powodów odrzucenia produktów — co je wyzwala, jak diagnozować i naprawiać bez strat."
+keywords:
+ - bledy merchant center
+ - odrzucenie produktu google
+ - diagnostyka merchant center
+ - bledy google shopping
+ - naprawa bledow feeda
+date: 2026-05-05
+updated: 2026-05-05
+author: "mfp-team"
+category: "merchant-center"
+tags:
+ - merchant-center
+ - troubleshooting
+ - disapprovals
+ - listicle
+featured: false
+comments: false
+cover: ""
+coverAlt: "Pulpit diagnostyki Google Merchant Center pokazujący problemy z produktami"
+---
+
+Jeśli kiedykolwiek wpatrywałeś się w stronę Diagnostyki Merchant Center i zastanawiałeś się, co oznacza „ograniczona wydajność: rozbieżność ceny", ten artykuł jest dla Ciebie.
+
+Te 12 błędów odpowiada za około 90% odrzuceń, które widoczmy podczas audytów klientów. Każdy ma konkretny powód, konkretną ścieżkę diagnostyczną i konkretne 30-minutowe rozwiązanie.
+
+## 1. Brak GTIN
+
+**Błąd**: „Brak wymaganego pola [gtin]" lub „Ograniczona wydajność z powodu braku GTIN".
+
+**Co go wyzwala**: produkty marek (sprzedawcy detaliczni) muszą podać GTIN (UPC/EAN/ISBN). Produkty prywatnej marki mogą być zwolnione poprzez ustawienie `identifier_exists` na `false`, ale większość katalogów zapomina to zrobić.
+
+**Diagnoza**:
+
+```text
+Merchant Center → Produkty → Diagnostyka → Filtr: Problem = „Brak GTIN"
+```
+
+**Rozwiązanie**:
+
+- Produkty sprzedawanych marek: uzyskaj GTIN od dostawcy lub wyszukaj go na stronie producenta. Dodaj go do pola `barcode` wariantu w Shopify lub odpowiednika na Twojej platformie.
+- Prywatna marka / handmade: ustaw `identifier_exists: false` w swoim feedzie. W Shopify jest to metafield (`google.identifier_exists: FALSE`).
+
+<Callout type="tip" title="Nie zostawiaj tego puste">
+Zostawienie GTIN pustego bez `identifier_exists: false` to najgorsze z obu światów — dostaniesz ostrzeżenie *i* stracisz korzyść rankingową z jego posiadania. Ustaw flagę wyraźnie.
+</Callout>
+
+## 2. Niepoprawna kategoria produktu Google
+
+**Błąd**: „Kategoria produktu nie jest wystarczająco szczegółowa" lub „Niezgodność produktu z kategorią".
+
+**Co go wyzwala**: Twój produkt jest przypisany do zbyt ogólnej kategorii (np. „Odzież i akcesoria" zamiast „Odzież i akcesoria > Odzież > Koszule i bluzki > Koszule wizytowe").
+
+**Rozwiązanie**: otwórz produkt, ustaw pełną 5-poziomową ścieżkę kategorii produktu Google. Taksonomia jest publikowana jako arkusz Google, który możesz przeglądać. Szczegółowość ma znaczenie — ścieżki 5-poziomowe osiągają średnio 2–3× lepsze rankingi niż 2-poziomowe.
+
+## 3. Problemy z jakością obrazu
+
+**Błąd**: „Jakość obrazu zbyt niska" lub „Nakładka promocyjna na obrazie".
+
+**Co go wyzwala**:
+
+- Obraz \< 250×250px (wymaganie twarde)
+- Obraz z nakładką tekstową, logo, znakami wodnymi lub ramkami
+- Obraz z manekinama (w niektórych kategoriach odzieży)
+- Obraz bez czystego tła
+
+**Rozwiązanie**: główny obraz musi być produktem wyśrodkowanym na czystym tle, ≥800px (idealnie 1500×1500), bez nakładki. W sklepach Shopify używaj *głównego* obrazu produktu z wariantu, nie zdjęcia lifestylowego.
+
+## 4. Rozbieżność ceny między feedem a stroną docelową
+
+**Błąd**: „Rozbieżność ceny" lub „Cena na stronie docelowej różni się od feeda".
+
+**Co go wyzwala**: cena w Twoim feedzie nie odpowiada cenie wyświetlanej na PDP. Częste przyczyny:
+
+- Ceny promocyjne stosowane przy kasie, ale nie w feedzie
+- Dryf konwersji walut w feedach wieloregionowych
+- Rozbieżność cen z podatkiem vs bez podatku
+- Różnice VAT między krajami
+
+**Rozwiązanie**:
+
+- Dopasuj `price` w feedzie do dokładnej ceny z podatkiem, którą kupujący widzi na PDP.
+- Jeśli prowadzisz promocję, uzupełnij `sale_price` i `sale_price_effective_date` — nie zmieniaj tymczasowo `price`.
+
+## 5. Brak lub niepoprawna polityka zwrotów
+
+**Błąd**: „Brak polityki zwrotów" lub „URL polityki zwrotów się nie ładuje".
+
+**Co go wyzwala**: od 2024 roku Google wymaga wyraźnie dostępnej polityki zwrotów połączonej z Twoim kontem Merchant Center.
+
+**Rozwiązanie**:
+
+- Merchant Center → Narzędzia → Zwroty → ustaw domyślną politykę (okres w dniach, wysyłka zwrotu, opłata za restockowanie).
+- Sprawdź, czy URL na Twojej stronie prowadzi do strony z wyraźnie widoczną polityką — gniazdownik Google to sprawdza.
+
+## 6. Ograniczona klasa produktu
+
+**Błąd**: „Polityka produktu ograniczonego" — dotyczy alkoholu, suplementów, kosmetyków z składnikami na receptę, broni, hazardu itp.
+
+**Co go wyzwala**: Twój produkt znajduje się w ograniczonej kategorii wymagającej dodatkowej certyfikacji (np. suplementy wymagają list składników; kosmetyki wymagają określonego oznaczenia).
+
+**Rozwiązanie**:
+
+- Zidentyfikuj konkretną ograniczoną kategorię z powodu odrzucenia.
+- W przypadku suplementów: podaj atrybuty `nutrition_facts` i `ingredients`.
+- W przypadku ograniczeń wiekowych: podaj `age_group: adult` i upewnij się, że Twoja PDP ma kontrolę wieku.
+- W przypadku niektórych kategorii (alkohol, broń w niektórych krajach): złóż wniosek o zwolnienie przez narzędzie polityki Merchant Center.
+
+## 7. Problemy ze stroną docelową
+
+**Błąd**: „Strona docelowa się nie zgadza" lub „Błąd strony docelowej".
+
+**Co go wyzwala**:
+
+- Strona docelowa przekierowuje (łańcuch 302) przed rozwiązaniem
+- Strona docelowa zwraca 4xx lub 5xx
+- Strona docelowa renderuje się pusta (ciężki JS, wolne LCP)
+- Produkt pokazany na PDP nie odpowiada feedowi (np. zły kolor)
+
+**Rozwiązanie**:
+
+- Rozwiąż wszelkie łańcuchy przekierowań — ostateczny URL powinien być kanonicznym PDP.
+- W przypadku sklepów o dużej zawartości SPA upewnij się, że zawartość produktu jest renderowana po stronie serwera lub wstępnie renderowana dla gniazdowników.
+- Zweryfikuj, że `availability` w feedzie odpowiada temu, co mówi PDP.
+
+## 8. Rozbieżność wysyłki
+
+**Błąd**: „Wysyłka nie jest obliczalna" lub „Koszt wysyłki różni się od feeda".
+
+**Co go wyzwala**:
+
+- Ustawienia wysyłki w Merchant Center nie obejmują kraju docelowego.
+- Feed mówi o darmowej wysyłce, ale PDP pobiera opłatę za wysyłkę.
+- Wysyłka na poziomie wariantu (np. przedmioty ciężkie) nie zadeklarowana w feedzie.
+
+**Rozwiązanie**:
+
+- Merchant Center → Narzędzia → Wysyłka i zwroty → upewnij się, że każdy kraj, do którego sprzedajesz, jest skonfigurowany.
+- W przypadku produktów ciężkich, zastąp wysyłkę na poziomie produktu za pomocą atrybutu `shipping`.
+
+## 9. Nieaktualna lub uszkodzona dostępność
+
+**Błąd**: „Niedostępny — powinien być dostępny" lub odwrotnie.
+
+**Co go wyzwala**: Twój feed mówi `in_stock`, ale PDP pokazuje „wyprzedane", lub Twój [feed aktualizuje się zbyt wolno](https://blog.magicfeedpro.com/posts/google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test) gdy zapasy się zmieniają.
+
+**Rozwiązanie**:
+
+- Przełącz się z zaplanowanego pobrania na push (Content API lub natywne wypychanie kanału Google w Shopify).
+- Ustaw `availability_date` dla produktów na zamówienie, aby Google je wciąż pokazywał.
+- Zbadaj opóźnienie między aktualizacją zapasów w Twoim sklepie a odzwierciedleniem w Merchant Center. Wszystko powyżej 1 godziny będzie Ci kosztować impressje podczas braku zapasów.
+
+## 10. Zabroniona zawartość
+
+**Błąd**: „Zabroniona zawartość" — zwykle pojawia się przy broni, narkotykach, podróbkach, treściach dla dorosłych, niebezpiecznych chemikaliach lub towarzach o tematyce politycznej.
+
+**Co go wyzwala**: dowolny produkt dotykający [polityk ograniczonej zawartości Google](https://support.google.com/merchants/answer/6149970).
+
+**Rozwiązanie**:
+
+- Jeśli to fałszywy alarm (np. marka odzieżowa flagowana za „broń" ze względu na rękawice bokserskie), złóż wniosek o ręczny przegląd w Merchant Center → Diagnostyka → Poproś o przegląd.
+- Jeśli Twój produkt rzeczywiście falls w zakazanej kategorii, nie możesz go reklamować w Shopping. Przenieś go z Shopping i polegaj na innych kanałach.
+
+## 11. Brak konfiguracji podatku
+
+**Błąd**: „Podatek nie skonfigurowany dla miejsca docelowego".
+
+**Co go wyzwala**: w USA (podatek stan po stanie), UE (VAT na kraj) lub innych ustawieniach wielojurysdykcyjnych, Twoje ustawienia podatku w Merchant Center nie obejmują stanu/kraju docelowego.
+
+**Rozwiązanie**:
+
+- Merchant Center → Narzędzia → Podatek → skonfiguruj na stan (USA) lub na kraj (UE).
+- W przypadku UE, upewnij się, że używasz cen z podatkiem (standard dla EU Shopping).
+
+## 12. Błędy struktury feeda
+
+**Błąd**: „Nie można przeanalizować feeda" lub „Niepoprawny format feeda".
+
+**Co go wyzwala**:
+
+- Znaki specjalne nie są escape'owane (ampersand, cudzysłowy wewnątrz pól CSV)
+- Niepoprawne ograniczniki kolumn
+- Problemy z kodowaniem (UTF-8 vs ISO-8859-1)
+- Pola wielowartościowe nie sformatowane z poprawnym separatorem (`/` dla rozmiarów itp.)
+
+**Rozwiązanie**:
+
+- W przypadku feedów CSV/TSV: zweryfikuj za pomocą narzędzia „Test feeda" w Merchant Center przed przesłaniem.
+- W przypadku feedów XML: zweryfikuj strukturę XML (zamknij wszystkie tagi) i escape'uj znaki specjalne.
+- W przypadku Shopify/BigCommerce/kanałów natywnych: to rzadko się zdarza; jeśli tak, skontaktuj się z wsparciem aplikacji kanału.
+
+## Jak audytować tygodniowo bez poświęcania weekendu
+
+15-minutowy tygodniowy audyt Merchant Center wyłapuje 95% problemów przed ich kosztami:
+
+1. **Diagnostyka → Problemy**: sortuj przez „Impressje, których to dotyczy" malejąco. Zajmij się czymkolwiek powyżej 1K dotkniętych.
+2. **Produkty → Odrzucone**: przejrzyj listę. Pogrupuj po typie problemu. Napraw najpierw najczęstszy wzór (jedno rozwiązanie zwykle wyczyści 20+ SKU).
+3. **Narzędzia → Przeglądy**: odpowiedz na wszelkie nowe wnioski o ręczny przegląd w ciągu 48 godzin.
+4. **Wydajność → Bestsellery**: zweryfikuj, że Twoje 20 najlepszych SKU wciąż wykazuje [zdrowy udział impressji](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith).
+
+## FAQ
+
+<FAQ>
+ <FAQItem q="Jak długo trwa ponowna akceptacja produktu w Merchant Center po naprawie?" a="Automatyczne ponowne sprawdzenia zwykle są ukończone w ciągu 1–24 godzin po następnym pobraniu feeda. Wnioski o ręczny przegląd mogą potrwać 3–7 dni, ale zwykle są szybsze. Wypychanie poprawki przez Content API daje Ci pierwszeństwo w kolejce." />
+ <FAQItem q="Czy naprawa odrzuceń przywróci moje impressje do poziomu bazowego?" a="Zwykle w ciągu 7–10 dni. Bardzo odrzucone konta mogą przejść przez okresową zmianę rankingu — zacznij najpierw naprawiać SKU z najwyższymi impressjami, aby szybciej się odzyskać." />
+ <FAQItem q="Dlaczego widzę nowe kategorie błędów, które nigdy wcześniej nie widziałem?" a="Google dodaje i udoskonala kategorie problemów z produktami kilka razy rocznie. Rozszerzenie 2024–2026 skupiało się na zgodności polityki zwrotów, jakości obrazu i dokładności ceny. Audytuj tygodniowo, aby złapać nowe problemy wcześnie." />
+ <FAQItem q="Czy mogę odwołać się od odrzucenia, które mi się nie podoba?" a="Tak. W Merchant Center → Diagnostyka → kliknij problem → „Poproś o przegląd". Podaj kontekst. Prawdziwe fałszywe alarmy (rzadkie, ale rzeczywiste) są zwykle uchylane w ciągu 3–5 dni roboczych." />
+</FAQ>
+
+## Szybki poradnik
+
+Jeśli zapamiętasz tylko jedną rzecz: **Diagnostyka → sortuj przez Impressje, których to dotyczy → napraw 3 najlepsze tygodniowo**. Ta pojedyncza dyscyplina utrzyma Twój [feed zdrowszy](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide) niż 90% kont.
+
+<ProductCTA variant="audit" title="Uzyskaj pełny audyt Merchant Center, bezpłatnie">
+Pobieramy Twój aktywny feed, ujawniamy każdą grupę odrzuceń i dajemy Ci priorytetowaną listę napraw z 30-minutową naprawą na typ problemu.
+</ProductCTA>

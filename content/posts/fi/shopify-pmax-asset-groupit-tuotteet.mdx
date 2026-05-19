@@ -1,0 +1,133 @@
+---
+title: "Shopify PMax: Asset Groupit oikeilla tuotteilla"
+description: "Shopify Performance Max -segmentointi katteittain, kiertonopeutensa ja palautusprosentilla—ei tuntemuksella—pysäyttää budjetin tuhlauksen. Tarkista asset groupit alle 30 minuutissa."
+keywords:
+ - shopify performance max feed segmentation
+ - pmax asset group product segmentation shopify
+ - performance max campaign structure shopify
+ - shopify pmax product group split
+ - google shopping pmax feed control
+ - performance max listing groups shopify
+ - shopify pmax budget allocation by product
+ - pmax vs standard shopping shopify feed
+date: "2026-05-18"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - performance-max
+ - shopify
+ - feed-segmentation
+ - asset-groups
+ - pmax-structure
+readingMinutes: 9
+featured: false
+locale: "fi"
+slug: "shopify-pmax-asset-groupit-tuotteet"
+translationKey: "shopify-pmax-feed-segmentation"
+noindex: false
+comments: false
+cover: "/blog-covers/shopify-pmax-feed-segmentation-which-products-deserve-their-own-asset-group.jpg"
+coverAlt: "Tuoteluettelon ruudukko isometristen laattojen kanssa jakautuu erillisiin klustereihin — suuri sähköisen sininen korkean katteen SKU-ryhmä haarautuu vasemmalle lihavoitujen nuolien kautta, pieni hiiliharmainen matalan kiertonopeuden klusteriksi haarautuu oikealle kohti ✗-merkkiä, ja violetti budjetinvirtapalkkikaavio nousee jyrkästi sinisen klusterin yläpuolelle."
+---
+
+Shopify Performance Max -feed-segmentointi on yksittäinen rakenteellinen päätös, joka määrittää, amplifikoiko Googlen automatisointi parhaita SKU:itasi vai polttaako se hiljaa budjetin kuolleeseen varastoon. Suurissa tileissä, joissa käytetään 30 000–150 000 dollaria kuukaudessa PMaxiin, kuvio on johdonmukainen: kauppiaat, jotka segmentoivat feed-signaalien perusteella — marginaalikerros, kiertonopeus, AOV, palautusprosentti — saavat takaisin keskimäärin 15–22 % tuhlattua budjetista 60 päivän sisällä. Ne, jotka pitävät yhtä kattavaa kampanjaa, antavat Googlen algoritmille ristiriitaisen signaaliseoksen ja ihmettelevät, miksi ROAS tasaantuu.
+
+## Miksi yksi PMax-kampanja koko Shopify-luettelossasi on budjetin tuhlaus
+
+Yksittäinen PMax-kampanja, jossa on yksi asset group ja "Kaikki tuotteet" listing groupissa, on yleisin rakenne, jonka tarkastamme 30 000+ dollarin kuukausittaisessa kulutuksessa — ja se on lähes aina epävakaiden ROAS-arvojen juurisyy. Googlen PMax-algoritmi allokoi budjetin ensin asset groupien välillä, sitten yksittäisiin tuotteisiin ryhmässä. Kun 12 000 SKU:ta jakavat yhden budjetin, algoritmi oletusarvoisesti optimoi vastustuskyvyttömän polun: tuotteita, joilla on korkea klikkivolyymi, mutta jotka eivät välttämättä ole korkeimman marginaalin tuotteitasi.
+
+Käytännön seuraus on raju. 4,99 dollarin lisävaruste 12 prosentin marginaalilla voi anastaa näkymäosuuden 249 dollarin päätuotteesta, jolla on 58 prosentin marginaali, vain koska sillä on enemmän historiallista klikkidataa. [Googlen virallisen Performance Max -dokumentaation](https://support.google.com/google-ads/answer/10724817) mukaan asset groupit toimivat ensisijaisena budjetinjaon yksikkönä, ei yksittäisinä tuotteina. Tämä arkkitehtoninen todellisuus tarkoittaa, että segmentointilogiikkasi asset group -tasolla on ainoa täysin hallitsemasi vipuvarsi.
+
+Olemme nähneet Shopify-myymälöiden menettävän 28 % tehollisesta ROAS:staan tälle tarkalleen tälle dynamiikalle. Yksi muotitalojen DTC 80 000 dollaria kuukaudessa käytti 9 400 SKU:ta yhdessä kampanjassa. Heidän parhaiden 40 marginaalituotteensa — keskimäärin 310 dollarin AOV ja 61 prosentin bruttokate — saivat 6 % kokonaisnäyttökerroista. Luettelon alaosan clearance-tuotteet 19 dollarin hintapisteellä kuluttivat 44 % kulutuksesta. Korjaus ei ollut tarjouksensäätö. Se oli feed-segmentoinnin uudelleenrakentaminen.
+
+## 4 Feed-signaalia, jotka pitäisi ajaa Asset Group -jakojasi
+
+Parhaiten toimivat PMax-rakenteet, joiden kanssa olemme työskennelleet, käyttävät täsmälleen neljää feed-johdettua signaalia segmenttirajojen määrittämiseen: bruttokate-kerros, 90 päivän kiertonopeus, keskimääräinen tilauksiarvo-kaista ja viimeiset 30 päivän palautusprosentti. Nämä neljä signaalia voidaan koodata suoraan `custom_label_0`:n kautta `custom_label_3`:een Shopify-tuotefeediisi, antaen Googlen algoritmille kovaa rajat työskenneltäväksi.
+
+**Bruttokate-kerros** on tärkein signaali ja useimmiten puuttuva Shopify-feedeistä. Useimmissa myymälöissä viedään myytävän hinnan alittava (COGS) feed-attribuutissa, mutta sitä ei koskaan liitetä feed-attribuuttiin. Ilman marginaali-nimikettä Google ei voi erottaa 70 prosentin marginaalin tuotetta 10 prosentin marginaalin tuotteesta — ne näyttävät identtisiltä feed-tasolla. Suosittelemme kolmea kerrosta: `margin-high` (>50 %), `margin-mid` (25–50 %) ja `margin-low` (\<25 %).
+
+**90 päivän kiertonopeus** erottaa todistetut kysyntäsignaalit testaamattomista varastoista. Tuotteet, joilla on alle 50 klikkiä 90 päivässä, niillä ei ole riittävää dataa PMax:n konversiomalleintiin; niiden yhdistäminen korkean kiertonopeuden SKU:iden kanssa pakottaa algoritmin keskiarvoistamaan. **Palautusprosentti** on aliarvioitu. Tuote, jolla on 35 prosentin palautusprosentti ja vahva ROAS-luku, tuhoaa itse asiassa maksuosuuden marginaalia — mutta PMax näkee vain konversion, ei peruutusta. Palautusprosentin koodaaminen mukautetuksi nimikkeeksi antaa sinulle mahdollisuuden luoda erillinen matalan kulutuksen tai suljettu segmentti kroonisille palauttajille.
+
+MagicFeed Pron mukautetulla merkinnän rakentajalla voit automatisoida kaikkien neljän etikettien määrityksen yhdestä sääntökonfiguraatiosta vetämällä COGS-, tilaus- ja palautustietoja Shopify-myymälästäsi ilman manuaalista vientiä.
+
+| Signaali | Feed-attribuutti | Esimerkkiarvot | Asset Group -toiminto |
+|---|---|---|---|
+| Bruttokate | custom_label_0 | margin-high, margin-mid, margin-low | Erilliset kampanjat kerroksittain |
+| 90 päivän kiertonopeus | custom_label_1 | fast-mover, slow-mover, new-sku | Eristä uudet SKU:t, suojaa nopeasti liikkujat |
+| AOV-kaista | custom_label_2 | aov-high, aov-mid, aov-low | Sovita tarjousstrategia AOV:iin |
+| Palautusprosentti | custom_label_3 | return-low, return-high | Supprimoi tai sulje korkean palautuksen tuotteet |
+
+<Callout type="warning">
+Älä käytä pelkästään tuotetyyppiä tai Google-tuotekategoriaa PMax:n segmentoinnin akselina. Kategoriat kertovat Googlelle, mikä tuote *on*, ei mitä se on *arvoinen* liiketoiminnallesi. 9 dollarin puhelinsuoja ja 90 dollarin puhelinsuoja voivat jakaa saman kategorian — ja saman asset groupin — ilman feed-tason signaalia budjetin allokaation erottamiseksi.
+</Callout>
+
+## Vaihe vaiheelta: Shopify-tuotetietojen vienti segmentointimatriisin rakentamiseksi
+
+Ennen kuin rakenteet uudelleen yksittäisen kampanjan, tarvitset segmentointimatriisin: laskentataulukon, joka yhdistää jokaisen SKU:n sen neljään signaaliin. Rakentaminen Shopifystä vie ensimmäisen kerran noin 90 minuuttia, ja alle 20 minuuttia päivityksellä kun sinulla on vientipohjapohja konfiguroitu.
+
+Aloita joukkoviennillä Shopify Admin → Tuotteet → Vie (CSV, kaikki tuotteet). Tämä antaa sinulle `Variant SKU`, `Variant Price` ja `Variant Cost` (jos olet antanut COGS-tiedot — jos et ole, tämä sarake on tyhjä ja se on sinun ensimmäinen ongelmasi korjattavaksi). [Shopifyn omassa Google-integraation dokumentaatiossa](https://help.shopify.com/en/manual/promoting-marketing/google) variant-tason kustannustiedot syötetään suoraan Google-kanavan sovelluksen täydentävään feed-kapasiteettiin.
+
+Seuraavaksi vedä 90 päivän tilausvienti Analytics → Raportit → Myynti tuotteittain. Liity SKU:lla käyttämällä VLOOKUP tai yksinkertaista Python-yhdistämistä. Lisää palautus-sarake 3PL:ltä tai Shopifyn palautusten portaalista — tämä on vaikeinta tietohakua myymälöissä, joilla ei ole omaa BI-työkalua, mutta se on välttämätöntä return-rate-nimikkeelle. Kun liitetty, käytä kynnysarvologiikkaasi: lipu jokaisen SKU:n marginaalikerros, kiertonopeus-kerros, AOV-kaista ja palautus-kerros.
+
+Tuloste on neljäsarakkeen täydentävä feed. Lataa se Google Merchant Centeriin täydentävänä lähteenä tai käytä MagicFeed Pron Shopify-integraatiota synkronoidaksesi etikettejä automaattisesti päivittäin, jotta segmentointisi pysyy ajankohtaisena kun varasto kiertyy ja palautusprosentit muuttuvat.
+
+<Callout type="tip">
+Jos COGS-tietosi Shopifyssä ovat puutteelliset — tavallista katalogisiirtojen tai toimittajien vaihtojen jälkeen — käytä mediaani-kategorian marginaalia `custom_label_0`:n konservatiivisena välityspalvelimena kunnes voit täyttää todellisuudet. Karkea marginaali-nimike on merkittävästi parempi kuin ei marginaali-nimikettä PMax:n asset groupin ohjaukselle.
+</Callout>
+
+## Listing Group -logiikka vs. Asset Group -logiikka — mitä useimmat opaskirjat saavat väärin
+
+Useimmissa PMax-oppaissa käsitellään "listing groupit" ja "asset groupit" vaihtokelpoisina termeinä. Ne eivät ole, ja sekaannus maksaa oikean Shopify-kauppiaita rahaa. Asset group on luova ja yleisö-säiliö — se pitää otsikot, kuvat, yleisösignaalit ja budjetin jaon kontekstin. Listing group on tuotesuodatin *asset groupin sisällä*, joka määrittää, mitkä tuotteet feedistäsi ovat kelpoisia palvelemaan.
+
+Voit omata hyvin rakennetun asset groupin oikealla luovuudella korkean AOV:n tuotteille, mutta listing groupin, joka vahingossa sisältää matalan marginaalin SKU:t, koska suodatinlogiikka ei ollut tarpeeksi tiukka. Asset groupin luova ja yleisösignaali tuhlautuu sitten väärille tuotteille. Päinvastoin, voit omata täydellisesti segmentoidun listing groupin, mutta yleisen, catch-all-luovuuden, joka ei sovi tuotteen tason ostajaintentioon.
+
+Oikea arkkitehtuuri palikoituu molemmissa kerroksissa. Korkean marginaalin asset groupissa: listing group suodattaa `custom_label_0 = margin-high`:ksi JA asset group sisältää luova omaisuutta — otsikot, kuvaukset, kuvat — erityisesti kirjoitettu premium ostaja-intentiille. Uuden SKU:n inkubaatio-groupissa: listing group suodattaa `custom_label_1 = new-sku`, asset group käyttää laajempia yleisö-signaaleja ja Target CPA -tarjouksesta strategiaa kerätäkseen dataa ilman marginaalin polttamista.
+
+Tämä on myös paikka, jossa MagicFeed Pron AI-feed-uudelleenkirjoitus luo seuraavat arvot — kun otsikko- ja kuvauskvaliteettisi vastaa asset groupin intentioita, PMax:n mainoksen relevanssipistemäärä paranee ja kelpoinen näyttöosuus kasvaa. Feed-laatu ja kampanja-rakenteet eivät ole erillisiä työvirtuita; ne vahvistavat toisiaan.
+
+## Todellinen tili: Kuinka 12 000 SKU:n Shopify-myymälä meni 1:stä 9 Asset Groupiin
+
+Yhdistyneen kuningaskunnan kotimaatavaraa myyvä Shopify-myymälä (2,1 miljoonan punnan vuosittaiset tulot, 65 000 puntaa kuukaudessa PMax-kulutus) tuli meidän luoksemme Q3 2025:ssa yhdellä PMax-kampanjalla, yhdellä asset groupilla ja 4,1x ROAS:lla — mikä näytti hyvältä kunnes jaoimme maksuosuuden marginaalin. Heidän tehokas marginaali-säädöstä ROAS oli 1,8x koska matalan marginaalin clearance-tuotteet kuluttivat 51 % kulutuksesta.
+
+Rakennamme heidän rakenteet uudelleen 9 asset groupiin kolmen viikon aikana edellä olevan neljäsignaalista. Ryhmät olivat: (1) Margin-High / Fast-Mover päätuotteet, (2) Margin-High / Slow-Mover korkea-arvo tuotteille, jotka tarvitsevat kysyntää, (3) Margin-Mid / Fast-Mover ydinalue, (4) Margin-Mid / Slow-Mover, (5) Uuden SKU:n inkubaatio, (6) Kausiluonteisia / promootiotuotteita, (7) Matala-marginaali likvidaatio — ylärajattu budjetti, vain kohde-CPA, (8) Korkean palautusasteen karanteeni — minimaalinen kulutus, (9) Brändinä hakupoissulkemiskuuluminen.
+
+Tulokset 60 päivän jälkeen: raportoitu ROAS liikkui 4,1x:stä 5,6x:ään. Vielä tärkeämpää, marginaali-säädöstä ROAS meni 1,8x:stä 3,9x:ään — 117 prosentin parannus todelliseen kannattavuuteen. Päätuoteryhmä (Group 1, ~340 SKU:t) meni 8 prosentin näyttöosuudesta 31 prosenttiin. Clearance-tuotteet putosivat 51 prosentista 14 prosenttiin kulutuksesta.
+
+Avain-mahdollistaja oli puhdas feed-data. Ennen uudelleenrakentamista, ajoimme täyden feed-attribuuttin tarkastuksen ja löysimme 23 % SKU:ista puuttuvat COGS-tiedot, 41 % ei-kuvaavilla otsikolla, jotka piilottivat laadun pisteet, ja 1 200 tuotetta GTIN:nä, jotka merkittiin väärin sovitetuiksi Merchant Centerissä. Feedin korjaus ensin teki segmentoinnin työskentely; segmentointi ilman puhdasta dataa on vain huonojen signaalien järjestely.
+
+## Feed-attribuutin vaatimukset jokaista segmenttiä kohti, jotta se todellakin toimisi PMax:ssä
+
+Segmentointi-strategia pitää vain, jos taustalla olevat feed-attribuutit ovat täydelliset ja tarkat. Jokainen yhdeksästä segmentityypistä on erilainen attribuutin prioriteetti, ja puutokset erityisissä kentissä aiheuttavat tuotteiden putoamisen oikeutetuista segmenteistä tai palvelemisesta heikentävällä laadulla.
+
+**Korkean marginaalin pääsegmenteissä** välttämätöntä attribuuttia ovat: tarkka `hinta` ja `sale_price` (yhteensopimattomuudet aiheuttavat hylkäämisen), oikea `GTIN` tai `MPN` (puuttuvat GTIN:t vähentävät huutokaupan kelpoisuutta Googlen tuotetietojen spesifikaation mukaan) ja optimoidut `otsikko` merkkillä + tuotetyyppi + avainmääritys 70 merkin ensimmäisessä osassa. Heikko otsikko pääsegmentissä on raha pöydällä — otsikko on ensisijainen relevanssissignaali Shopping-kyselyille.
+
+**Uuden SKU:n inkubaatio-segmenteissä** kriittisin attribuutti on `product_type` — ilman hyvin rakennettua tuotetyyppi-taksonomia, Googlen algoritmilla ei ole kategorista signaalia alustava imprimoi kohdentamaan. [Search Engine Landin kattavuuden](https://searchengineland.com/) mukaan PMax-parhaiden käytäntöjen, tuotteet ilman määritettyä tuotetyyppiä kestävät 3–5x kauemmin poistua "oppimis"-vaiheesta, polttavan inkubaatio-budjetin ilman käytettävien konversio-datan tuottamista.
+
+**Korkean palautusasteen karanteeni-segmenteissä** tarkasta `kuvaus` ja `otsikko` tarkkuusvajeista — harhaanjohtavat otsikot ja kuvaukset ovat nro 1 -ajaja estettävissä palautuksissa, erityisesti vaatteissa ja elektroniikassa. Tuotteet, jotka palauttavat >25 % nopeudella, lähes aina omaavat feed-tarkkuusongelman ylävirtaan. Feed-datan korjaus, ei vain tuotteiden karanteeni, on kestävä korjaus.
+
+Täysimittainen attribuuttin tarkistuslista jokainen segmentityypille kartoittuu läheisesti siihen, mitä rakenteinen feed-auditointi paljastaa. Jos et ole tehnyt sitä äskettäin, tarkistuslista-kehys MagicFeed Pron feed-attribuuttin audit-oppaassa käy läpi jokaisen vaaditun ja suositellun attribuutin tuotekategorian ja segmenttityypin mukaan.
+
+<ProductCTA variant="audit" title="Hanki ilmainen Feed-segmentointi-auditointi Shopify PMax-kampanjallesi" />
+
+<FAQ>
+ <FAQItem
+ q="Kuinka monta asset groupia Shopify PMax -kampanjassa pitäisi olla?"
+ a="Ei ole yleistä numeroa, mutta data mid-to-suurista Shopify-tileistä (30 000+ dollaria kuukaudessa) näyttää johdonmukaisesti 5–9 asset groupia ylittävät 1–3. Oikea luku määritetään kuinka monta erilaista marginaali-kerrosta, kiertonopeus-pronssia ja AOV-kaistaa luettelossasi on — ei SKU-luvun perusteella. 500 SKU:n myymälä voi tarvita 7 ryhmää; 20 000 SKU:n myymälä voi käyttää 6:a jos segmentit ovat puhtaat."
+ />
+ <FAQItem
+ q="Voinko käyttää mukautettuja etikettejä PMax listing groupille Shopifyssä?"
+ a="Kyllä. Mukautetut etiketteet (custom_label_0 kunnes custom_label_4) ovat täysin tuettuja Google Shopping -ruokinnassa Shopifyn kautta Google-kanavaa tai kolmannen osapuolen feed-työkalua. Määrität arvot täydentävässä feedissä, ja ne näkyvät suodatettavissa attribuutteina listing group rakentajassa Google Ads:issa. Ne eivät vaikuta orgaanisiin tuoteluetteloihin tai Shopifyn omiin kokoelmiin."
+ />
+ <FAQItem
+ q="Kuinka kauan Performance Max ottaa oppimisen jälkeen rakenteiden uudelleenorganisoinnissa?"
+ a="Googlen virallinen ohjaus sanoo PMax-kampanjoiden tarvitsevan vähintään 6 viikkoa poistua oppimis-vaiheesta merkittävän rakenteellisen muutoksen jälkeen. Käytännössä tilit, joilla on puhdas feed-data ja vahva konversio-historia, yleensä stabiloituvat 3–4 viikossa. Vältä tarjouksesta-strategian muutoksia ensimmäisen 21 päivän aikana rakenteen uudelleenorganisoinnin jälkeen — pinotut muutokset pidentävät oppimis-ajanjaksoa ja tekevät mahdottomaksi eristää mitä aiheutti suorituskykyn siirtymät."
+ />
+ <FAQItem
+ q="Mikä on ero PMax listing groupien ja Standard Shoppingin tuoteryhmien välillä?"
+ a="Standard Shoppingissa tuoteryhmät ovat ensisijainen budjetti ja tarjous-ohjaus-mekanismi — määrität CPC:n tuoteryhmällä. PMax:ssa listing groupit ovat puhtaasti suodatin, mitkä tuotteet feedistä ovat kelpoisia palvelemaan asset groupissa; todellinen budjetin jako ohjataan kampanjan tarjous-strategian ja asset groupin rakenteen kautta. Tämä on miksi segmentointilogiikka, joka toimi Standard Shoppingissa, ei suoraan siirry PMax:iin ilman uudelleenajattelua asset groupien ympärillä."
+ />
+ <FAQItem
+ q="Pitäisikö minun sulkea matalan marginaalin tuotteet PMax:stä kokonaan tai vain ylärajata heidän budjetin?"
+ a="Matalan marginaalin tuotteiden sulkeminen kokonaan on harvoin oikea kutsu ellei heidän palautusprosentista tai marginaalista ole negatiivinen palautusten jälkeen. Parempi lähestymistapa on eristää ne erillisessä asset groupissa konservatiivisella Target CPA tai Target ROAS:lla, joka heijastaa heidän todellista marginaali-osuuden. Tämä pitää heidät kelpoina näyttöosuudelle korkean kysynnän aikoina (myynti, kausiluonteiset piikit) ilman päätuotteiden kannibaalisoinnin budjetin."
+ />
+</FAQ>

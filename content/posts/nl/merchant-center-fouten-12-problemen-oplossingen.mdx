@@ -1,0 +1,221 @@
+---
+slug: "merchant-center-fouten-12-problemen-oplossingen"
+translationKey: "merchant-center-errors-12-common-issues-solutions"
+locale: "nl"
+title: "Merchant Center-fouten: 12 problemen en snelle fixes"
+description: "Alle Merchant Center-fouten uitgelegd. De 12 meest voorkomende productafwijzingen — oorzaken, diagnose en snelle oplossing zonder verlies van indrukken."
+keywords:
+ - merchant center fouten
+ - google shopping afwijzingen
+ - merchant center diagnostiek
+ - google shopping fouten
+ - feed error fix
+date: 2026-05-05
+updated: 2026-05-05
+author: "mfp-team"
+category: "merchant-center"
+tags:
+ - merchant-center
+ - troubleshooting
+ - disapprovals
+ - listicle
+featured: false
+comments: false
+cover: ""
+coverAlt: "Google Merchant Center diagnostiek dashboard met productproblemen"
+---
+
+Als je ooit naar de Merchant Center Diagnostics-pagina staarde en je afvroeg wat "beperkte prestaties: prijsverschil" nou echt betekent, is dit artikel voor jou.
+
+Deze 12 fouten veroorzaken ruwweg 90% van de afwijzingen die we in klantaudits tegenkomen. Elk probleem heeft een specifieke oorzaak, een specifiek diagnostisch pad en een specifieke 30-minuten-oplossing.
+
+## 1. Ontbrekende GTIN
+
+**De fout**: "Missing required field [gtin]" of "Limited performance due to missing GTIN".
+
+**Wat veroorzaakt het**: merkproducten (wederverkopers) moeten de GTIN (UPC/EAN/ISBN) opgeven. Eigen merk-producten kunnen vrijgesteld worden door `identifier_exists` op `false` in te stellen, maar de meeste catalogi vergeten dit.
+
+**Diagnose**:
+
+```text
+Merchant Center → Products → Diagnostics → Filter: Issue = "Missing GTIN"
+```
+
+**Oplossing**:
+
+- Wederverkochte merkproducten: haal de GTIN op bij je leverancier of zoek deze op op de website van de fabrikant. Voeg het toe aan het veld `barcode` in Shopify of het equivalent in jouw platform.
+- Eigen merk / handgemaakt: stel `identifier_exists: false` in je feed. In Shopify is dit een metaveld (`google.identifier_exists: FALSE`).
+
+<Callout type="tip" title="Laat het niet gewoon leeg">
+Het leeglaten van GTIN zonder `identifier_exists: false` is het ergste van twee werelden — je krijgt een waarschuwing *en* verliest het rankingvoordeel van een GTIN. Stel de vlag expliciet in.
+</Callout>
+
+## 2. Onjuiste Google-productcategorie
+
+**De fout**: "Product category not specific enough" of "Product mismatch with category".
+
+**Wat veroorzaakt het**: je product is toegewezen aan een te brede categorie (bijv. "Apparel & Accessories" in plaats van "Apparel & Accessories > Clothing > Shirts & Tops > Dress Shirts").
+
+**Oplossing**: open het product en stel het volledige 5-niveau Google Product Category-pad in. De taxonomie wordt gepubliceerd als Google Sheet die je kunt doorzoeken. Specificiteit is belangrijk — 5-niveau paden scoren gemiddeld 2–3× beter dan 2-niveau.
+
+## 3. Problemen met afbeeldingskwaliteit
+
+**De fout**: "Image quality too low" of "Promotional overlay on image".
+
+**Wat veroorzaakt het**:
+
+- Afbeelding \< 250×250px (strikte vereiste)
+- Afbeelding met tekstoverlay, logo's, watermerken of randen
+- Afbeelding met mannequins (voor bepaalde kledingcategorieën)
+- Afbeelding zonder schone achtergrond
+
+**Oplossing**: hero-afbeelding moet het product zijn gecentreerd op een schone achtergrond, ≥800px (ideaal 1500×1500), geen overlay. Voor Shopify-winkels: gebruik de *primaire* productafbeelding in de variant, niet een lifestyle-foto.
+
+## 4. Prijsverschil tussen feed en landingspagina
+
+**De fout**: "Price mismatch" of "Landing page price differs from feed".
+
+**Wat veroorzaakt het**: de prijs in je feed komt niet overeen met de prijs op de PDP. Veelvoorkomende oorzaken:
+
+- Verkoopprijzen toegepast bij checkout maar niet in de feed
+- Valutaomzettingsverschil bij multi-regio feeds
+- Verschil tussen prijs inclusief en exclusief belasting
+- BTW-verschillen tussen landen
+
+**Oplossing**:
+
+- Zorg dat `price` in feed exact gelijk is aan de belasting-inclusieve prijs die klanten op de PDP zien.
+- Vul bij een sale `sale_price` en `sale_price_effective_date` in — wijzig niet gewoon `price` tijdelijk.
+
+## 5. Ontbrekend of onjuist retourbeleid
+
+**De fout**: "Missing returns policy" of "Returns policy URL doesn't load".
+
+**Wat veroorzaakt het**: sinds 2024 vereist Google een duidelijk toegankelijk retourbeleid dat is gekoppeld vanuit je Merchant Center-account.
+
+**Oplossing**:
+
+- Merchant Center → Tools → Returns → stel het standaardbeleid in (aantal dagen, retourbezorging, restockingsvergoeding).
+- Controleer of de URL op je site laadt naar een pagina met duidelijk zichtbaar retourbeleid — Google's crawler controleert dit.
+
+## 6. Beperkte productcategorie
+
+**De fout**: "Restricted product policy" — geldt voor alcohol, supplementen, cosmetica met receptgerechtigd ingrediënten, wapens, gokspelaanbiedingen, enz.
+
+**Wat veroorzaakt het**: je product valt in een beperkte categorie waarvoor aanvullende certificering nodig is (bijv. supplementen moeten ingrediëntenlijsten hebben; cosmetica moeten bepaalde etikettering hebben).
+
+**Oplossing**:
+
+- Identificeer de specifieke beperkte categorie uit de afwijzingsreden.
+- Voor supplementen: voeg `nutrition_facts` en `ingredients` attributen toe.
+- Voor leeftijdsbeperking: voeg `age_group: adult` toe en zorg ervoor dat je PDP leeftijdsverificatie heeft.
+- Voor bepaalde categorieën (alcohol, wapens in bepaalde landen): dien een uitzonderingsverzoek in via het Merchant Center-beleid.
+
+## 7. Problemen met landingspagina
+
+**De fout**: "Landing page doesn't match" of "Landing page error".
+
+**Wat veroorzaakt het**:
+
+- Landingspagina stuurt door (302-keten) voordat deze opgelost is
+- Landingspagina geeft 4xx of 5xx terug
+- Landingspagina wordt leeg weergegeven (zware JS, langzame LCP)
+- Product op de PDP komt niet overeen met feed (bijv. verkeerde kleur)
+
+**Oplossing**:
+
+- Los eventuele omdirectioningsketen op — de uiteindelijke URL moet de canonieke PDP zijn.
+- Voor SPA-zware winkels: zorg ervoor dat productinhoud server-side wordt weergegeven of vooraf weergegeven voor crawlers.
+- Controleer of `availability` in de feed overeenkomt met wat de PDP zegt.
+
+## 8. Verzendverschil
+
+**De fout**: "Shipping not computable" of "Shipping cost differs from feed".
+
+**Wat veroorzaakt het**:
+
+- Je verzendingsinstellingen in Merchant Center dekken het bestemmingsland niet.
+- De feed zegt gratis verzending maar de PDP berekent verzendkosten.
+- Variantniveau-verzending (bijv. zware items) niet opgegeven in de feed.
+
+**Oplossing**:
+
+- Merchant Center → Tools → Shipping and returns → zorg ervoor dat elk land waar je verkoopt is geconfigureerd.
+- Voor zware producten: override verzending op productniveau via `shipping` attribuut.
+
+## 9. Verouderde of gebroken beschikbaarheid
+
+**De fout**: "Out of stock — should be in stock" of andersom.
+
+**Wat veroorzaakt het**: je feed zegt `in_stock` maar de PDP toont "uitverkocht", of je [feed wordt te langzaam bijgewerkt](https://blog.magicfeedpro.com/posts/google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test) wanneer inventaris verandert.
+
+**Oplossing**:
+
+- Wissel van geplande ophaling naar push (Content API of Shopify's native Google-kanaal).
+- Stel `availability_date` in voor producten in backorder zodat Google deze blijft tonen.
+- Controleer de vertraging tussen inventarisupdate van je winkel en reflectie in Merchant Center. Alles > 1 uur kost je indrukken tijdens stockouts.
+
+## 10. Verboden inhoud
+
+**De fout**: "Prohibited content" — meestal voor wapens, drugs, namaak, volwasseninhoud, gevaarlijke chemicaliën of politiek geladen goederen.
+
+**Wat veroorzaakt het**: elk product dat tegen Google's [restrictieve inhoudsbeleid](https://support.google.com/merchants/answer/6149970) aanloopt.
+
+**Oplossing**:
+
+- Bij vals-positief (bijv. sportmerk gemarkeerd voor "wapens" vanwege bokshandschoenen): dien een handmatig beoordelingsverzoek in via Merchant Center → Diagnostics → Request review.
+- Als je product werkelijk in een verboden categorie valt: je kunt het niet adverteren op Shopping. Verplaats het naar andere kanalen.
+
+## 11. Ontbrekende belastingconfiguratie
+
+**De fout**: "Tax not configured for destination".
+
+**Wat veroorzaakt het**: in de VS (belasting per staat), de EU (BTW per land) of andere multi-jurisdictie setups dekken je Merchant Center belastinginstellingen de bestemmingsstaat/land niet.
+
+**Oplossing**:
+
+- Merchant Center → Tools → Tax → configureer per staat (VS) of per land (EU).
+- Voor EU: zorg ervoor dat je belasting-inclusieve prijzen gebruikt (standaard voor EU Shopping).
+
+## 12. Feed-structuurfouten
+
+**De fout**: "Cannot parse feed" of "Invalid feed format".
+
+**Wat veroorzaakt het**:
+
+- Speciale tekens niet onderbroken (ampersands, aanhalingstekens in CSV-velden)
+- Onjuiste kolom-scheidingstekens
+- Coderingsfouten (UTF-8 vs ISO-8859-1)
+- Multi-waarde velden niet correct opgemaakt met juiste scheidingsteken (`/` voor maten, enz.)
+
+**Oplossing**:
+
+- Voor CSV/TSV feeds: valideer via het Merchant Center "Test feed"-hulpprogramma vóór upload.
+- Voor XML feeds: valideer XML-structuur (sluit alle tags) en escape speciale tekens.
+- Voor Shopify/BigCommerce/native kanalen: dit gebeurt zelden; als het gebeurt: contacteer de support van de kanaal-app.
+
+## Wekelijkse audit zonder je weekend te verpesten
+
+Een 15-minuten wekelijkse Merchant Center-audit vangt 95% van de problemen op voordat ze budget verspillen:
+
+1. **Diagnostics → Issues**: sorteer op "Impressions affected" dalend. Adresseer alles boven 1K beïnvloede indrukken.
+2. **Products → Disapproved**: scan de lijst. Cluster per probleemtype. Fix eerst het meest voorkomende patroon (één fix wist meestal 20+ SKU's).
+3. **Tools → Reviews**: reageer op nieuwe handmatige beoordelingsverzoeken binnen 48 uur.
+4. **Performance → Best sellers**: controleer of je top 20 SKU's nog [gezond indrukkaandeel](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith) tonen.
+
+## Veelgestelde vragen
+
+<FAQ>
+ <FAQItem q="Hoe lang duurt het voordat Merchant Center een gerepareerd product opnieuw goedkeurt?" a="Geautomatiseerde herkeuringen nemen doorgaans 1–24 uur na de volgende feed-fetch. Handmatige beoordelingsverzoeken kunnen 3–7 dagen duren, maar zijn meestal sneller. Pushen via Content API brengt je vooraan in de rij." />
+ <FAQItem q="Zal het repareren van afwijzingen mijn indrukken herstellen naar baseline?" a="Meestal binnen 7–10 dagen. Zwaar afgewezen accounts kunnen een proefperiode-herranking ondergaan — start eerst met het repareren van SKU's met hoogste indrukken voor sneller herstel." />
+ <FAQItem q="Waarom zie ik steeds nieuwe foutcategorieën die ik nog nooit eerder gezien heb?" a="Google voegt en verfijnt productprobleem-categorieën meerdere keren per jaar. De 2024–2026 expansie heeft zich gericht op retourbeleid-naleving, afbeeldingskwaliteit en nauwkeurigheid van prijzen. Audit wekelijks om nieuwe vroeg op te vangen." />
+ <FAQItem q="Kan ik in beroep gaan tegen een afwijzing waar ik het niet mee eens ben?" a="Ja. In Merchant Center → Diagnostics → klik het probleem → 'Request review'. Geef context. Echte vals-positieven (zeldzaam maar echt) worden meestal binnen 3–5 werkdagen ingetrokken." />
+</FAQ>
+
+## Snelreferentie
+
+Als je maar één ding onthoudt: **Diagnostics → sorteer op Impressions affected → repareer wekelijks top 3**. Deze enkele discipline houdt je [feed gezonder](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide) dan 90% van de accounts.
+
+<ProductCTA variant="audit" title="Krijg een volledige Merchant Center-audit, gratis">
+We halen je live feed, zetten elk afwijzingscluster bloot en geven je een geprioriteerde reparatielijst met 30-min remediatie per probleemtype.
+</ProductCTA>

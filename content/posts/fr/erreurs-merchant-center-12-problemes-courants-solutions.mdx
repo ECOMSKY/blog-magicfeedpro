@@ -1,0 +1,221 @@
+---
+slug: "erreurs-merchant-center-12-problemes-courants-solutions"
+translationKey: "merchant-center-errors-12-common-issues-solutions"
+locale: "fr"
+title: "Erreurs Merchant Center : 12 problèmes courants et solutions"
+description: "Les 12 désapprobations produit les plus fréquentes — causes, diagnostic et correction en 30 min sans perdre d'impressions ni budget."
+keywords:
+ - erreurs merchant center
+ - désapprobation produit google
+ - diagnostic merchant center
+ - erreurs google shopping
+ - correction flux produit
+date: 2026-05-05
+updated: 2026-05-05
+author: "mfp-team"
+category: "merchant-center"
+tags:
+ - merchant-center
+ - troubleshooting
+ - disapprovals
+ - listicle
+featured: false
+comments: false
+cover: ""
+coverAlt: "Tableau de bord de diagnostic Google Merchant Center affichant les problèmes produit"
+---
+
+Si vous avez déjà contemplé la page Diagnostics de Merchant Center en vous demandant ce que signifie réellement « performances limitées : prix non concordant », cet article est pour vous.
+
+Ces 12 erreurs représentent environ 90 % des désapprobations que nous voyons dans les audits clients. Chacune a un déclencheur spécifique, une voie de diagnostic précise et une correction réalisable en 30 minutes.
+
+## 1. GTIN manquant
+
+**L'erreur** : « Champ requis manquant [gtin] » ou « Performances limitées en raison du GTIN manquant ».
+
+**Ce qui la déclenche** : les produits de marque (revendeurs) doivent fournir le GTIN (UPC/EAN/ISBN). Les produits de marque propre peuvent être exemptés en définissant `identifier_exists` à `false`, mais la plupart des catalogues oublient de le faire.
+
+**Diagnostic** :
+
+```text
+Merchant Center → Produits → Diagnostics → Filtre : Problème = « GTIN manquant »
+```
+
+**Correction** :
+
+- Produits de marque revendus : obtenez le GTIN auprès de votre fournisseur ou recherchez-le sur le site du fabricant. Ajoutez-le au champ `barcode` de la variante dans Shopify ou l'équivalent sur votre plateforme.
+- Marque propre / fait main : définissez `identifier_exists: false` dans votre flux. Dans Shopify, c'est un métachamp (`google.identifier_exists: FALSE`).
+
+<Callout type="tip" title="Ne le laissez pas vide">
+Laisser le GTIN vide sans `identifier_exists: false` est le pire des deux mondes — vous obtenez un avertissement *et* perdez le bénéfice de classement d'en avoir un. Définissez le drapeau explicitement.
+</Callout>
+
+## 2. Catégorie de produit Google incorrecte
+
+**L'erreur** : « Catégorie de produit pas assez spécifique » ou « Produit ne correspond pas à la catégorie ».
+
+**Ce qui la déclenche** : votre produit est mappé à une catégorie trop large (par ex. « Vêtements et accessoires » au lieu de « Vêtements et accessoires > Vêtements > Chemises et chemisiers > Chemises habillées »).
+
+**Correction** : ouvrez le produit et définissez le chemin complet de la catégorie Google Product Category à 5 niveaux. La taxonomie est publiée sous forme de Google Sheet que vous pouvez consulter. La spécificité compte — les chemins à 5 niveaux se classent en moyenne 2–3 fois mieux que ceux à 2 niveaux.
+
+## 3. Problèmes de qualité d'image
+
+**L'erreur** : « Qualité d'image trop faible » ou « Superposition promotionnelle sur l'image ».
+
+**Ce qui la déclenche** :
+
+- Image \< 250×250 px (exigence stricte)
+- Image avec superposition de texte, logos, filigranes ou bordures
+- Image avec mannequins (pour certaines catégories de vêtements)
+- Image sans arrière-plan propre
+
+**Correction** : l'image principale doit montrer le produit centré sur un fond propre, ≥800 px (idéalement 1500×1500), sans superposition. Pour les boutiques Shopify, utilisez l'image produit *principale* de la variante, pas une photo lifestyle.
+
+## 4. Discordance de prix entre le flux et la page de destination
+
+**L'erreur** : « Prix non concordant » ou « Le prix de la page de destination diffère du flux ».
+
+**Ce qui la déclenche** : le prix dans votre flux ne correspond pas au prix affiché sur la page produit. Causes courantes :
+
+- Prix réduits appliqués au paiement mais pas dans le flux
+- Dérives de conversion de devises sur les flux multi-régions
+- Discordance prix TTC vs prix HT
+- Différences de TVA entre pays
+
+**Correction** :
+
+- Faites correspondre `price` dans le flux au prix exact TTC que le client voit sur la page produit.
+- Si vous lancez une promotion, remplissez `sale_price` et `sale_price_effective_date` — ne changez pas simplement `price` temporairement.
+
+## 5. Politique de retour manquante ou incorrecte
+
+**L'erreur** : « Politique de retour manquante » ou « L'URL de la politique de retour ne se charge pas ».
+
+**Ce qui la déclenche** : depuis 2024, Google exige une politique de retour clairement accessible depuis votre compte Merchant Center.
+
+**Correction** :
+
+- Merchant Center → Outils → Retours → configurez la politique par défaut (durée en jours, frais d'expédition, frais de remise en stock).
+- Vérifiez que l'URL sur votre site mène à une page avec la politique clairement visible — le crawler de Google vérifie cela.
+
+## 6. Classe de produit restreinte
+
+**L'erreur** : « Politique de produit restreint » — s'applique à l'alcool, suppléments, cosmétiques avec ingrédients sur ordonnance, armes, jeux d'argent, etc.
+
+**Ce qui la déclenche** : votre produit appartient à une catégorie restreinte nécessitant une certification supplémentaire (par ex. les suppléments ont besoin de listes d'ingrédients ; les cosmétiques d'étiquetage spécifique).
+
+**Correction** :
+
+- Identifiez la catégorie restreinte spécifique dans la raison de la désapprobation.
+- Pour les suppléments : fournissez les attributs `nutrition_facts` et `ingredients`.
+- Pour les produits réservés aux adultes : fournissez `age_group: adult` et assurez-vous que votre page produit a une vérification d'âge.
+- Pour certaines catégories (alcool, armes dans certains pays) : demandez une exemption via l'outil de politique Merchant Center.
+
+## 7. Problèmes de page de destination
+
+**L'erreur** : « La page de destination ne correspond pas » ou « Erreur de page de destination ».
+
+**Ce qui la déclenche** :
+
+- La page de destination redirige (chaîne 302) avant de se résoudre
+- La page de destination retourne 4xx ou 5xx
+- La page de destination s'affiche vide (JS lourd, LCP lent)
+- Le produit affiché sur la page ne correspond pas au flux (par ex. mauvaise couleur)
+
+**Correction** :
+
+- Résolvez toute chaîne de redirection — l'URL finale doit être la page produit canonique.
+- Pour les boutiques à forte dépendance JavaScript, assurez-vous que le contenu produit est rendu côté serveur ou pré-rendu pour les crawlers.
+- Vérifiez que `availability` dans le flux correspond à ce que la page produit indique.
+
+## 8. Discordance d'expédition
+
+**L'erreur** : « Expédition non calculable » ou « Le coût d'expédition diffère du flux ».
+
+**Ce qui la déclenche** :
+
+- Vos paramètres d'expédition dans Merchant Center ne couvrent pas le pays de destination.
+- Le flux dit expédition gratuite mais la page produit facture l'expédition.
+- Expédition au niveau de la variante (par ex. articles lourds) non déclarée dans le flux.
+
+**Correction** :
+
+- Merchant Center → Outils → Expédition et retours → assurez-vous que chaque pays où vous vendez est configuré.
+- Pour les produits lourds, redéfinissez l'expédition au niveau du produit via l'attribut `shipping`.
+
+## 9. Disponibilité obsolète ou invalide
+
+**L'erreur** : « En rupture de stock — devrait être en stock » ou inversement.
+
+**Ce qui la déclenche** : votre flux dit `in_stock` mais la page produit affiche « rupture de stock », ou votre [flux se met à jour trop lentement](https://blog.magicfeedpro.com/posts/google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test) quand l'inventaire change.
+
+**Correction** :
+
+- Passez de la récupération programmée à l'envoi (API Content ou canal Google natif Shopify).
+- Définissez `availability_date` pour les produits en pré-commande afin que Google continue à les montrer.
+- Auditez le délai entre la mise à jour d'inventaire de votre boutique et le reflet dans Merchant Center. Tout > 1 heure vous coûtera des impressions lors des ruptures.
+
+## 10. Contenu prohibé
+
+**L'erreur** : « Contenu prohibé » — se déclenche généralement sur les armes, drogues, contrefaçons, contenu adulte, produits chimiques dangereux ou marchandises à caractère politique.
+
+**Ce qui la déclenche** : tout produit touchant aux [politiques de contenu restreint de Google](https://support.google.com/merchants/answer/6149970).
+
+**Correction** :
+
+- Si faux positif (par ex. une marque de sportswear signalée pour « armes » à cause d'un gant de kickboxing), demandez un examen manuel via Merchant Center → Diagnostics → Demander un examen.
+- Si votre produit appartient réellement à une catégorie prohibée, vous ne pouvez pas le faire apparaître sur Shopping. Retirez-le de Shopping et utilisez d'autres canaux.
+
+## 11. Configuration fiscale manquante
+
+**L'erreur** : « Taxe non configurée pour la destination ».
+
+**Ce qui la déclenche** : aux USA (impôts par état), dans l'UE (TVA par pays), ou dans d'autres configurations multi-juridictionnelles, vos paramètres fiscaux Merchant Center ne couvrent pas l'état/pays de destination.
+
+**Correction** :
+
+- Merchant Center → Outils → Fiscalité → configurez par état (USA) ou par pays (UE).
+- Pour l'UE, assurez-vous d'utiliser la tarification TTC (standard pour Shopping UE).
+
+## 12. Erreurs de structure de flux
+
+**L'erreur** : « Impossible d'analyser le flux » ou « Format de flux invalide ».
+
+**Ce qui la déclenche** :
+
+- Caractères spéciaux non échappés (ampersands, guillemets dans les champs CSV)
+- Délimiteurs de colonne incorrects
+- Problèmes d'encodage (UTF-8 vs ISO-8859-1)
+- Champs multi-valeurs non formatés avec le bon séparateur (`/` pour les tailles, etc.)
+
+**Correction** :
+
+- Pour les flux CSV/TSV : validez via l'outil « Tester le flux » de Merchant Center avant le téléchargement.
+- Pour les flux XML : validez la structure XML (fermez toutes les balises) et échappez les caractères spéciaux.
+- Pour Shopify/BigCommerce/canaux natifs : c'est rare ; si cela survient, contactez le support de l'app du canal.
+
+## Comment auditer chaque semaine sans sacrifier votre week-end
+
+Un audit Merchant Center de 15 minutes chaque semaine détecte 95 % des problèmes avant qu'ils ne gruent votre budget :
+
+1. **Diagnostics → Problèmes** : triez par « Impressions affectées » décroissant. Traitez tout ce qui dépasse 1K affecté.
+2. **Produits → Désapprouvés** : parcourez la liste. Groupez par type de problème. Corrigez d'abord le motif le plus courant (une correction élimine généralement 20+ SKU).
+3. **Outils → Examens** : répondez à toute nouvelle demande d'examen manuel dans les 48h.
+4. **Performance → Meilleures ventes** : vérifiez que vos 20 meilleurs SKU affichent toujours une [part d'impressions saine](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith).
+
+## FAQ
+
+<FAQ>
+ <FAQItem q="Combien de temps faut-il pour que Merchant Center réapprouve un produit corrigé ?" a="Les revérifications automatisées se terminent généralement dans les 1–24 heures après la prochaine récupération de flux. Les demandes d'examen manuel peuvent prendre 3–7 jours mais sont généralement plus rapides. Envoyer la correction via l'API Content vous met en avant de la file." />
+ <FAQItem q="Corriger les désapprobations rétablira-t-il mes impressions au niveau de base ?" a="Généralement en 7–10 jours. Les comptes lourdement désapprouvés peuvent passer par un re-classement probatoire — commencez par corriger les SKU avec le plus d'impressions pour récupérer plus vite." />
+ <FAQItem q="Pourquoi je vois constamment de nouvelles catégories d'erreur jamais vues avant ?" a="Google ajoute et affine les catégories de problèmes produit plusieurs fois par an. L'expansion 2024–2026 s'est concentrée sur la conformité politique de retour, la qualité d'image et la précision des prix. Auditez chaque semaine pour les détecter tôt." />
+ <FAQItem q="Puis-je contester une désapprobation avec laquelle je suis en désaccord ?" a="Oui. Dans Merchant Center → Diagnostics → cliquez sur le problème → « Demander un examen ». Fournissez du contexte. Les vrais faux positifs (rares mais réels) sont généralement renversés en 3–5 jours ouvrables." />
+</FAQ>
+
+## Référence rapide
+
+Si vous ne retenez qu'une chose : **Diagnostics → triez par Impressions affectées → corrigez les 3 premiers chaque semaine**. Cette seule discipline maintiendra votre [flux plus sain](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide) que 90 % des comptes.
+
+<ProductCTA variant="audit" title="Obtenez un audit Merchant Center complet, gratuit">
+Nous récupérons votre flux en direct, surfaçons chaque cluster de désapprobation et vous donnons une liste de correction priorisée avec la remédiation 30 min par type de problème.
+</ProductCTA>

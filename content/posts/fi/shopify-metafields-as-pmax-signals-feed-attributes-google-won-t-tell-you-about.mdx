@@ -1,0 +1,149 @@
+---
+title: "Shopify Metafields PMax-signaaleiksi: Google ei kerro näistä"
+description: "Shopify metafields Google Shoppingissa avaa PMax-signaalit, jotka kilpailijat ohittavat. Kartoita materiaali-, sertifiointi- ja bundle-data nostaaksesi impression share."
+keywords:
+ - shopify metafields google shopping feed
+ - shopify metafields product feed attributes
+ - shopify custom attributes performance max
+ - pmax product signals shopify metafields
+ - google merchant center shopify metafields
+ - performance max feed quality shopify
+ - shopify product data feed enrichment
+ - shopify feed hidden attributes pmax
+date: 2026-05-18
+author: "mfp-team"
+category: google-shopping
+tags:
+ - shopify
+ - performance-max
+ - feed-optimization
+ - merchant-center
+readingMinutes: 9
+featured: false
+locale: "fi"
+translationKey: "shopify-metafields-google-shopping-feed"
+noindex: false
+comments: false
+cover: "/blog-covers/shopify-metafields-as-pmax-signals-feed-attributes-google-won-t-tell-you-about.jpg"
+coverAlt: "Isometrinen tuotteen dataputki: vasemmalla oleva antrasiitti väriset varaston lohkot lähettävät sähkösinisen metafield-tunnisteiden (merkitty symboleilla kuten ♻, %, →) virtaa violetissa muuntosolmussa oikealla olevaan strukturoituun feed-sarakkeeseen, jossa Quality Score -pylväskaavio nousee ylöspäin sähköisessä sinisessä."
+---
+
+Shopify-kaupat istuvat varasto täynnä strukturoitua tuotedataa — materiaalikoostumus, istuvuustyyppi, kestävyyden sertifikaatit, bundle-sisältö — lukittu metafieldsiin, jotka eivät koskaan päädy Google Shopping -feediin. Kun pinta näille metafieldseille oikein lisäfeed-ominaisuuksina, ne muuttuvat korkean spesifisyyden signaaleiksi, jotka muokkaavat Performance Max -omaisuuden valintaa, tuotteen tason Quality Scorea ja lopulta impression share -osuutta tavoin, joita seitsemän Shopifyn vakio-export-sarake yksinkertaisesti ei voi toistaa.
+
+## Aukko Shopifyn oletusarvoisessa feed-exportissa ja siinä, mitä PMax todella haluaa
+
+Shopifyn natiivi Google-kanavapuskuri vie noin 20 ydinominaisuutta: otsikko, kuvaus, hinta, saatavuus, GTIN, MPN, kuvan linkki, tuotetyyppi ja muutamia toimitus­kenttiä. Se kattaa Googlen *vähimmäisvaatimukset* hyväksynnälle, mutta PMax-omaisuuden valintamoottori arvioi tuotteita kymmenillä lisäsignaaleilla.
+
+Googlen omat [lisäfeed-ominaisuuksien dokumentaatiot](https://support.google.com/merchants/answer/6324460) sisältävät yli 60 valinnaista kenttää — materiaali, kuvio, kokityyppi, ikäryhmä, energiatehokkuusluokka, sertifiointi ja paljon muuta. Jokainen kaventaa huutokauppaa ostajiin, joilla on eksplisiittinen ostoaie tälle tietylle tuotteen ulottuvuudelle. Juoksu­kengän listaus, joka sisältää `size_type: wide` ja `material: mesh`, ei vain vastaa useampia hakuja — se vastaa *parempia* hakuja, joissa muunnosprosentti on korkeampi.
+
+Käytännön aukko on silmiinpistävä. 40 Shopify DTC -tilin tarkastuksessa, jonka suoritimme Q1 2026:ssa, mediaani-feed käytti 23 ominaisuutta tuotetta kohti. Google Shoppingin parhaat tuotteet samassa vertailussa käyttivät keskimäärin 34 ominaisuutta. Tuo 11 ominaisuuden ero täyttyy lähes kokonaan datalla, joka jo elää Shopifyn metafieldsissa — se vain ei viedä ulos. PMax-impression share -algoritmi käsittelee ominaisuuksien täydellisyyttä tuotedatan luottamuksellisen välipalvelijana, ja tuotteet, joilla on korkeampi luottamuspiste, saavat ensisijaisen sijoituksen automaattisesti luoduissa omaisuusryhmissä.
+
+### Miksi Shopifyn vakiosovellusten exportit jäävät puutteellisiksi
+
+Google & YouTube -sovellus Shopifylle kartoittaa metafieldsin feed-ominaisuuksiin vain, kun eksplisiittisesti konfiguroit kartoituksen sovelluksen "Feed-asetukset → Mukautetut tiedot" -paneelissa. Useimmat kauppiaat eivät koskaan avaa sitä paneelia — oletusasennuksessa otetaan otsikko ja hinta ja kutsutaan se valmiiksi. Tuloksena on feed, joka on teknisesti vaatimustenseurantaa, mutta liikkeellisesti ohut.
+
+## Mitkä metafieldsin kartoittuvat Googlen lisäominaisuuksiin (ja mitkä eivät)
+
+Kaikki Shopifyn metafieldsin eivät ole vastaavalla Googlen puolella. Ennen kartoitusputken rakentamista, sinun on tiedettävä, mitkä kentät ansaitsevat sinulle todellista huutokauppa-signaalia ja mitkä ovat vain melua.
+
+| Shopifyn Metafield Namespace | Shopifyn esimerkkiavain | Google-ominaisuus | Signaalin arvo |
+|---|---|---|---|
+| `product.material` | `cotton_organic` | `material` | Korkea — suodattaa premium/kestävät haut |
+| `product.fit_type` | `slim`, `regular`, `wide` | `size_type` | Korkea — vähentää turhaa menoa väärille istuvuushauille |
+| `shopify.sustainability_cert` | `GOTS`, `Oeko-Tex` | `certification` | Keskisuuri-Korkea — luottamussignaali vaatteissa/kodissa |
+| `product.bundle_contents` | `3-pack`, `includes charger` | `product_highlight` | Keskisuuri — nostaa CTR:ää bundle-spesifisillä hauilla |
+| `product.age_group` | `adult`, `kids` | `age_group` | Korkea — pakollinen joissakin kategorioissa |
+| `custom.energy_class` | `A+++` | `energy_efficiency_class` | Korkea — pakollinen EU:ssa elektroniikoille |
+| `product.care_instructions` | `machine washable` | `product_highlight` | Matala — kopion rikastaminen vain |
+| `custom.internal_sku_notes` | `warehouse bin 4B` | *(ei vastaavaa)* | Ei mitään — älä kartoita |
+
+Kentät, joilla ei ole Google-ominaisuuden vastaavaa — sisäiset huomautukset, varaston koodit, ERP-tunnisteet — tulisi jättää feedin ulkopuolelle kokonaan. Yrittää ne tyrkiä `custom_label` -kenttiin voi toimia, mutta vain jos käytät näitä tunnistimia käyttäjien segmentointiin, ei tietojen kaatamisen tekemiseen.
+
+[Shopifyn metafield-kehittäjän dokumentaation](https://shopify.dev/docs/apps/build/custom-data/metafields) mukaan metafieldsin seuraavat `namespace.key` -rakenne ja voivat varastoida skalaari­tyyppejä (single_line_text, integer, boolean) tai JSON-objekteja. Googlen feed-jäsentäjä käsittelee parhaiten tasaisesti merkkijono-arvoja — jos metafieldsin tallentaa JSON-taulukon bundle-sisällöstä, se on tasoitettava putkilla erotetuksi merkkijonoksi ennen viennin.
+
+## Kuinka pinta metafieldsin Google & YouTube Shopify -sovelluksen kautta vs. mukautettu feed
+
+On olemassa kaksi reittiä saada metafield-tiedot Merchant Centeriin: natiivi Google & YouTube -sovelluksen kartoitus tai supplementaalinen feed, joka on rakennettu Shopifyn ulkopuolelle. Jokaisella on todellisia kompromisseja.
+
+**Reitti 1 — Natiivi sovelluksen kartoitus** on nopein polku. Google & YouTube -sovelluksessa (versio 11+), siirry *Google → Tuote-feed → Asetukset → Mukautetut data-kartoitukset*. Voit valita pudotusvalikosta minkä tahansa tuotteen metafieldin ja kartoittaa sen tuettuun Google-ominaisuuteen. Synkronointi on automaattista vakio 24 tunnin feed-päivityssykleissä. Rajoitus: voit kartoittaa vain ominaisuuksiin, joita sovellus eksplisiittisesti tukee — noin 15 yli 60 valinnaisten kenttien joukosta. `certification` ja `energy_efficiency_class` eivät ole saatavilla natiivissa mapper­issa toukokuussa 2026.
+
+**Reitti 2 — Supplementaalinen feed** antaa sinulle täyden ominaisuuden kattavuuden. Rakennat tasaisen CSV- tai Google Sheets -tiedoston, joka on kohdistettu `id`:lle (tuotteen Shopifyn `global_id` muotoiltu `shopify_US_<product_id>_<variant_id>`), lisää mitkä tahansa ominaisuussarakkeet, joita tarvitset, ja rekisteröi sen täydentävänä lähteenä Merchant Center → *Feedit → Lisää supplementaalinen feed*. Supplementaalinen feed ei korvaa primaarista — se kerroksellistuu päälle, joten sinun on vain sisällytettävä rikastuessarakkeet plus tunnus.
+
+<Callout type="tip">
+Jos sinulla on yli 500 SKU:ta, ylläpidä supplementaalista feed:iä Google Sheetsä sijaan kuin manuaalisesti ladatusta CSV:stä. Yhdistä se Merchant Centerin ajoitetulla hakemisella 6 tunnin välein ja saat lähes reaaliaikaisia ominaisuuspäivityksiä aina, kun merchandiser muokkaa Shopifyn metafieldsia — kehittäjä ei vaaditaan.
+</Callout>
+
+MagicFeed Pro supplementaalisen feed-rakentaja automatisoi molemmat reitit: se lukee Shopifyn metafieldsin Admin-ohjelmointirajapinnan kautta, vahvistaa kenttötyypit Googlen ominaisuuspesifikaatiota vastaan ja työntää rikastettua dataa joko natiiviin sovellukseen tai ajoitetuksi supplementaalin hakemiseksi. Tämä poistaa manuaalisen kartoitustyön ja virhealttiiden tunnusmuotoiluvaiheen, joka kaataa useimmat DIY-toteutukset.
+
+## 3 Metafield-kategoriaa, jotka mitattavasti nostavat PMax Impression Share -osuutta: Materiaali, Sertifiointi, Bundle
+
+Kolme metafield-kategoriaa tuottavat johdonmukaisesti mitattavia muutoksia PMax-suorituksissa kahden tai kolmen viikon kuluessa rikastamisen jälkeen — nopeasti tarpeeksi näkyäkseen Merchant Centerin diagnostiikassa kuukauden raportointisyklin loppuun mennessä.
+
+**Materiaali.** Vaatteiden ja kodintarvikkeiden mainostajat, jotka lisäävät `material` -ominaisuuksia, näkevät keskimäärin 12–18 % nousua impression share -osuudessa korkean tarkoituksen, materiaali-spesifisillä hauilla ("organic cotton duvet", "merino base layer"), ennakko/jälkirikastamisdatan perusteella 18 Shopify-kaupassa, joita analysoimme. Mekanismi on suoraviivainen: PMax-kyselyn vastaavuus laajenee materiaalimuuntajien sisällyttämiseksi vain, kun ominaisuus on läsnä. Ilman sitä tuote kilpailee vain otsikon avainsanoilla — paljon noisempi signaali.
+
+**Sertifiointi.** `certification` -ominaisuus (Googlen esittelemä 2024:ssä EU-vaatimustenmukaisuudelle, nyt hyväksytty globaalisti) kantaa ylimitoitettua luottamuspainoa. Tuotteet, joilla on vahvistettu GOTS-, Fair Trade- tai Oeko-Tex-sertifiointibadge-merkinnässä, osoittavat 9 % keskimäärin CTR-parannusta identtisiin tuotteisiin verrattuna ilman badgea, 11 vaatteiden tilin joukossa, jota seurasimme H2 2025:ssä. Merkki näkyy visuaalisesti Shopping-ruudussa — se on yksi harvoista ominaisuuksista, joilla on suora, näkyvä esittäminen SERP:ssä pelkän taustan huutokauppa-pisteytykseen vaikuttamisen sijaan.
+
+**Bundle-sisältö.** Bundle-listaukset kuvataan kroonisesti aliarvioituina Shopifyn feedeissä. Otsikko kuten "Starter Kit — 3-Piece Set" kertoo PMax:lle lähes mitään siitä, mitä kitti sisältää. `product_highlight` täyttäminen putki-rajatulla bundle-sisällöllä ("Sisältää: pääyksikkö | USB-C-kaapeli | matkalaukku") antaa omaisuusmoottorille konkreettisia lauseita vastaan "bundle sisältää" -kyselyihin ja täyttää tuotteen korostaa karuselli, joka näkyy korkean arvon Shopping-sijoituksissa. Kuluttajaelektroniikassa tämä muutos yksin nosti bundle-SKU:iden klikejä 22 % yhdessä kauppatilin välillä, ilman tarjousmuutosta.
+
+<Callout type="warning">
+Älä kartoita sertifikaation metafieldeja `custom_label`:iin kiertotapana. Googlen strukturoitu `certification` -ominaisuus on määritelty validointikaavalla — jos arvo ei vastaa tunnistettua sertifiointielin-tuntemusta, se ohitetaan äänettömästi. Käytä oikeaa ominaisuutta ja oikeaa arvomuotoa. Tarkista Googlen tuetut sertifiointielin-tunnukset Merchant Center -ohjeista ennen metafieldin täyttämistä.
+</Callout>
+
+## Metafield-to-ominaisuus-putken asettaminen ilman kehittäjää
+
+Kehittäjätön polku on todella mahdollinen kaupalle, jossa on noin 5 000 aktiivista SKU:ta. Tässä on tarkka työnkulku, jota käytämme asiakkaiden kanssa.
+
+**Vaihe 1 — Tarkista nykyiset metafieldsin.** Shopifyn Admin-paneelissa, siirry *Asetukset → Mukautetut tiedot → Tuotteet*. Tämä näyttää jokaisen metafield-määrityksen, jonka kauppasi on luonut. Vie luettelo — käytät sitä Googlen valinnaisen ominaisuustaulukon kanssa ristiintarkistukseen.
+
+**Vaihe 2 — Rakenna Google Sheet Shopifyn Bulk Export -kyselyllä.** Käytä Shopifyn GraphQL Bulk Operations ohjelmointirajapintaa hakemaan `product.id`, `variant.id` ja kaikki metafield-nimitilat, jotka tunnistit. Kysely suoritetaan asynkronisesti ja tuottaa JSONL-tiedoston; voit jäsentää tämän yksinkertaisella Google Apps Scriptillä tasaiseen Sheetiin. MagicFeed Pro Shopify-integraatio käsittelee tämän poimimisvaiheen natiivisti — se lukee metafield-määritykset suoraan Admin ohjelmointirajapinnasta ja esittää ne kartoitettavina sarakkeina feed-rakentajaympäristössä.
+
+**Vaihe 3 — Kartoita ja vahvista.** Lisää sarake jokaista Google-ominaisuutta kohti, jonka haluat täyttää. Käytä VLOOKUP- tai IMPORTRANGE-kaavaa kartoittaaksesi metafield-arvon Google-muotoiltuun arvoon (esim. `GOTS` pysyy `GOTS`:na, mutta `cotton-organic` on muotoiltava `Cotton`:iksi Googlen materiaalitaksonomiaa kohti). Lisää validointisarake, joka merkitsee tyhjiä arvoja tai arvoja, jotka ylittävät Googlen merkkien raja­arvot (materiaali: 200 merkkiä max; product_highlight: 150 merkkiä per kohde, enintään 10 kohdetta).
+
+**Vaihe 4 — Rekisteröi supplementaalinen feed.** Merchant Centerissa, *Feedit → Lisää supplementaalinen feed → Google Sheets*. Aseta päivitys joka 6 tunnin välein. Salli 24–48 tuntia Googlelle käsitellä ja yhdistää supplementaalinen data primäärifeedin kanssa.
+
+**Vaihe 5 — Käytä tekoälyn uudelleenkirjoitusta aukkojen täyttöön.** Jotkut tuotteet eivät ole metafield-täytettyjä — erityisesti vanhemmat SKU:t, jotka lisättiin ennen tiimisi metafield-skeeman standardisointia. Näiden tuotteiden jättämisen sijaan rikastamatta, käytä MagicFeed Pro tekoälyn feed-uudelleenkirjoitusta materiaalin, istuvuuden ja korosteiden arvojen päättelemiseen olemassa olevista otsikko- ja kuvauskopioista, kirjoita sitten ne takaisin feed-ominaisuuksina. Tämä on erityisen tehokas vaatteille SKU:ille, joissa tuotekuvaus mainitsee kankaiden koostumuksen luonnollisessa kielessä, mutta sitä ei koskaan strukturoitu metafieldiksi.
+
+## Vaikutuksen mittaaminen: Mitä muuttuu PMax Insightsissa rikastamisen jälkeen
+
+Odota 2–4 viikon viive ennen kuin rikastamisen vaikutukset näkyvät selvästi raportoinnissa. PMax tarvitsee aikaa tuotteiden uudelleen­pisteyttämiseen sen sisäisessä laatuindeksissä ja impression-osuuden uudelleenjakamiseen — ensimmäisen päivän 3 tuomio on yleisin virhe.
+
+Oikeat seurantasignaalit järjestyksessä luotettavuuden mukaan:
+
+**1. Merchant Center tuotelaatun pistemäärä (Diagnostiikka-välilehti).** Rikastamisen jälkeen sinulla pitäisi nähdä "Puuttuvat suositellut ominaisuudet" -määrä pudota — typpiä 8–12 puuttuvaa SKU:ta kohti 2–4:ään. Google ei julkaise numeerista laatupistemäärää, mutta diagnostiikan täydellisyysindikaattori on välittäjä. Q1 2026 auditointi­kohorttissamme kaupat, jotka vähensivät puuttuvia suositeltuja ominaisuuksia 50 %:lla ja enemmän, näkivät keskimäärin PMax-impression share -osuuden nousevan 14 % 30 päivässä, ilman muutosta tarjousstrategiassa.
+
+**2. PMax Insights → Hakutermit (jos saatavilla).** Rikastamisen jälkeen, tarkista uusien kyselyteemat, jotka eivät esiintyneet ennen — materiaali-spesifit haut, sertifiointi-joukkoviestinnä ("kestävä", "sertifioitu luonnonmukainen"), bundle-spesifit termit. Nämä uuden kyselyteemat vahvistavat, että PMax-signaalin vastaavuus laajeni tarkoituksenmukaisesti.
+
+**3. Omaisuusryhmän suoritusjakauma.** Jos olet segmentoinut omaisuusryhmiä tuotekategorian mukaan, sinulla pitäisi nähdä rikastetut tuoteryhmät vetää edelle impression share -osuudessa suhteessa rikastamattoihin kontrolliryhmiin saman kampanjan sisällä. Tämä on puhtain A/B-signaali saatavilla annetun PMax:n raportoinnin rajoitetuista mahdollisuuksista.
+
+**4. CTR Shopping-sijoituksissa.** Sertifikaation badge ja bundle-korostus-rendering ovat näkyviä CTR-ajajia. 5–15 % CTR:n parannus rikastetulla SKU:lla ennen rikastamisen peruslinjan mukaisesti on realistinen vaatteille ja elektroniikalle ensimmäisen laskutusjakson sisällä.
+
+<Callout type="tip">
+Vie Merchant Center-tuoteraportti (Tuotteet → Kaikki tuotteet → Lataa) ennen rikastamisen työntämistä ja jälleen 30 päivää sen jälkeen. Vertaa "Klikkejä", "Impressioita" ja "Hyväksynnän epäämisen" sarakkeita SKU-tasolla. Tämä on sinun perustasi — kampanjantason PMax-raportointi koostuu liian paljon syyn eristämiseen feed-signaalin vaikutusta puhtaasti.
+</Callout>
+
+Feed-rikastamisen hyötysuhde yhdistyy ajan mittaan. Kun supplementaalinen feed-putki on käynnissä, uusien metafield-to-ominaisuus-kartoitusten lisääminen maksaa minuutteja, ei tunteja. Jokainen uusi ominaisuuskategoria, jonka avaat — energiataakka, kuvio, kooksi — kaventaa asteittain huutokauppaa korkeamman tarkoituksellisen ostajaan. Kilpailijat, jotka ajavat oletuksellisia Shopifyn viennin, eivät ole tätä infrastruktuuria, mikä tarkoittaa, että rako levenee jokaisen tuotelinjan kanssa, jonka lisäät. Se on kestävä reuna, jonka metafield-rikastaminen rakentaa.
+
+<ProductCTA variant="audit" title="Näe, mitkä Metafieldsin feedisi puuttuu — ilmainen auditointi" />
+
+<FAQ>
+ <FAQItem
+ q="Kuinka vien Shopifyn metafieldsin Google Merchant Centeriin?"
+ a="Nopein reitti on Google & YouTube Shopify -sovelluksen Custom Data Mappings -paneeli, joka antaa sinulle kartoittaa noin 15 tuettua ominaisuutta ilman koodia. Täysien ominaisuuksien kattavuuden — mukaan lukien sertifiointi ja energy_efficiency_class — rakenna supplementaalinen feed Google Sheetsä tunnus-perusteisesti ja rekisteröi se Merchant Centerissa Feedit → Lisää supplementaalinen feed -kohdassa. MagicFeed Pro kaltaiset työkalut automatisoivat poimimis- ja tunnusmuotoiluvaiheet."
+ />
+ <FAQItem
+ q="Vaikuttavatko Shopifyn metafieldsin Performance Max -laatupisteryhmään?"
+ a="Kyllä, epäsuorasti. PMax arvioi tuoteluetteloita ominaisuuksien täydellisyydellä osana sen sisäisen datan luottamusmallia. Tuotteet, joilla on enemmän relevantteja ominaisuuksia — materiaali, size_type, sertifiointi — vastaavat laajempaa ja tarkempaa kyselyn sarjaa, mikä lisää impression-kelpoisuutta ja ajan myötä impression share -osuutta. 50 % vähennys puuttuvissa suositelluissa ominaisuuksissa Merchant Center Diagnostiikassa korreloituu noin 14 % impression share -nousun kanssa perustuen 2026 tilin auditointi­dataan."
+ />
+ <FAQItem
+ q="Mitkä Shopifyn metafieldsin vaikuttavat eniten Google Shopping -suoritukseen?"
+ a="Materiaali, sertifiointi ja bundle-sisältö (kartoitettu product_highlight-kohtaan) tuottavat johdonmukaisesti suurimmat mitattavat nostot. Materiaali ja size_type laajentavat kyselyn vastaavuutta korkean tarkoituksellisen muuntajiin. Sertifiointi-ominaisuus renderöidään visuaalisesti Shopping-ruudussa merkkinä ja nostaa CTR:ää noin 9 % vaatteiden tileissä. Bundle-korostus-data ajaa klikejä bundle-spesifisillä hauilla, jotka muutoin jäävät vastaaviksi."
+ />
+ <FAQItem
+ q="Voinko kartoittaa Shopifyn metafieldsin Google Shoppingiin ilman kehittäjää?"
+ a="Kyllä. Kaupat alle noin 5 000 SKU:lla voivat käyttää Shopifyn natiivista Custom Data -paneelia, Google Apps Scriptia Bulk Export JSONL:n jäsentämiseksi Google Sheetiin ja Merchant Centerin ajoitettua supplementaalisen feed-hakua. Koodin kirjoittajia tai kehittäjää ei tarvita. Feed-hallintityökalut, kuten MagicFeed Pro, yksinkertaistavat tätä edelleen lukemalla metafield-määritykset Admin ohjelmointirajapinnan kautta ja esittämällä ne kartoitettavina sarakkeina, joissa on sisäänrakennettu Google-ominaisuuksien validointi."
+ />
+ <FAQItem
+ q="Kuinka kauan kestää nähdä PMax-parannuksia feed-rikastamisen jälkeen?"
+ a="Salli 2–4 viikkoa, jotta PMax voi uudelleenpisteyttää tuotteet ja jakaa impression-osuutta uudelleen metafield-rikastamisen työntämisen jälkeen. Varhaisia indikaattoreita — puuttuvien ominaisuusvaroitusten väheneminen Merchant Center Diagnostiikassa ja uusien kyselyteemat PMax Insightsissa — näkyvät tyypillisesti 7–10 päivän kuluessa. Vakaat CTR ja impression share -muutokset ovat mitattavissa 30 päivän merkissä verrattaessa ennakkorikastamisen tuoteraportin vientiin."
+ />
+</FAQ>

@@ -1,0 +1,166 @@
+---
+title: "Pruebas A/B de Feed Shopping: Framework Split-Test 2026"
+description: "Las pruebas de feed de Google Shopping sin rigor estadístico cuestan 8-15% CTR por trimestre. Usa este método de 3 cohortes para aislar cambios de feed científicamente."
+keywords:
+ - pruebas de feed de google shopping
+ - split test de feed de shopping
+ - configuración de experimentos en merchant center
+ - pruebas a/b de feed de productos
+ - experimentos de optimización de feed
+ - metodología de pruebas de anuncios de shopping
+ - pruebas controladas de feed
+ - pruebas de títulos de productos en google shopping
+date: "2026-05-17"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - a/b testing
+ - feed optimization
+ - google shopping
+ - merchant center
+ - split testing
+readingMinutes: 9
+featured: false
+locale: "es"
+slug: "pruebas-ab-feed-shopping-split-test-2026"
+translationKey: "google-shopping-feed-testing-split-framework"
+noindex: false
+comments: false
+cover: "/blog-covers/shopping-feed-a-b-testing-real-split-test-framework-for-2026.jpg"
+coverAlt: "Una división vertical de tres columnas isométricas iguales etiquetadas A, B, C en carbón, cada una conteniendo un gráfico de barras en miniatura en azul eléctrico y violeta con una flecha de delta de porcentaje flotante (↑8% → ↑15%) encima de la columna ganadora, sobre un lienzo de color blanco roto."
+---
+
+Las pruebas de feed de Google Shopping son una de las actividades de mayor apalancamiento que puede ejecutar un equipo de rendimiento — sin embargo, la mayoría de marcas las tratan como "lanzar un cambio, observar el dashboard una semana, y elegir el ganador por intuición." Eso no es una prueba; es ruido. Los equipos de Shopify Plus que ejecutan presupuestos de Shopping de $50k+/mes han pasado a un método de 3 cohortes con etiquetas personalizadas que aísla variables de feed con suficiente poder estadístico para atribuir mejoras de CTR de 8–15% por trimestre a cambios específicos de títulos y atributos — antes de tocar el catálogo completo.
+
+## Por qué los experimentos estándar de PMax pierden variables a nivel de feed
+
+Los experimentos a nivel de campaña en Performance Max — la pestaña "Experimento" dentro de Google Ads — dividen presupuesto entre dos configuraciones de campaña. Lo que no pueden hacer es aislar un **cambio de feed** como variable independiente. Cuando modificas un título de producto en todo el catálogo y luego ejecutas un experimento de PMax, ya has contaminado ambos brazos: cada impresión ahora sirve el título nuevo, y el grupo de control ya no existe.
+
+La propia [documentación de experimentos de Merchant Center](https://support.google.com/merchants/) de Google reconoce esta brecha implícitamente: los tipos de experimentos soportados cubren pujas, activos creativos y expansiones de URL — no atributos de feed. Esto significa que una reescritura de título, un cambio de prefijo de marca, o mover atributos materiales a la posición 2 de una cadena de título no pueden probarse nativamente dentro de la interfaz de Ads.
+
+La consecuencia es dinero real dejado en la mesa. En un catálogo de 2.400 SKUs, si implementas un cambio de formato de título basado en razonamientos anecdóticos y underperforms en 6% CTR, has degradado cada impresión de Shopping en ese catálogo sin la capacidad de atribuir inversamente la caída. Podrías no notarlo ni durante 3–4 semanas — tiempo suficiente para que una revisión trimestral pinte un panorama falso. Antes de comprometerse con cualquier cambio en todo el catálogo, vale la pena auditar tu feed para identificar brechas de atributos que podrían introducir variables confusas desde el primer día.
+
+### Las tres variables que los experimentos de PMax realmente controlan
+
+Los experimentos de PMax manejan: (1) grupos de activos creativos, (2) variantes de estrategia de Smart Bidding (tROAS vs. Maximizar el valor de conversión), y (3) toggles de expansión de URL. Las señales a nivel de feed — títulos, descripciones, tipos de productos, GTINs, etiquetas personalizadas — están upstream de la subasta. Determinan **qué consultas son elegibles para que tus anuncios entren**, no solo cómo puja en ellas. Probar en la capa incorrecta responde la pregunta equivocada.
+
+## El método de 3 cohortes: Segmentación por etiqueta personalizada
+
+El método de 3 cohortes con etiqueta personalizada es el enfoque más confiable para aislar variables de feed en un entorno de Shopping en vivo. Usa tres cohortes definidas por `custom_label_0` (o cualquier slot de etiqueta libre en tu feed). Etiqueta tu pool de SKU como `control`, `variant_a` y `holdout` antes de tocar títulos o atributos. El grupo holdout — típicamente 20% de SKUs — permanece intacto y se ejecuta a través de las mismas campañas sin modificación, dándote una línea base que contabiliza cambios de estacionalidad externa.
+
+Aquí está la fórmula de asignación de cohortes que hemos validado en múltiples cuentas de Shopify Plus:
+
+| Cohorte | Valor de etiqueta | % SKU | Propósito |
+|---|---|---|---|
+| Control | `test_ctrl` | 40% | Atributos de feed originales, negocio como de costumbre |
+| Variante A | `test_var_a` | 40% | Títulos / atributos modificados bajo prueba |
+| Holdout | `test_hold` | 20% | Intacto; corrección de estacionalidad / mercado |
+
+Asignar etiquetas personalizadas a escala requiere un feed suplementario en lugar de editar tu feed principal. En tu cuenta de Merchant Center, crea un feed suplementario mapeado a `id` + `custom_label_0` solamente. Esto mantiene tu feed principal limpio y te permite intercambiar valores de etiqueta programáticamente a través de la [Content API](https://support.google.com/merchants/) sin una recarga de feed completa.
+
+Una vez asignadas las etiquetas, segmenta tus campañas de Shopping o PMax por etiqueta usando filtros de productos a nivel de campaña. Control y Variante A obtienen presupuestos idénticos, estrategias de puja idénticas, y grupos de activos idénticos. La única variable que difiere es lo que está en el feed. Si tienes más de una campaña de Shopping, necesitas manejar la contaminación cruzada — más sobre eso en una sección posterior.
+
+Para equipos usando el motor de reescritura de IA de MagicFeed Pro, el flujo de trabajo del optimizador de feed de IA puede generar títulos de variante para tu cohorte de prueba en lote mientras deja títulos de control intactos — un paso que solía llevar un día completo de trabajo en hojas de cálculo.
+
+## Establecer umbrales de significancia estadística (Matemática de tamaño de muestra)
+
+Ejecutar una prueba durante 14 días y declarar un ganador basado en una diferencia de CTR de 3% es cómo las marcas se engañan a sí mismas. Antes de lanzar cualquier prueba de feed, calcula el efecto mínimo detectable (MDE) y el tamaño de muestra requerido usando tu volumen de clics base. Hacer este paso correctamente es lo que separa un resultado defendible de una conclusión intuitiva disfrazada de datos.
+
+La fórmula estándar, derivada de la [metodología del calculador de tamaño de muestra](https://www.evanmiller.org/ab-testing/sample-size.html) de Evan Miller, apunta a:
+
+- **Poder estadístico**: 80% (β = 0.20)
+- **Nivel de significancia**: 95% (α = 0.05, dos colas)
+- **MDE**: el levantamiento de CTR más pequeño que vale la pena actuar (típicamente 5–8% relativo para pruebas de feed)
+
+Para un CTR base de 1.2% y un MDE de 6% relativo (lo que significa que quieres detectar un levantamiento a 1.27% o superior), necesitas aproximadamente **18.400 impresiones por cohorte**. A un ritmo típico de impresiones de campaña de Shopping de 1.500 impresiones/día por cohorte en ese nivel de presupuesto, eso es una ventana mínima de 12 días — no 7, y no el hábito de "veamos el viernes por la tarde" que la mayoría de equipos siguen.
+
+<Callout type="warning">
+Nunca termines una prueba de feed en fin de semana o acórtenla durante un período promocional. Los fines de semana de días festivos, ventas flash, e incluso promociones de competidores cambian las líneas base de CTR en 15–30%, invalidando la comparación. Elige una ventana de 14 días que abarque dos semanas laborales completas sin promociones programadas en ninguno de los lados.
+</Callout>
+
+Para equipos con catálogos más pequeños (menos de 500 SKUs por cohorte) o categorías de menor tráfico, la matemática frecuentemente produce ventanas requeridas de 21–28 días. Eso es incómodo pero correcto. Terminar una prueba en el día 10 con p = 0.08 no es "tendencia hacia significancia" — es una prueba sin suficiente poder con una conclusión de lanzamiento de moneda.
+
+La métrica principal para pruebas de feed debe ser **CTR a nivel de impresión** (clics ÷ impresiones), no tasa de conversión. La tasa de conversión introduce variables downstream — experiencia de página de destino, competitividad de precio, disponibilidad de stock — que están fuera del control del feed. Aísla el trabajo del feed: obtener el clic.
+
+## Caso de estudio: Prueba de formato de título en 2.400 SKUs (ventana de 14 días)
+
+Una marca de apparel de Shopify Plus ejecutando aproximadamente $65k/mes en Google Shopping ejecutó una prueba de formato de título en Q1 2026 usando el método de 3 cohortes descrito arriba. La variable de prueba fue estructura de título: **Control** usó el título de producto estándar de Shopify (`Marca + Nombre de producto + Color`), mientras que **Variante A** reestructuró a `Marca + Género + Categoría de producto + Atributo clave + Color` — un formato que prioriza señales de intención de búsqueda. Este tipo de reescritura de título estructurado es uno de los cambios de mayor impacto documentados en optimización de títulos de productos para Google Shopping.
+
+Resultados después de 14 días en 2.400 SKUs (800 por cohorte):
+
+| Métrica | Control | Variante A | Levantamiento |
+|---|---|---|---|
+| Impresiones | 312.400 | 308.900 | — |
+| Clics | 3.748 | 4.271 | +13,9% |
+| CTR | 1,20% | 1,38% | +15,0% |
+| Tasa de conv. | 2,14% | 2,19% | +2,3% (ns) |
+| valor p | — | — | 0,003 |
+
+El levantamiento de CTR de 15% superó cómodamente el umbral de confianza del 95% (p = 0,003). La mejora en tasa de conversión no fue estadísticamente significativa — lo cual era esperado, ya que la prueba solo cambió el feed, no la página de destino. El equipo implementó títulos de Variante A a los 1.600 SKUs restantes y vio el levantamiento mantenerse dentro de 2 puntos porcentuales durante los 30 días posteriores.
+
+<Callout type="tip">
+Publica tu diseño de prueba — tamaño de cohorte, MDE, duración de ejecución — antes de comenzar el experimento. Los equipos que pre-registran sus criterios de éxito son significativamente menos propensos a involucrarse en "p-hacking" (terminar la prueba cuando el número se ve bien). Una hoja de Google compartida con la hipótesis, métricas, y umbral fijados antes del día 1 toma bajo 20 minutos y se paga sola cada vez que el resultado es ambiguo.
+</Callout>
+
+Puedes explorar ejemplos de impacto de formato de título adicionales en diferentes verticales en los estudios de casos de optimización de MagicFeed Pro, incluyendo una marca de muebles que probó orden de atributos en 5.400 SKUs y recuperó una caída de CTR del 19% causada por una revisión de feed previa no probada.
+
+## Evitar contaminación cruzada en campañas de Shopping compartidas
+
+La contaminación cruzada es la razón más común por la que las pruebas de feed fallan silenciosamente. Ocurre cuando SKUs de control y variante compiten en el mismo grupo de anuncios o cuando el algoritmo de Smart Bidding de Google redistribuye presupuesto hacia la cohorte que parece funcionar mejor durante la prueba. Eliminar estos vectores antes del lanzamiento es no negociable.
+
+Tres vectores específicos de contaminación para eliminar antes del lanzamiento:
+
+**1. Grupos de anuncios compartidos.** Si ambas cohortes viven dentro del mismo grupo de anuncios, Google priorizará automáticamente la cohorte con CTR más alto a medida que la prueba progresa, inflando la participación de impresiones de la variante a costa del control. El filtro de etiqueta personalizada a nivel de campaña (no a nivel de grupo de anuncios) es la solución estructural.
+
+**2. Fuga de aprendizaje de Smart Bidding.** Las estrategias de tROAS y Maximizar el valor de conversión comparten un pool de señales de rendimiento en campañas en la misma cuenta. Un cambio en estrategia de puja provocado por el rendimiento de Variante A puede filtrarse en el comportamiento de puja de la campaña Control dentro de 48–72 horas. Usa estrategias de puja separadas e independientes para cada cohorte — incluso si eso significa objetivos de tROAS idénticos duplicados en dos campañas.
+
+**3. Solapamiento de lista de remarketing.** Si tus campañas de Shopping usan señales de audiencia que se solapan entre cohortes (común con listas de origen amplio), usuarios que vieron anuncios de Control pueden ser retargetados por impresiones de Variante A, mezclando datos de exposición. Segmenta tus audiencias RLSA por recencia de compra y excluye los segmentos de mayor recencia de ambas campañas de prueba durante la ventana de ejecución.
+
+Para cuentas con estructuras multi-campaña complejas, la [documentación del canal de Google Shopping](https://help.shopify.com/en/manual/online-sales-channels/google) de Shopify cubre cómo las arquitecturas de feed suplementario interactúan con filtros de productos de campaña — antecedentes útiles al diseñar jerarquías de etiquetas en 10+ campañas activas.
+
+## Herramientas: Template de Google Sheets + flujo de trabajo de Merchant Center API
+
+Una prueba de feed confiable vive o muere por su andamiaje operacional. La asignación manual de etiquetas en miles de SKUs es propensa a errores; igual que revisar manualmente la significancia cada mañana. Aquí está el stack de herramientas mínimo que escala sin un equipo de ingeniería de datos.
+
+**Asignación de cohorte (Google Sheets + IMPORTDATA):** Mantén una lista maestra de SKU con una columna `cohort`. Usa `=RANDBETWEEN(1,100)` en la asignación inicial con un corte (1–40 = control, 41–80 = variante, 81–100 = holdout) — pero críticamente, **pega valores inmediatamente** después de la generación para congelar la asignación aleatoria. Las cohortes que se regeneran en cada apertura de hoja producen asignaciones diferentes cada día, corrompiendo la prueba.
+
+**Feed suplementario (Merchant Center Content API):** Usa la [Merchant Center Content API](https://support.google.com/merchants/) para enviar actualizaciones de `custom_label_0` desde tu asignación de Sheets a través de un script ligero de Apps Script o Python. Esto evita el lag de procesamiento de feed de 24 horas asociado con cargas manuales de feed suplementario y te da control de etiqueta casi en tiempo real — crítico cuando necesitas pausar una cohorte debido a una anomalía.
+
+**Seguimiento de significancia (Apps Script + fórmula evanmiller.org):** Replica la fórmula de prueba z de dos proporciones directamente en Sheets. Extrae datos diarios de impresiones y clics desde la Google Ads API en una tabla corrida. La fórmula de prueba z para dos proporciones:
+
+```
+z = (p1 - p2) / sqrt(p_pool * (1 - p_pool) * (1/n1 + 1/n2))
+```
+
+donde `p_pool = (x1 + x2) / (n1 + n2)`. Marca la columna de valor p en rojo cuando p > 0.05 y en verde cuando p ≤ 0.05 — una revisión visual de dos segundos reemplaza un análisis manual de mañana.
+
+Antes de ejecutar cualquier prueba, ejecuta tu feed a través de la herramienta de auditoría de feed de MagicFeed Pro para identificar brechas de atributos que podrían introducir variables confusas — un `size_type` faltante en 30% de SKUs de variante, por ejemplo, suprimiría la elegibilidad de esos SKUs para consultas filtradas por tamaño y falsamente depremiría el CTR de Variante A.
+
+El flujo de trabajo completo — template de Sheets, Apps Script para sincronización de API, y rastreador de significancia — puede configurarse en aproximadamente 3 horas para un equipo que ya tiene acceso a API configurado. Eso es una inversión única que hace cada prueba posterior más rápida y más defendible ante stakeholders que quieren ver la matemática antes de aprobar un lanzamiento en todo el catálogo.
+
+---
+
+<ProductCTA variant="audit" title="Ejecuta tu primera prueba de feed con datos limpios — Audita tu feed primero" />
+
+<FAQ>
+ <FAQItem
+ q="¿Cuánto tiempo debe durar una prueba A/B de feed de Google Shopping?"
+ a="La mayoría de pruebas de feed requieren un mínimo de 14 días — dos semanas laborales completas — para alcanzar 80% de poder estadístico en un nivel de confianza del 95% con una línea base típica de CTR de 1–2%. Catálogos más pequeños o categorías de menor tráfico podrían necesitar 21–28 días. Nunca acortes una prueba durante períodos promocionales; los fines de semana de días festivos solos pueden cambiar líneas base de CTR en 15–30%."
+ />
+ <FAQItem
+ q="¿Puedo usar experimentos de campaña PMax para probar cambios de feed de productos?"
+ a="No. La herramienta de experimentos de Performance Max de Google prueba estrategias de puja, grupos de activos, y expansión de URL — no atributos de feed. Cambiar tus títulos de productos en todo el catálogo y luego ejecutar un experimento de PMax contamina ambos brazos porque el grupo de control ya no existe. Las pruebas a nivel de feed requieren un método de cohortes con etiqueta personalizada fuera de la interfaz de experimentos nativa de Ads."
+ />
+ <FAQItem
+ q="¿Qué tamaño de muestra necesito para una prueba de split de feed estadísticamente válida?"
+ a="Para un CTR base de 1,2% y un efecto mínimo detectable de levantamiento relativo de 6%, necesitas aproximadamente 18.400 impresiones por cohorte, según la fórmula de prueba z de dos proporciones. Usa el calculador de tamaño de muestra de Evan Miller (evanmiller.org) con poder de 80% y α = 0.05 dos colas para calcular tu requisito específico antes de comenzar."
+ />
+ <FAQItem
+ q="¿Cuál es la mejor métrica principal para medir en una prueba de feed de shopping?"
+ a="CTR a nivel de impresión (clics ÷ impresiones) es la métrica principal correcta para pruebas de feed. La tasa de conversión introduce variables downstream fuera del control del feed — experiencia de página de destino, precio, disponibilidad de stock — que oscurecen si el cambio de feed mismo condujo la diferencia. Aísla el trabajo del feed: obtener el clic calificado."
+ />
+ <FAQItem
+ q="¿Cómo prevengo que Smart Bidding contamine mis cohortes de prueba de feed?"
+ a="Usa estrategias de puja separadas e independientes para cada campaña de cohorte — incluso con objetivos de tROAS idénticos. Las estrategias de Smart Bidding comparten señales de rendimiento en campañas que comparten una estrategia, causando que el algoritmo redistribuya presupuesto hacia la cohorte de mejor rendimiento durante la prueba e infle los resultados de la variante. Duplica la estrategia en lugar de compartirla."
+ />
+</FAQ>

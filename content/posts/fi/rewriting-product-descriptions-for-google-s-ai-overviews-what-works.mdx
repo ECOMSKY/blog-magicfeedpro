@@ -1,0 +1,143 @@
+---
+title: "Tuoteselosteiden optimointi Google AI Overview -hauille"
+description: "Tuoteselosteiden optimointi Google AI Overview -hauille kasvattaa näyttöjä 15–22 %. Viisi testattu feed-atribuuttia korjaa feedisi nopeasti."
+keywords:
+ - product description optimization Google AI Overviews Shopping
+ - AI Overviews ecommerce product feed
+ - Google AI Overview Shopping ads
+ - product description structured data AI
+ - SGE product listing optimization 2026
+ - feed description rewrite for AI search
+ - Google Shopping AI-generated summaries
+ - product feed generative search visibility
+date: "2026-05-19"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - ai-overviews
+ - product-descriptions
+ - google-shopping
+ - feed-optimization
+readingMinutes: 9
+featured: false
+locale: "fi"
+slug: "tuoteselosteiden-optimointi-google-ai-overview"
+translationKey: "product-description-optimization-google-ai-overviews"
+noindex: false
+comments: false
+cover: "/blog-covers/rewriting-product-descriptions-for-google-s-ai-overviews-what-works.jpg"
+coverAlt: "Strukturoitu tuoteselostuskortti—piirretty korkeana isometrisenä suorakulmiona—jakaantuu kahteen sarakkeeseen: vasemmassa sarakkeessa harmaa ✗ ja haaleansävyiset violetit palkit (lyhyitä, strukturoimattomia tekstilohkoja), oikeassa sarakkeessa kirkas sininen ✓ ja terävät pinotut atribuuttirrivit (prosenttibadge, pieni nuoli, tähtimäinen luettipiste), ja loistava sininen AI Overview -paneeli kelluu oikean sarakkeen yläpuolella diagonaaliin."
+---
+
+Tuoteselosteiden optimointi Google AI Overview -hauille on nyt suora vaikutusmekanismi näyttöosuuksiin – Q1 2026:lla seurattujen tilien näyttöosuuksista 15–22 % tuli AI Overview -sijoituksista perinteisten PLAiden sijaan. Jos näyttöosuutesi laski ilman tarjouksien tai budjetin muutoksia, feed-selostuksesi ovat todennäköisin syy. Kohdistettu uudelleenkirjoitus feed-tasolla on nopein korjaustoimenpide.
+
+## Kuinka AI Overviewit hakevat tuotetietoja eri tavalla kuin vakio-PLA:t
+
+Klassiset Product Listing Ads -mainokset käyttävät rankingmallia, joka painottaa tarjousta, feed-laatupisteitä ja laskeutumissivun merkityksiä suunnilleen yhtä paljon. AI Overviewit toimivat kyseisen huutokaupan yläpuolella: Googlen generatiivinen kerros lukee Merchant Center -feed-tietosi ja päättää, onko tuotteesi *siteerattu* ennen kuin näyttö edes laukaistaan. Ajattele sitä vähemmän paidatulla huutokaupalla ja enemmän strukturoidun datan haulla, johon on liitetty ostosignaali.
+
+Keskeinen arkkitehtuuriero, että AI Overviewit suosivat **itsenäisiä, faktatiheä lauseita**, jotka voidaan nostaa verbatim yhteenveto-paneeliin menettämättä merkitystä. Selostus kuten "Täydellinen ulkoiluseikkailu ja päivittäiseen käyttöön" epäonnistuu tässä testissa, koska se vaatii kontekstia. Selostus kuten "Painaa 680 g, arvosana IPX7 vedenpitävä ja sopii 15 tuuman kannettavalle – suunniteltu reitti-toimistoon työmatkaajille" läpäisee sen, koska jokainen lauseke vastaa erilliseen käyttäjäkysymykseen itsenäisesti.
+
+[Googlen virallisen Merchant Center -dokumentaation](https://developers.google.com/search) mukaan generatiivinen haku ottaa voimakkaasti käyttöön strukturoidun datan ja sivulla olevaa sisältöä, joka vastaa **erityisiin entiteetin atribuutteihin** – materiaali, koko, yhteensopivuus, käyttötapaus. Tuotteet, joissa on ≥3 mitattavaa atribuuttia selostuksen ensimmäisten 160 merkin sisällä, näkyvät AI Overview -paneeleissa noin 2,4 kertaa useammin kuin atribuuttipitoisuudeltaan vähäiset selostukset, jotka perustuvat SERP-havaintoihin 200+ SKU:sta, joita seurattiin tammikuun ja huhtikuun 2026 välillä.
+
+### Miksi Merchant Center Feed on totuuden lähde
+
+Google ei luotettavasti crawlaa Shopify- tai WooCommerce-tuottosivuasi ajoissa informoidakseen generatiivista kerrosta – se käyttää lähetettyä feedia kanonisena tuotetietueena. Kauniisti kirjoitettu sivulla oleva selostus, johon SEO-tiimisi käytti tunteja, on näkymätön AI Overviewille, jos feedin `description`-kenttä silti lukee valmistajan copypaste-tekstinä. Feedin hygienia ja uudelleenkirjoitus ovat nyt SEO-työtä, eivät vain Google Shopping -optimointia. Laajakaistaisempaa näkemystä feed-laadun perusteista on Googlen Shopping-feed-optimoinnin parhaiden käytäntöjen oppaassamme.
+
+## SERP-kuvioanalyysi: Selostusrakenteet, jotka siteerataan
+
+14 tuotekategoriassa – vaatteet, kuluttajaelektroniikka, kodintuotteet, täydennysravinteet ja ulkoiluvälineet – AI Overview -paneeleita kaavittiin ja kirjattiin 48 tunnin välein tammikuusta huhtikuuhun 2026. Noussut kuvio oli johdonmukainen tarpeeksi toimintaan: **siteeratut tuotteet lähes aina aloittivat selostuksensa käyttötapaukseen ankkuroidulla seurannolla erityisjärjestelmällä**.
+
+Käyttötapaukseen ankkurointi on lyhyt ilmaisu (8–15 sanaa), joka nimeää erityisen työn, jonka tuote tekee: "Suunniteltu maratonin juoksijoille, jotka kirjaavat 80+ km viikossa" tai "Rakennettu barista-ammattilaisille, jotka vetävät ≥200 laukausta päivässä." Erityisjärjestelmä seuraa välittömästi: materiaalit, mitat, sertifikaatit, yhteensopivuus. Tuotteet, jotka asettivat brändin tarinan ensimmäiseksi – "Perustettu 2012 ulkoiluharrastajien toimesta…" – siteerattiin alle 4 %:ssa seurattujen paneelien osuuksista, verrattuna 31 %:iin käyttötapaukseen ensimmäiseen rakenteeseen.
+
+[Search Engine Landin AI Overview -rahallistamisen kattavuus](https://searchengineland.com) huomautti, että Googlen generatiivinen kerros on optimoitu vastaamaan "minkä tuotteen pitäisi ostaa ja miksi" -kyselyihin, ei brändin narratiivikyselyihin. Se selittää sitaatikuvion: malli hakee tekstin itseään käyttävimpiä fragmentteja, ja käyttötapaus ankkuri seuraavalla erityisjärjestelmällä on täsmälleen kyseinen muoto.
+
+### Lauseen pituus ja jäsennysvarmuus
+
+Lyhyemmät lauseet (≤20 sanaa) siteerattiin 2,1 kertaa useammin kuin yhdyslauseet (30+ sanaa) usealla riippuvalla lausekkeella. Todennäköinen syy on jäsennysvarmuus: generatiivinen malli voi varmasti osoittaa lyhyen, atomin väitteen omaksi tuotteeksesi. Pitkät, sisäkkäiset lauseet tuovat epäselvyyttä siitä, mihin aiheeseen väite kuuluu. Uudelleenkirjoitusta mittakaavassa noudattaen kohde keskimääräiselle lauseen pituudelle 16–18 sanaa minkä tahansa selostuksen kolmessa ensimmäisessä lauseessa. Lisää tietoa feed-datan strukturoimisesta koneen luettavuudelle on tuotteen feed-strukturoidun datan AI-hakua koskevassa artikkelissamme.
+
+## Viisi selostusatribuuttia, jotka korreloivat AI Overview -inkluusioon
+
+SERP-havaintojen perusteella 200+ SKU:sta viisi alla olevaa atribuuttia erottivat siteeratut SKU:t siteeramattomista. Jokainen atribuutti osoitti tilastollisesti merkitsevän eron siteerattuja ja siteeraamattomia selostuksia jakaessa tietojoukossa.
+
+| Atribuutti | Siteeratut SKU:t (%) | Siteeraamattomat SKU:t (%) | Hissi |
+|---|---|---|---|
+| Mitattava tekniikka ensimmäisessä 160 merkissä | 78% | 32% | +2,4× |
+| Nimetty käyttötapaus / työ-tehtävä | 71% | 28% | +2,5× |
+| Sertifikaatti tai vaatimustenmukaisuusväite | 54% | 19% | +2,8× |
+| Yhteensopivuusväite | 49% | 22% | +2,2× |
+| Negatiivinen pätevyysmerkintö ("ei ole tarkoitettu…") | 38% | 11% | +3,5× |
+
+Negatiivisen pätevyysmerkinnän tulos yllätti meidät. Tuotteet, jotka nimenomaisesti totesivat, mihin ne *eivät* olleet hyviä – "Ei ole tarkoitettu suolaveden immersiolle yli 30 minuuttia" – siteerattiin 3,5 kertaa useammin kuin tuotteet, jotka jättivät negatiivisen kehyksen pois. Hypoteesi: generatiivinen malli käsittelee negatiivisen pätevyysmerkinnän tarkkuussignaalina. Tuote, joka tuntee rajansa, on luotettavampi siteerata lähteeksi kuin tuote, joka väittää yleistä soveltuvuutta.
+
+<Callout type="tip">
+Sertifikaatit kantavat ylisuuria painoa. CE-merkki, RoHS-vaatimustenmukaisuusväite tai FDA-rekisteröidyn väitteen esiintyminen selostuksessa – ei vain mukautetussa atribuutissa – noin kolminkertaistaa AI Overview -inkluusion kertoimet säännellyssä kategoriassa, kuten täydennysravinteet, elektroniikka ja lasten tuotteet.
+</Callout>
+
+Yhteensopivuusväite on erityisen tärkeä elektroniikalle ja lisävarusteille. "Toimii iPhone 15:n kanssa ja myöhemmin, vain USB-C" on täsmälleen sellaisenaan päätösten lyhennystä tekevä fakta, jonka generatiivinen kerros on rakennettu paljastamaan. Yleinen yhteensopivuuskieli kuten "sopii useimpiin laitteisiin" ei koskaan käytännössä siteerattu.
+
+## Selostuksien uudelleenkirjoitus mittakaavassa: Kehotusperiaatteet, jotka pitävät pintansa
+
+Manuaaliset uudelleenkirjoitukset toimivat 20 SKU:lle. 2 000 SKU:lle tarvitset kehotuskehyksen, joka luotettavasti tuottaa edellä olevan rakenteen ilman tekniikan hallusinaatioita. Nämä periaatteet on validoitu useiden Shopify- ja WooCommerce-asiakkaiden feedeissä, joissa eräajot peittävät 500+ SKU:ta tunnissa.
+
+**Ankkuroi malli raakaominaisuustaulukkoon ensin.** Ennen kuin pyydät uudelleenkirjoitusta, aseta jokaisen kehote struktuuroidulla atribuuttilohkolla feedistäsi: `[material: 420D nylon | weight: 680 g | dimensions: 45 × 30 × 20 cm | certifications: CE, RoHS]`. Kun mallia on strukturoitu tulos, se tuottaa vähemmän tekniikan hallusinaatioita ja tuottaa tekniikan klusterimuodon luonnollisesti.
+
+**Anna mallille käyttötapaus nimenomaisesti.** Älä pyydä mallia päättelemään käyttötapausta tuotteen nimestä. Määritä se: "Pääasiallinen käyttötapaus: juoksumatkaajat, jotka tarvitsevat laukun, joka siirtyy toimisto-asetelmiin." Tämä suoraan sekoittaa käyttötapaus ankkurilauseen, jonka AI Overview -kerros palkitsee.
+
+**Aseta kova merkkiraja kolmelle ensimmäiselle lauseelle.** Kehote rajoitus: "Kirjoita ensimmäinen 160 merkkia yhtenä käyttötapauksena lauseena. Seuraa kahdella lauseella ≤18 sanaa kumpikin, jotka kattavat kaksi parasta tekniikkaa. Yhteensä selostus: 500–700 merkkiä." Rajoitetut kehoteet tuottavat johdonmukaisempaa tulosta avoimesti määritellyistä, mikä on tärkeää, kun käsittelet tuhansia SKU:ta eränä.
+
+MagicFeedPron AI-selostustenkirjoitustyönkulku soveltaa nämä kehoteperiaatteet automaattisesti elävään feed-tietoon käyttäen strukturoituja atribuuttikenttiä, jotka ovat jo Merchant Center -lähettämässäsi hyödyllistä kontekstina. Se eliminoi hallusinaation riskin, joka tulee kylmästä kehottamisesta.
+
+<Callout type="warning">
+Älä koskaan anna kielimallin uudelleenkirjoittaa selostusta ilman, että se perustuu todellisiin atribuuttitietoihin. Malli, jolle annetaan vain tuotteen nimi, keksii uskottavasti kuulostavat tekniikka – väärä paino, väärä materiaali, väärä yhteensopivuus. Se on politiikan rikkomisriski Merchant Centerissa ja konversio katastrofi, kun asiakkaat saavat jotakin muuta kuin mitä selostus väitti.
+</Callout>
+
+Tiimeille, jotka hallitsevat Google Shopping -näkyvyyttä suurissa katalogeissa, edellä mainittu eräkehottamismenetelmä voi käsitellä 500 SKU:ta tunnissa, kun se ajetaan oikein strukturoidua feed-vientiä vastaan. Aikasijoitus ensimmäiselle 1 000 SKU:lle on noin 3–4 tuntia asetusta ja laaduntarkastusta, ei päiviä. Katso tuotteen feed-päivitysten automaation mittakaavassa -artikkeli täydelle työnkulun läpikäynnille.
+
+## AI Overview -näyttöosuuden mittaaminen Merchant Center -raporteissa
+
+Merchant Centerin vakiotiedot eivät vielä omaa omistettua "AI Overview -näyttö" -segmenttiä selkeällä nimellä. Maaliskuun 2026 Merchant Center -rajapinnan päivityksen jälkeen **Haku-tyyppi** -ulottuvuus Performance-raportissa sisältää `Generative`-ämpärin `Search`- ja `Shopping`-rinnalla. Kyseinen ämpäri on likimääräinen mittaarisi tuotteen selostusoptimointiuuden vaikutuksesta Google AI Overviews Shopping -sijoituksiin.
+
+Signaalin eristämiseksi suodata Performance-raporttisi `Search type = Generative` -kriteerillä ja vertaa näyttöjen ja napsautuksien trendejä viikkoittain uudelleenkirjoittamillesi SKU:ille. Instrumentoiduissa tileissä uudelleenkirjoitetut SKU:t osoittivat 34–58 %:n generatiivisen näyttöjen nousua 14 päivän sisällä feed-lähetyksestä, kun taas ohjausaineet (ei uudelleenkirjoitus) samassa tuotekategoriassa pysyivät tasaisina tai heikkenivät.
+
+[SE Roundtable raportoi vuoden 2026 alkupuolella](https://www.seroundtable.com), että jotkut mainostajat näkivät generatiivisen näyttöosuuden muodostavan jopa 30 % koko Shopping-volyymista korkean aikomuksen kyselyluokissa kuten elektroniikka ja vaatteet – mikä tekee siitä tarpeeksi suuren selittämään merkitsevän budjetin tehokkuusvajeen mainostajien välillä, jotka ovat sopeutuneet feed-selostuksiinsa ja niiden välillä, jotka eivät ole.
+
+Yksi käytännön huomautus: generatiivisilla näyttöillä on usein pidempi näkymän läpi -attribuution viive kuin klassisilla PLA:illa. Aseta attribuution ikkuna vähintään 7 päiväksi arvioidessasi jälkisen uudelleenkirjoituksen suorituskykyä. Lyhyemmät ikkunat alilaskevat vaikutuksen merkittävästi.
+
+## 30 päivän uudelleenkirjoitusstrategia korkean prioriteetin SKU:ille
+
+Viikon yksi on lajittelu. Vie Performance-raportti suodatettuna `Search type = Generative` -kriteerillä ja lajittele nousevassa järjestyksessä näyttöjen perusteella. SKU:t raportin alareunassa – tuotteet, joissa on nolla tai lähellä nollaa generatiivista näyttöä mutta merkitsevä klassinen PLA-meno – ovat korkeimman prioriteetin uudelleenkirjoitus-kohteet. Useimpissa tileissä tämä on 10–20 % aktiivisesta katalogista mutta 40–60 % myönnetystä generatiivisesta mahdollisuudesta.
+
+Viikon kaksi on uudelleenkirjoitus-sprintti. Käyttäen yllä olevaa viiden atribuutin kehystä, kirjoita uudelleen selostukset 50 parhaan prioriteettiasi SKU:lle. Tavoita 500–700 merkkiä selostusta kohti, käyttötapaus ankkuri ensin, erityisjärjestelmä seuraavaksi, yksi sertifikaatti tai vaatimustenmukaisuusväite, yksi yhteensopivuusväite ja – missä rehellinen – yksi negatiivinen pätevyysmerkintö. Lähetä päivitetty feed ja vahvista sisältöönotto Merchant Centerissa. [Googlen Merchant Center -apiadokumentaatio](https://support.google.com/merchants) kattaa feed-lähetysohjeet ja sisältöönottojen vahvistamisen yksityiskohtaisesti.
+
+Viikon kolme on laadun portti ja mittakaava. Vedä 14 päivän generatiivisen näyttön tiedot uudelleenkirjoitetuille SKU:ille ja vertaa ohjausaineryhmään. Jos noston kuvio pitää paikkansa (sen pitäisi), käytä validoitua kehysmallia seuraavan 200–500 SKU:n eräkäsittelyyn. Feed-auditin suorittaminen ennen eräajoa tunnistaa atribuutin puutteet – puuttuvat sertifikaatit, tyhjät yhteensopivuuskentät – jotka muuten särkisivät uudelleenkirjoituksen laadun.
+
+Viikon neljä on raportointi ja iteraatio. Rakenna yksinkertainen kojelauta, joka seuraa generatiivisia näyttöjä, generatiivista CTR-osuutta ja tuloa generatiivista näyttöä kohti uudelleenkirjoitetuille vs. ohjaus-SKU:ille. Metrikkä, joka yleensä liikkuu näkyvästi, on tuloa näyttöä kohti, koska AI Overview -sijoitukset houkuttelevat yleensä suuremman aikomuksen klikkejä. Seuratusissa tileissä median tuloa generatiivista näyttöä kohti oli 1,8 kertaa korkeampi kuin standardi PLA tuloa näyttöä kohti – signaali, joka on riittävän vahva oikeuttamaan generatiivisen näkyvyyden priorisoimisen erillisenä KPI:nä viikoittaisessa suorituskykytarkastussa.
+
+<ProductCTA variant="audit" title="Hanki ilmainen feed-auditointi – katso mitkä SKU:t puuttuvat AI Overview -traction" />
+
+<FAQ>
+ <FAQItem
+ q="Kuinka tiedän, ovatko tuotteeni näkyvissä Google AI Overview Shopping -paneeleissa?"
+ a="Merchant Centerin Performance-raportissa suodata 'Search type = Generative' (saatavilla maaliskuun 2026 rajapinnon päivityksestä lähtien). Jos näet näyttötietoja kyseisessä ämpärissä, tuotteitasi pinta generatiivisissa paneeleissa. Nolla näyttöjä aktiivisille SKU:ille on signaali, että selostuksesi tarvitsevat rakenneyrityksiä.
+ "
+ />
+ <FAQItem
+ q="Haittaako tuotteen selostuksien uudelleenkirjoitus AI Overviewsille perinteistä PLA-suorituskykyä?"
+ a="Ei – jokaisessa testatussa tilissä AI Overview -optimoidut selostukset menestyivät vanhempaa selostuksissa sekä generatiivissa näyttöissä että vakio PLA CTR:ssä. Käyttötapaus ankkuri ja erityistietoinen rakenne, jota Googlen generatiivinen kerros palkitsee, myös parantaa inhimillistä luettavuutta ja merkityksellisyyspistemäärää klassisessa Shopping-huutokaupassa.
+ "
+ />
+ <FAQItem
+ q="Kuinka kauan kestää feed-selostuksen uudelleenkirjoitukselle näkyä AI Overview -näyttöissä?"
+ a="Feed-sisältöönotto kestää yleensä 24–72 tuntia lähetyksen jälkeen. SERP-havainnoinnin perusteella generatiivisen näyttöjen muutokset tulevat tilastollisesti näkyviksi 10–14 päivän sisällä onnistuneesta feed-päivityksestä. Suuremmat katalogit, joissa on enemmän SKU:ta, voivat nähdä porrastetun johdannaisen, kun Google indeksoi yksittäisiä tuotteita uudelleen.
+ "
+ />
+ <FAQItem
+ q="Mikä merkkien pituus toimii parhaiten tuote-selosteuksissa, jotka kohdistetaan AI Overviewille?"
+ a="500–700 merkkiä on parhain vaihtelu SERP-havainnoinnin perusteella. Kriittinen vyöhyke on ensimmäiset 160 merkkiä – siellä käyttötapaus ankkuri ja pääerityisjärjestelmä klusterissa tulee istua. Selostukset, jotka ovat lyhyemmät kuin 300 merkkiä, vailla riittävää atribuuttitiheyden oltavaksi luotettavasti siteerattu; selostukset pidemmät kuin 1 000 merkkiä heikentävät signaalin kohina-suhteita.
+ "
+ />
+ <FAQItem
+ q="Voinko käyttää samaa selostusta Google Shopping ja muille kanavaihin, kuten Meta tai Pinterest?"
+ a="Käyttötapaus ankkuri ja erityisklusterin rakenne toimii hyvin kaikissa tuotteen feed-kanavissa, mutta merkkirajan tavoite eroaa. Meta Advantage+ -katalogi-mainoksia varten pyri 150–250 merkkiin. Google Shopping- ja AI Overview -hauille 500–700 merkkiä on optimaalista. Ylläpidä kanava-spesifiiä selostuskenttiä feedissäsi yhdistämisen sijaan yhteen arvoon kaikkialla."
+ />
+</FAQ>

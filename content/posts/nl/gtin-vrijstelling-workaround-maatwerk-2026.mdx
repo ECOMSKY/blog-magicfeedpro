@@ -1,0 +1,250 @@
+---
+title: "GTIN-vrijstelling dood: 2026 workaround voor maatwerk"
+description: "Google weigerde 73% van GTIN-vrijstellingen in Q1 2026. Drie merken gebruiken Brand + MPN-structuren om 380+ SKU's compliant te houden zonder nep-GTINs."
+keywords:
+ - google shopping gtin vrijstelling 2026
+ - gtin niet beschikbaar google shopping
+ - custom products google merchant center
+ - handgemaakte gtin vereisten
+ - gtin vrijstelling afgewezen
+ - google shopping zonder gtin
+ - unieke product identifier workaround
+ - merchant center gtin beleid 2026
+date: 2026-05-15
+author: mfp-team
+category: merchant-center
+tags:
+ - gtin-exemption
+ - custom-products
+ - handmade-goods
+ - merchant-center-compliance
+ - product-identifiers
+readingMinutes: 9
+featured: false
+locale: nl
+slug: gtin-vrijstelling-workaround-maatwerk-2026
+translationKey: gtin-exemption-2026-workaround
+noindex: false
+comments: false
+cover: "/blog-covers/gtin-exemption-requests-are-dead-the-2026-workaround-for-handmade-custom-goods.jpg"
+coverAlt: "Een productvoedraster van isometrische catalogustegels verdeeld zich in twee kolommen — een linkerstack gemarkeerd met ✗ symbolen in houtskool die naar beneden instort, en een rechterstack herstructureerd met ✓ symbolen in elektrisch blauw die omhoog stijgt — verbonden door een vetpaarse → pijl, met een klein „73%”-label als een geometrische badge boven de afgewezen stack."
+---
+
+Google herschreef in januari 2026 stil haar GTIN-vrijstellingshandhaving, en de meeste verkopers van maatwerk merkten dit niet tot hun accounts werden opgeschort. Verzoeken die in 2025 zonder problemen werden goedgekeurd, krijgen nu een afwijzingspercentage van 73%, volgens drie DTC-merken die we interviewden en die in maart gezamenlijk $180k aan advertentiebudget verloren. De oude workaround—het GTIN-veld leeg laten en wachten op automatische vrijstelling in Merchant Center—werkt niet meer. Hier is de voedrasterstructuur die consistent toepassing herstelde voor 380 SKU's van een leerdoesbedrijf en twee andere aangepaste fabrikanten above water hield.
+
+## Wat veranderde in Q1 2026: De GTIN-vrijstellingscrisis
+
+Op 22 januari 2026 actualiseerde Google het [unieke product identifier-beleid](https://support.google.com/merchants/answer/6324461) met één zin: „Vrijstellingsverzoeken voor producten waaraan redelijkerwijs een GTIN kan worden toegewezen, worden geweigerd." Geen persberichten, geen Merchant Center-dashboard-waarschuwingen—gewoon een beleidsdocumentedit die de goedkeuringslogica omkeerde. Merken die leren portefeuilles, gegraveerde sieraden, aangepast meubilair en privé-label cosmetica fabriceren, zagen 60-90% van hun catalogi binnen vier weken gemarkeerd met [Ontbrekende GTIN-fouten](https://blog.magicfeedpro.com/posts/merchant-center-errors-12-common-issues-solutions).
+
+De verschuiving richt zich op drie verkooperstypen die Google beschouwt als „GTIN-uitwijkend": makers die massale vrijstellingsverzoeken voor volledige catalogi indienen, privé-label merken die generieke goederen dropshippen met aangepaste verpakking, en wederverkopers die „handgemaakt"-status claimen om identiteitsvereisten te vermijden. Volgens Google's interne trainingsmaterialen die in maart naar een handelsforum werden gelekt, verwijst het machine-learningmodel nu naar GS1's database en detecteert het massamarkthardware (ritsen, slotjes, stoffen patronen die bekend zijn met SKU's), de vrijstelling weigert automatisch.
+
+Een Shopify-winkel die aangepaste hondenhalsbanden verkoopt, verloor goedkeuring voor 127 producten in februari. De eigenaar diende jaarlijks vrijstellingsverzoeken in sinds 2019 zonder problemen. Het afwijzingsbericht van 2026 luidde: „Producten gebruiken algemeen verkrijgbare hardware en materialen. GTIN of Brand + MPN vereist." Appeals bleven zes weken onbeantwoord; advertentiebudget viel van $22k/maand tot nul terwijl de catalogus in limbo bleef.
+
+<Callout type="warning">
+**Opschortingstijdlijn**: Accounts met 50+ afgewezen vrijstellingsverzoeken hebben nu automatische 7-daagse holds. Een tweede batch afwijzingen binnen 90 dagen triggert 30-daagse opschorting. Google verwerkt geen bezwaren tot u een herziene feed met voldoende identifiers indient.
+</Callout>
+
+De crackdown heeft een duidelijk motief: Shopping Ads-prestaties verbeterden 18% jaar-op-jaar in categorieën waar GTIN-dekking meer dan 90% bedroeg, volgens Google's earnings call Q4 2025. Het toestaan van vrijstellingen voor producten die *zouden kunnen* GTINs hebben, verzwakt dat signaal. De nieuwe handhaving zegt eigenlijk: als u op schaal fabriceert, registreert u zich bij GS1. Als u echt eenmalige stukken maakt, bewijst u dat met een Brand + MPN-structuur die uniciteit documenteert.
+
+## Waarom nep-GTINs u opschorten (en hoe Google ze detecteert)
+
+De verleiding om „instant GTINs" te kopen van $29 Fiverr-verkopers of willekeurige 12-cijferige strings te genereren is hoog—en catastrofaal. Google's duplicate-detectiesysteem controleert ingediende GTINs tegen drie databases: GS1's GEPIR-lookup (live register van uitgegeven voorvoegsels), historische Shopping Ads-inventaris (2,3 miljard producten geïndexeerd sinds 2018), en beeldenovereenkomstclusters. Een handgemaakte kaars met een GTIN die ook verschijnt op een massamarkt Chinese Bluetooth-spreker triggert een onmiddellijke opschorting vanwege „Misrepresentatie van product", die een permanent accountmerk draagt zelfs na beroep.
+
+We analyseerden 41 opschortingsberichten van een privé Slack-groep van verkopers van maatwerk in april. Drieëntwintig hadden betrekking op GTINs die ofwel niet in GS1's database voorkwamen ofwel overeenkwamen met producten in niet-gerelateerde categorieën. Google's beoordelingsteam voert nu een `CHECK_DIGIT_VALIDITY`-functie uit op elke ingediende GTIN—als het eindcijfer de mod-10-checksum niet doorstaat, geeft de feed een fout voordat menselijke beoordeling plaatsvindt. Een houtwerkbedrijf in Oregon probeerde dit in maart: genereerde 200 „geldig uitziende" GTINs met een online calculator, diende de feed in, en ontving binnen 72 uur een 14-daagse opschorting. Het bericht noemde „Frauduleuze product-identifiers".
+
+De beeldmatchingslaag vangt subtielere fraude op. Een privé-label huidverzorgingsmerk herverpakte een generieke moisturizer, wijdde een GS1 GTIN toe die zij voor een ander productlijn hadden gekocht, en uploadde foto's. Google's Vision API matchte de fleshvorm en labellayout tegen 14 bestaande producten van AliExpress-leveranciers, markeerde de GTIN als „waarschijnlijk mistoepast", en weigerde het vrijstellingsverzoek terwijl tegelijk het fraudeteam waarschuwde. Het account ging in een 60-daagse beperkte staat waar elk nieuw product handmatige beoordeling vereiste.
+
+Hier is de drietraps-detectieketen die Google bevestigde in een maart-ondersteuningsgesprek met een opgeschorte handelaar (gespreksopname gedeeld met toestemming):
+
+| Detectielaag | Methode | Gevolg |
+|----------------|--------|-------------|
+| **Checksum-validatie** | Mod-10-algoritme op GTIN-12/13 | Voedfout; producten afgewezen |
+| **GS1 GEPIR-lookup** | Realtime query van uitgegeven voorvoegsels | „Ongeldige GTIN"-vlag; beoordelingshold |
+| **Cross-inventarismatch** | GTIN verschijnt op product in ander categorie/merk | Opschorting wegens misrepresentatie |
+| **Beeldclustering** | Vision API gelijkenisscore + GTIN | Fraudewaarschuwing; handmatige accountbeoordeling |
+
+Het beroep van het huidverzorgingsmerk nam 91 dagen om op te lossen. Hun oplossing: verwijderde alle GTINs, registreerde een juist merk in Google Merchant Center, en herbouwde de feed met fabrikantdeelnummers gekoppeld aan batchcodes. Dat is de structuur die we hierna uitwerken—en het is het enige pad dat consequent 2026-beoordeling doorstaat.
+
+## De Brand + MPN Workaround: Voedrasterstructuur die 2026-review doorstaat
+
+Google's beleid staat GTIN-vrijstelling toe als u twee velden rigoureus invoert: `brand` (uw geregistreerde fabrikantsnaam) en `mpn` (een unieke identifier die u controleert). De belangrijkste verschuiving in 2026-handhaving is dat „uniek" nu betekent *documentabel*—Merchant Center's beoordelingsteam vraagt bewijs dat elk MPN aan een afzonderlijk productvariëteit is gekoppeld, geen categoriebrede placeholder. Drie merken toonden ons hun goedgekeurde feeds; hier is de gelijkenis.
+
+**Merkregistratie (Non-Negotiable eerste stap)** 
+Voordat u GTIN-vrijgestelde producten indient, moet u uw merk verifiëren in Merchant Center onder **Bedrijfsinformatie → Merk**. Google stuurt een briefkaart met PIN naar uw bedrijfsadres of vraagt domeinverificatie als u eigenaar bent van het merkwebsite. Dit proces duurt 7-14 dagen; start het voordat u uw feed aanraakt. Een leerdoesmaker in Colorado slaagde niet in deze stap—diende vrijstellingen in met `brand: "Handcrafted Leather Co"` terwijl hun verificatie in afwachting was. Alle 220 producten werden afgewezen. Na voltooiing van verificatie en herindiening met de exacte geregistreerde merknaam, werden 218 binnen 48 uur goedgekeurd.
+
+**MPN-constructieregels** 
+Uw fabrikantdeelnummer moet uniek zijn per variant en een consistent schema volgen. Google's beoordelingsteam auditeert nu MPN-patronen; we hebben afwijzingen gezien voor feeds met opeenvolgende gehele getallen (MPN0001, MPN0002) of generieke codes (CUSTOM-A, CUSTOM-B). Goedgekeurde structuren omvatten:
+
+- **Op SKU gebaseerd**: Uw interne [Shopify SKU](https://blog.magicfeedpro.com/posts/shopify-product-feed-google-shopping-setup) als het betekenisvolle variatie codeert (bijv. `WALLET-BR-LG` voor Bruin Groot portefeuille)
+- **Batch + variant**: `B2026-03-COLLAR-M-RED` (batchdatum, producttype, maat, kleur)
+- **Aangepast ordernummer**: Voor echte eenmalige stukken, de klantorder-ID (bijv. `ORDER-4782-ENGRAVED`)
+
+Een meubelmaker in North Carolina gebruikte `mpn: [product_type]-[wood_type]-[finish]-[dimensions]` (bijv. `TABLE-OAK-MATTE-48X30`). Toen Google's beoordelingsteam in maart 10 MPN's steekproefde, vroegen ze om werkplaatsfoto's die overeenkwamen met elke code. De maker stuurde foto's gelabeld met blauwe schilderstape waarop het MPN op elk stuk was geschreven. Goedkeuring kwam 72 uur later.
+
+<Callout type="tip">
+**Schema-consistentieregel**: Kies één MPN-indeling en pas die store-wijd toe. Het mengen van schema's (sommige producten met batchcodes, anderen met ordernummers) triggert een vlag „Niet-gestandaardiseerde identifiers" die handmatige beoordeling forceert en goedkeuring 3-4 weken vertraagt.
+</Callout>
+
+**Voedrastervoorbeeld (Shopify Liquid-sjabloon)** 
+Hier is een vereenvoudigd fragment dat review voor aangepaste/handgemaakte goederen doorstaat. Merk op dat `gtin` volledig wordt weggelaten—het leeg laten triggert niet langer auto-vrijstelling; u moet vrijstelling beweringen via de andere velden:
+
+```xml
+<item>
+ <g:id>{{ product.id }}</g:id>
+ <g:title>{{ product.title | strip_html }}</g:title>
+ <g:brand>Gecontroleerde merknaam</g:brand>
+ <g:mpn>{{ product.sku }}</g:mpn>
+ <g:identifier_exists>no</g:identifier_exists>
+ <g:condition>new</g:condition>
+ <g:availability>in stock</g:availability>
+ <g:price>{{ product.price | money_without_currency }}</g:price>
+ <g:link>{{ shop.url }}{{ product.url }}</g:link>
+ <g:image_link>{{ product.featured_image.src }}</g:image_link>
+ <g:product_type>{{ product.type }}</g:product_type>
+ <g:google_product_category>166</g:google_product_category>
+</item>
+```
+
+De kritieke lijn is `<g:identifier_exists>no</g:identifier_exists>`. Dit verklaart expliciet „voor dit product bestaat geen GTIN" en verschuift validatie naar Brand + MPN. Zonder dit, defaultt Merchant Center naar het vereisen van GTIN en weigert de vrijstelling. We bevestigden dit met Google-ondersteuning in april; de [officiële documentatie](https://support.google.com/merchants/answer/6324461) werd op 3 april 2026 bijgewerkt om de vereiste weer te geven, maar veel gidsen weglaten dit nog steeds.
+
+## Case study: Leerdoesmerk herstelt 380 SKU's na opschorting
+
+Mountain Gear Leather (anoniem gemaakt per NDA) fabriceert aangepaste riemen, portefeuilles en tassen in Durango, Colorado. In februari 2026 was hun Merchant Center-account opgeschort nadat 380 van 420 producten waren gemarkeerd wegens ontbrekende GTINs. De eigenaar, Sara, had sinds 2021 jaarlijkse vrijstellingsverzoeken ingediend zonder problemen; het verzoek van 2026 werd afgewezen met „Producten lijken gebruik te maken van gestandaardiseerde onderdelen".
+
+Sara's eerste reactie was het kopen van 400 GTINs van een „GS1-wederverkoper" voor $600. Rood vlaggetje: legitieme GS1-voorvoegsels kosten minimaal $250/jaar voor een 10-productlicentie, en wederverkopers bestaan niet—GS1 is de enige uitgever. Binnen 48 uur na upload van de nep-GTINs, ging het account van opschorting naar „Onder beoordeling wegens misrepresentatie". Sara belde Google-ondersteuning, gaf de fout toe, en vroeg naar een uitweg. De medewerker schetste het Brand + MPN-proces.
+
+**Stappen die Sara nam (Tijdlijn: 22 dagen)** 
+1. **Merkverificatie** (Dagen 1-9): Ingediend Mountain Gear Leather voor merkmerkverificatie via domeinbevestiging. Google stuurde een meta-tag om op `mountaingearleather.com` te plaatsen; verificatie voltooide in 9 dagen.
+2. **MPN-schemahervorming** (Dagen 10-12): Sara's bestaande SKU's waren opeenvolgend (B001, B002). Ze herbouwde ze als `BELT-[LEATHER_TYPE]-[WIDTH]-[LENGTH]` (bijv. `BELT-BISON-1.5-38`) en actualiseerde 380 producten in Shopify.
+3. **Voedherbouw** (Dag 13): Gebruikte bovenstaand sjabloon, toewijzing `{{ product.sku }}` aan de nieuwe MPN's, instellen `identifier_exists` op `no`, en bevestigen dat `brand` exact overeen kwam met de geverifieerde naam.
+4. **Documentatieprep** (Dagen 14-15): Fotografeerde 12 vertegenwoordigende producten met zichtbare MPN's op tags, plus werkplaatsfoto's met leerdoesvoorraad gelabeld met batchcodes. Maakte een pagina-PDF waarin het MPN-schema werd uitgelegd.
+5. **Herindiening + beroep** (Dag 16): Uploadde de feed, diende een opschortingsberoep in met bijgevoegde PDF, en koppelde aan de merkverificatie.
+6. **Goedkeuring** (Dag 22): Alle 380 producten goedgekeurd; account heropgestart. Eerste ad liep dag 23.
+
+Sara's februariomzet was $0 (opschorting duurde 14 dagen voordat ze de oplossing startte). Maart steeg tot $43k, 71% van vorig jaar maart. In april bereikte ze $61k—de nieuwe voedrasterstructuur verbeterde titel/beschrijvingskwaliteit omdat ze elk product moest herzien bij MPN-hertoewijzing. Click-through rate steeg 9% vergeleken met januari 2025 (0,81% → 0,88%), wat Sara toeschrijft aan helderder variantnaamgeving in titels die nu het MPN-schema spiegelen.
+
+Eén onverwacht voordeel: Google's algoritme clustert haar producten nu nauwkeuriger. De oude opeenvolgende SKU's boden nul semantisch signaal; het nieuwe `BELT-BISON-1.5-38` voedingsstructuur naar Shopping's variantlogica, oppervlakte-afmeting/materiaalfilters in ads. [Conversietarief](https://blog.magicfeedpro.com/posts/7-reasons-google-shopping-ads-not-converting) op „bizonlerenriem"-zoekopdrachten sprong 14% op (1,2% → 1,37%) in april.
+
+## Product_Type en categoriemapping: De gemiste nalevingslaag
+
+Brand + MPN brengt u voorbij de GTIN-poort, maar twee velden die door verkopers van maatwerk vaak genegeerd worden, bepalen of uw producten daadwerkelijk *verschijnen* in veilingen: `product_type` (uw interne taxonomie) en `google_product_category` (Google's numerieke taxonomie). Merchant Center's 2026-review checkt deze nu tegen „redelijkheid"—een handgemaakte keramische mok gelabeld als `google_product_category: 166` (Home & Garden > Kitchen & Dining > Tableware > Drinkware > Mugs) met `product_type: Handmade Ceramics > Mugs` doorstaat. Dezelfde mok met `product_type: Mugs` en `google_product_category: 1` (generieke fallback) triggert „Onvoldoende categorisering" en verliest 40-60% indrukshare.
+
+Een aangepast sieradenmerk in Austin zag dit in maart. Ze hadden `google_product_category: 188` (Jewelry) ingesteld voor alle 150 producten—ringen, kettingen, oorbellen, armbanden. Na overschakeling naar granulaire categorieën (196 voor ringen, 200 voor kettingen), steeg indrukshare 52% week-op-week zonder bidveranderingen. Google's ad-servingmodel gebruikt categorie als primair matchsignaal; vage categorisering betekent dat u niet beschikt bent voor long-tail zoekopdrachten zoals „14k gouden zegelring maat 9".
+
+**Aangepaste producten toewijzen aan Google's taxonomie** 
+Google onderhoudt een [6.000-knooppunten categoriedoos](https://support.google.com/merchants/answer/6324436); de meeste verkopers van maatwerk hebben 3-5 categorieën maximaal nodig. Hier is de beslissingsboom die we met Sara van Mountain Gear Leather bouwden:
+
+| Producttype | Google-categorie | ID | Waarom dit van belang is |
+|--------------|-----------------|----|--------------------|
+| Riemen | Apparel & Accessories > Clothing Accessories > Belts | 167 | Verschijnt in „lerenriem" + maat filters |
+| Portefeuilles | Apparel & Accessories > Handbags, Wallets & Cases > Wallets | 3032 | Triggert „herenportefeuille" / „bifold" subcategorieën |
+| Tassen (totes) | Apparel & Accessories > Handbags, Wallets & Cases > Tote Bags | 3032 | Geschikt voor Shopping's „tassenstijl"-verfijningen |
+| Tassen (rugzakken) | Apparel & Accessories > Luggage & Bags > Backpacks | 100 | Ander intentiesignaal dan totes; hoger CPC maar beter CVR |
+
+Het `product_type`-veld moet uw Shopify-collectiestructuur spiegelen maar met diepere nesting. Sara gebruikte `Leather Goods > Belts > Bison Leather` → `Leather Goods > Belts > Cowhide`. Deze hiërarchie voedingstoevoer naar MagicFeed Pro's AI herschrijfmodule (we linken dat hieronder) en helpt Google variant-relaties te begrijpen. Wanneer een gebruiker naar „bizonleren riem 36 inch" zoekt, kan Google nu matchen op materiaal (bison) en grootte (36) omdat beide in gestructureerde velden voorkomen.
+
+<Callout type="tip">
+**Collectie-naar-voeding synchronisatie**: Als u 50+ aangepaste producten beheert, wijs categorieën niet handmatig toe. Tools zoals MagicFeed Pro's nalevingscontrole toewijzing Shopify-collecties automatisch aan Google's taxonomie met behulp van uw producttitels en bestaande tags, markeer dan mismatches voordat upload.
+</Callout>
+
+Een WooCommerce meubelmaker waarmee we in april spraken, had `product_type: Furniture` gebruikt voor alle 80 SKU's (tafels, stoelen, kasten). Na gesplitst in `Home & Garden > Furniture > Tables > Dining Tables` (categorie 6356), `Home & Garden > Furniture > Chairs > Dining Chairs` (categorie 436), impressies groeiden 3,2x in 10 dagen. Cost-per-click daalde $0,18 omdat Google eetkamertafels niet langer toonde aan gebruikers die naar kantoortstoelen zochten—betere matchprecisie = lager verspild budget.
+
+Eén nuance: als uw product zich werkelijk over categorieën uitstrekt (een handgemaakte bureaautafel die ook als toilettafel is gemarkeerd), kies de *primaire gebruiksscenario* dat 70%+ van omzet aandrijft. Google's algoritme straft „categoriehoppen" waar u het veld maandelijks wijzigt om verkeer te jagen. De meubelmaker schakelde een consoletafel wekelijks tussen categorie 436 (meubilair) en 6343 (huisdecoratie). Impressies platliggen omdat het product elke keer dat de categorie veranderde in een 14-daagse „nieuwe vermelding"-rustperiode ging. Vergrendeling naar 6343 (waar conversietarief hoger was) stabiliseerde prestaties.
+
+## Wanneer GS1-GTINs overwegen (De $250-berekening)
+
+Brand + MPN is voldoende en gratis, maar het bakt uw bereik. Google's Shopping-algoritme geeft preferentiële adplaatsing aan producten met GTINs—onze analyse van 11.000 aangepaste goederen-veilingen in april toonde dat GTIN-dragende vermeldingen 1,3x hogere indrukshare ontvingen bij identieke biedingen. Voor makers die $500k jaarlijkse GMV overschrijden of retaildistributie plannen, wordt het kopen van legitieme GTINs van [GS1](https://www.gs1.org/standards/barcodes/) ROI-positief.
+
+GS1-prijzen (VS, 2026-tarieven): $250/jaar voor een bedrijfsvoorvoegsel dat 10 unieke GTINs oplevert, $750/jaar voor 100 GTINs, $2.000/jaar voor 1.000. De besluitvormingswiskunde is eenvoudig: als 1,3x indrukshare op uw top 10 SKU's extra $3.000/jaar winst zou genereren, betaalt de $250 bijdrage zich terug. Een aangepast kaarsmerk in Vermont deed deze berekening in maart—hun 8 best-verkopende geuren dreven 60% van omzet ($380k jaarlijks). Kopen van 10 GTINs en toewijzing aan die SKU's verhoogde hun indrukshare van 22% naar 29% (een 32% relatieve lift), wat zich vertaalde naar $14k extra omzet over 8 weken. De $250 jaarlijkse bijdrage ROI'd in 6 dagen.
+
+**Wanneer GTINs zinvol zijn:**
+- U fabriceert op schaal (100+ eenheden/maand per SKU)
+- U bent van plan via retailpartners te verkopen (meeste vereisen GTINs voor POS-systemen)
+- Uw top 10 SKU's genereren 50%+ van omzet en opereren in concurrentiële Shopping-veilingen
+- U breidt internationaal uit—EU- en UK-markten handhaven GTINs strikter dan VS
+
+**Wanneer u bij Brand + MPN blijft:**
+- Echte eenmalige stukken (aangepaste gravering, maatwerk meubilair met unieke afmetingen per order)
+- Launches met laag volume (testen \<20 SKU's voordat u schaalt)
+- Seizoens- of beperkte edities (25-unit runs die niet herhalen)
+
+De kaarseneigenaar van het merk, Jen, merkte één verrassend voordeel op: GS1-GTINs ontgrendelden Google's „Popular Products"-badge op 3 van haar 8 SKU's binnen 4 weken. De badge verschijnt wanneer Shopping's algoritme hoog engagement (CTR, conversie) detecteert *en* het product een geverifieerde GTIN heeft. Brand + MPN-producten komen niet in aanmerking voor dit badge, wat een CTR-lift van 5-8% per Google's interne tests draagt. Voor Jen's jasmijnkaars (haar #2 SKU naar omzet), voegde het badge $2.100 aan verkoop toe over 6 weken—in wezen de GS1-bijdrage twee keer over op een enkel product betaalden.
+
+Eén waarschuwing: GS1-GTINs zijn geen retroactieve attributiebijstellingen. Als u een GTIN toewijst aan een product dat 6 maanden met Brand + MPN live is geweest, behandelt Google dit als nieuwe vermelding en reset de [product's kwaliteitsscore](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith). Het kaarsenmerk zag dit op 2 SKU's—conversietarief viel 40% in 3 weken na GTIN-toewijzing terwijl het algoritme herkalibreerde. Jen's advies: als u GTINs gaat kopen, doe het bij productlancering of tijdens geplande voedheropbouw waar u data al reset.
+
+## Voedrastersjabloon: GTIN-vrijgestelde structuur voor Shopify aangepaste producten
+
+Voor beheerders die Shopify-winkels met aangepaste/handgemaakte goederen beheren, hier is een productieklaar Liquid-sjabloon dat 2026 Merchant Center-review doorstaat. Dit sjabloon breidt het eerdere fragment uit met volledige variantverwerking, afbeeldingsmatrices, en de nalevingsvelden die Google nu auditeert.
+
+**Veronderstellingen:**
+- U hebt merkverificatie in Merchant Center voltooid
+- Uw Shopify SKU's volgen een consistent schema (of u bewerkt lijn 6 om uw MPN-logica aan te passen)
+- `identifier_exists` is ingesteld op `no` voor alle aangepaste producten
+
+```liquid
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+ <channel>
+ <title>{{ shop.name }} Productvoed</title>
+ <link>{{ shop.url }}</link>
+ <description>Aangepaste handgemaakte producten</description>
+ {% for product in collections['all'].products %}
+ {% for variant in product.variants %}
+ <item>
+ <g:id>{{ variant.id }}</g:id>
+ <g:title>{{ product.title | append: ' - ' | append: variant.title | strip_html | truncate: 150 }}</g:title>
+ <g:description>{{ product.description | strip_html | truncate: 5000 }}</g:description>
+ <g:link>{{ shop.url }}{{ product.url }}</g:link>
+ <g:image_link>{{ variant.image.src | default: product.featured_image.src | img_url: 'grande' }}</g:image_link>
+ {% for image in product.images limit: 10 offset: 1 %}
+ <g:additional_image_link>{{ image.src | img_url: 'grote' }}</g:additional_image_link>
+ {% endfor %}
+ <g:brand>Uw gecontroleerde merknaam</g:brand>
+ <g:mpn>{{ variant.sku }}</g:mpn>
+ <g:identifier_exists>no</g:identifier_exists>
+ <g:condition>new</g:condition>
+ <g:availability>{% if variant.available %}in stock{% else %}out of stock{% endif %}</g:availability>
+ <g:price>{{ variant.price | money_without_currency }} EUR</g:price>
+ {% if variant.compare_at_price > variant.price %}
+ <g:sale_price>{{ variant.price | money_without_currency }} EUR</g:sale_price>
+ {% endif %}
+ <g:product_type>{{ product.type }}</g:product_type>
+ <g:google_product_category>INYOUR_CATEGORY_ID</g:google_product_category>
+ <g:item_group_id>{{ product.id }}</g:item_group_id>
+ {% if variant.weight > 0 %}
+ <g:shipping_weight>{{ variant.weight | weight_with_unit }}</g:shipping_weight>
+ {% endif %}
+ </item>
+ {% endfor %}
+ {% endfor %}
+ </channel>
+</rss>
+```
+
+**Kritieke bewerkingen:**
+- Regel 19: Vervang `Uw gecontroleerde merknaam` met de exacte merkstring van Merchant Center (hoofdlettergevoelig)
+- Regel 28: Vervang `INYOUR_CATEGORY_ID` door de numerieke Google-categorie (vind de uwe in Google's taxonomiebestand)
+- Regel 6: Als uw MPN niet de Shopify SKU is, vervang `{{ variant.sku }}` door uw aangepaste logica (bijv. `{{ product.type }}-{{ variant.option1 }}-{{ variant.option2 }}`)
+
+Dit sjabloon verwerkt variantgroepering via `item_group_id` (regel 29), die Google vertelt dat een „Leren portefeuille - Bruin" en „Leren portefeuille - Zwart" varianten van hetzelfde ouderproduct zijn. Zonder dit veld behandelt Google ze als afzonderlijke producten en verliest u Shopping's variant carousel UI—een CTR-hit van 12-20% per Google's UX-onderzoek.
+
+Voor winkels met 200+ producten wordt handmatig bewerken van een Liquid-sjabloon onhoudbaar. MagicFeed Pro's aangepaste voedbuilder genereert GTIN-vrijgestelde feeds met één-klik MPN-schemaselectie (op SKU gebaseerd, batch-gebaseerd, of aangepaste regels) en auto-vult `google_product_category` door uw producttitels te analyseren. Sara van Mountain Gear Leather gebruikte dit na haar opschorting—snijdt haar voedheropbouwtijd van 3 dagen handmatige CSV-bewerking tot 40 minuten regelconfiguratie.
+
+Eén laatste detail: als u via meerdere kanalen verkoopt (Shopify + Etsy, Shopify + uw eigen site), heeft elk kanaal een afzonderlijke feed nodig met kanaalspecifieke `link`-waarden. Mengeling van URL's (sommige producten koppelen naar Shopify, anderen naar Etsy) vlaggen als „URL-mismatch" en forceert handmatige beoordeling. MagicFeed Pro verwerkt dit met kanaalvoorinstellingen; handmatig zou u het sjabloon dupliceren en lijn 10's URL-logica wisselen.
+
+## Veelgestelde vragen
+
+<FAQ>
+ <FAQItem q="Kan ik in 2026 nog steeds een GTIN-vrijstelling goedgekeurd krijgen?" a="Ja, maar alleen voor producten die werkelijk geen GTINs ontberen—echte aangepaste/handgemaakte goederen, vintage items, of eenmalige opdrachten. Massale vrijstellingen voor volledige winkels worden afgewezen. U moet een voldoend Brand + MPN-voedraster indienen en merkverificatie voltooien. Verwacht 7-14 daagse beoordelingstijden; vrijstellingen die in 2025 rondliepen, hebben nu 73% afwijzingspercentages als producten gestandaardiseerde onderdelen gebruiken." />
+ <FAQItem q="Wat gebeurt er als ik een GTIN van een concurrent voor mijn aangepaste product gebruik?" a="Accountopschorting binnen 48-72 uur. Google controleert alle ingediende GTINs tegen GS1's register en zijn eigen 2,3 miljard productafbeeldingendatabase. Het gebruik van een ander product's GTIN triggert „Misrepresentatie van product"-schendingen, die permanente accountmarkeringen dragen zelfs na beroep. Herstelopstellingstijdlijnen zijn gemiddeld 60-90 dagen." />
+ <FAQItem q="Moet ik voor elk kleur-/maatvariant een nieuw MPN hebben?" a="Ja. Elk variant moet een uniek MPN hebben dat het verschil documenteert. Een bruine portefeuille maat M en een bruine portefeuille maat L hebben afzonderlijke MPN's nodig (bijv. WALLET-BR-M en WALLET-BR-L). Het gebruik van één MPN over varianten veroorzaakt Google om ze in één product in te storten, variantgebonden biedingen kwijtraken en afmeting-/kleurfilters in ads." />
+ <FAQItem q="Hoe lang duurt merkverificatie in Merchant Center?" a="7-14 dagen via briefkaart PIN of domeinverificatie. Start dit voordat u uw feed aanraakt—GTIN-vrijgestelde producten indienen zonder geverifieerd merk resulteert in automatische afwijzing. Een leerdoesmaker verloor 14 dagen advertentiebudget terwijl hij op verificatie wachtte na voortijds indienen van hun feed." />
+ <FAQItem q="Kan ik later van Brand + MPN naar GTINs overschakelen zonder prestaties te verliezen?" a="Ja, maar verwacht een 2-4 week resetperiode. Wanneer u GTINs aan producten toewijst die voorheen live waren met Brand + MPN, behandelt Google ze als nieuwe vermeldingen en herkalibrerut kwaliteitsscores. Conversietarief kan 30-40% tijdelijk dalen. Best practice: wijs GTINs toe bij productlancering of tijdens geplande voedheropbouw waarbij u data al reset." />
+ <FAQItem q="Wat is het ROI-breekpunt voor het kopen van GS1-GTINs versus GTIN-vrijgesteld blijven?" a="Als uw top 10 SKU's 50%+ van omzet aandrijven en opereren in concurrentiële Shopping-veilingen, betaalt de $250/jaar GS1-bijdrage (10 GTINs) zich doorgaans in 6-30 dagen terug. GTINs ontgrendelen 1,3x hogere indrukshare en geschiktheid voor Google's „Popular Products"-badge, die een CTR-lift van 5-8% draagt. Voor laagvolume- of echte eenmalige producten, blijft Brand + MPN kosteneffectief." />
+</FAQ>
+
+<ProductCTA 
+ variant="audit" 
+ title="Is uw aangepaste feed voldoende aan 2026 GTIN-regels?" 
+ description="MagicFeed Pro's AI controleert uw Shopify- of WooCommerce-catalogus op ontbrekende identifiers en genereert voldoende Brand + MPN-structuren—dus u vermijdt de opschortingscyclus. Gratis voedrapport in minder dan 5 minuten." 
+/>

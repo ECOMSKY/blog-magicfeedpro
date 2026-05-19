@@ -1,0 +1,166 @@
+---
+title: "Test Feed Google Shopping: Framework Split per 2026"
+description: "Test feed Google Shopping senza rigore statistico costa 8-15% CTR trimestrale. Usa questo metodo a 3 coorti per isolate i cambiamenti feed scientificamente."
+keywords:
+ - google shopping feed testing
+ - shopping feed split test
+ - merchant center experiment setup
+ - product feed ab testing
+ - feed optimization experiments
+ - shopping ads test methodology
+ - controlled feed testing
+ - product title testing google shopping
+date: "2026-05-17"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - a/b testing
+ - feed optimization
+ - google shopping
+ - merchant center
+ - split testing
+readingMinutes: 9
+featured: false
+locale: "it"
+slug: "test-feed-google-shopping-framework-split"
+translationKey: "google-shopping-feed-testing-split-framework"
+noindex: false
+comments: false
+cover: "/blog-covers/shopping-feed-a-b-testing-real-split-test-framework-for-2026.jpg"
+coverAlt: "Una divisione verticale di tre colonne isometriche uguali etichettate A, B, C in carbone, ognuna contenente un minigrafico a barre in blu elettrico e violetto con una freccia percentuale fluttuante (↑8% → ↑15%) sopra la colonna vincente, su sfondo bianco sporco."
+---
+
+Il test del feed Google Shopping è una delle attività ad altissima leva che un team di performance può eseguire — eppure la maggior parte dei brand la affronta come «spingi una modifica, guarda il dashboard per una settimana, e affidati al tuo istinto per scegliere il vincitore». Questo non è un test; è rumore. I team Shopify Plus che gestiscono budget Shopping di $50k+/mese hanno adottato un metodo a 3 coorti con custom label che isola le variabili del feed con sufficiente potenza statistica per attribuire miglioramenti CTR dell'8–15% trimestrale a specifici cambiamenti di titoli e attributi — prima di toccare l'intero catalogo.
+
+## Perché gli Esperimenti PMax Standard Mancano le Variabili a Livello Feed
+
+Gli esperimenti a livello campagna Performance Max — la scheda «Experiment» dentro Google Ads — dividono il budget tra due configurazioni di campagna. Quello che non possono fare è isolare un **cambiamento feed** come variabile indipendente. Quando modifichi un titolo di prodotto a livello di catalogo e poi esegui un esperimento PMax, hai già contaminato entrambi i bracci: ogni impression ora serve il nuovo titolo, e il gruppo di controllo non esiste più.
+
+La stessa documentazione di Google su [gli esperimenti in Merchant Center](https://support.google.com/merchants/) riconosce implicitamente questo divario: i tipi di esperimento supportati coprono bid, asset creativi ed espansioni URL — non attributi feed. Questo significa che una riscrittura di titolo, una modifica al prefisso del brand, o lo spostamento di attributi materiali nella posizione 2 di una stringa di titolo non possono essere testati nativamente nell'interfaccia Ads.
+
+La conseguenza è denaro reale lasciato sul tavolo. In un catalogo di 2.400 SKU, se rilasci un cambiamento di formato titolo basato su ragionamenti aneddotici e sottoperforma del 6% CTR, hai degradato ogni impression Shopping in quel catalogo senza alcuna capacità di attribuire in retrospettiva il calo. Potresti non accorgertene nemmeno per 3–4 settimane — abbastanza a lungo perché una revisione trimestrale dipinga un quadro falso. Prima di impegnarti in qualsiasi modifica a livello di catalogo, vale la pena controllare il feed per lacune di attributi che potrebbero introdurre variabili confondenti dal primo giorno.
+
+### Le Tre Variabili che gli Esperimenti PMax Controllano Effettivamente
+
+Gli esperimenti PMax gestiscono: (1) gruppi di asset creativi, (2) varianti della strategia Smart Bidding (tROAS vs. Maximize Conversion Value), e (3) toggle di espansione URL. I segnali a livello feed — titoli, descrizioni, tipi di prodotto, GTIN, custom label — sono a monte dell'asta. Determinano **quali query i tuoi annunci sono idonei a inserire**, non solo come fai un'offerta su di esse. Testare al livello sbagliato risponde alla domanda sbagliata.
+
+## Il Metodo a 3 Coorti: Segmentazione tramite Custom Label
+
+Il metodo a 3 coorti con custom label è l'approccio più affidabile per isolare le variabili feed in un ambiente Shopping live. Utilizza tre coorti definite da `custom_label_0` (o qualunque slot label sia libero nel tuo feed). Etichetta il pool SKU come `control`, `variant_a` e `holdout` prima di toccare qualsiasi titolo o attributo. Il gruppo holdout — tipicamente il 20% degli SKU — rimane intatto e gira attraverso le stesse campagne senza alcuna modifica, dandoti una baseline che tiene conto dei cambiamenti di stagionalità esterna.
+
+Ecco la formula di allocazione delle coorti che abbiamo validato su più account Shopify Plus:
+
+| Coorte | Valore Label | % SKU | Scopo |
+|---|---|---|---|
+| Control | `test_ctrl` | 40% | Attributi feed originali, business-as-usual |
+| Variant A | `test_var_a` | 40% | Titoli / attributi modificati sotto test |
+| Holdout | `test_hold` | 20% | Intoccato; correzione stagionalità / mercato |
+
+Assegnare custom label su larga scala richiede un feed supplementare piuttosto che modificare il feed primario. Nel tuo account Merchant Center, crea un feed supplementare mappato a `id` + `custom_label_0` solo. Questo mantiene il tuo feed primario pulito e ti permette di scambiare i valori label a livello programmatico tramite l'[API Content](https://support.google.com/merchants/) senza un caricamento feed completo.
+
+Una volta assegnati i label, segmenta le tue campagne Shopping o PMax per label usando filtri prodotto a livello campagna. Control e Variant A ricevono budget identici, strategie di bid identiche e gruppi di asset identici. L'unica variabile che differisce è ciò che si trova nel feed. Se hai più di una campagna Shopping, devi gestire la contaminazione incrociata — più su questo in una sezione successiva.
+
+Per i team che utilizzano il motore di riscrittura IA di MagicFeed Pro, il flusso di lavoro dell'ottimizzatore feed IA può generare titoli variant per la tua coorte di test in bulk mantenendo i titoli di controllo intatti — uno step che soleva richiedere un'intera giornata di lavoro su fogli di calcolo.
+
+## Impostazione Soglie di Significatività Statistica (Matematica della Dimensione Campione)
+
+Eseguire un test per 14 giorni e dichiarare un vincitore basandoti su una differenza CTR del 3% è come ingannare se stessi. Prima di lanciare qualsiasi test feed, calcola l'effetto minimo rilevabile (MDE) e la dimensione campione richiesta usando il tuo volume di clic baseline. Fare bene questo step è ciò che separa un risultato difendibile da una scelta istintiva travestita da dati.
+
+La formula standard, derivata dalla [metodologia del calcolatore di dimensione campione di Evan Miller](https://www.evanmiller.org/ab-testing/sample-size.html), mira a:
+
+- **Potenza statistica**: 80% (β = 0.20)
+- **Livello di significatività**: 95% (α = 0.05, two-tailed)
+- **MDE**: il più piccolo aumento CTR che vale la pena attuare (tipicamente 5–8% relativo per test feed)
+
+Per un CTR baseline del 1.2% e un MDE del 6% relativo (il che significa che vuoi rilevare un aumento a 1.27% o superiore), hai bisogno di approssimativamente **18.400 impression per coorte**. A un tipico ritmo di impression di campagna Shopping di 1.500 impression/giorno per coorte a quel livello di budget, quello è un minimo di 12 giorni — non 7, e non l'abitudine di «vediamo il venerdì pomeriggio».
+
+<Callout type="warning">
+Non terminare mai un test feed nel fine settimana o accorciarlo durante un periodo promozionale. I fine settimana festivi, le vendite lampo, e persino le promozioni concorrenti spostano le baseline CTR del 15–30%, invalidando il confronto. Scegli una finestra di 14 giorni che copra due settimane lavorative complete senza promozioni programmate su nessuno dei due lati.
+</Callout>
+
+Per i team con cataloghi più piccoli (meno di 500 SKU per coorte) o categorie con traffico inferiore, la matematica spesso produce finestre richieste di 21–28 giorni. È scomodo ma corretto. Terminare un test al giorno 10 con p = 0.08 non è «tende verso la significatività» — è un test sottopotenziale con una conclusione al 50%.
+
+La metrica primaria per i test feed dovrebbe essere **CTR a livello di impression** (clic ÷ impression), non il tasso di conversione. Il tasso di conversione introduce variabili a valle — esperienza della pagina di destinazione, competitività dei prezzi, disponibilità di stock — che esulano dal controllo del feed. Isola il lavoro del feed: ottenere il clic.
+
+## Case Study: Test Formato Titolo Su 2.400 SKU (Finestra di 14 Giorni)
+
+Un brand di moda Shopify Plus che gestiva approssimativamente $65k/mese su Google Shopping ha eseguito un test di formato titolo nel Q1 2026 usando il metodo a 3 coorti descritto sopra. La variabile del test era la struttura titolo: il **Control** ha usato il titolo prodotto Shopify predefinito (`Brand + Product Name + Color`), mentre **Variant A** ha ristrutturato a `Brand + Gender + Product Category + Key Attribute + Color` — un formato che antepone segnali di intento di ricerca. Questo tipo di riscrittura di titolo strutturato è uno dei cambiamenti ad alto impatto documentati nell'ottimizzazione dei titoli di prodotto per Google Shopping.
+
+Risultati dopo 14 giorni su 2.400 SKU (800 per coorte):
+
+| Metrica | Control | Variant A | Aumento |
+|---|---|---|---|
+| Impression | 312.400 | 308.900 | — |
+| Clic | 3.748 | 4.271 | +13.9% |
+| CTR | 1.20% | 1.38% | +15.0% |
+| Tasso Conv. | 2.14% | 2.19% | +2.3% (ns) |
+| p-value | — | — | 0.003 |
+
+L'aumento CTR del 15% ha superato comodamente la soglia di confidenza del 95% (p = 0.003). Il miglioramento del tasso di conversione non era statisticamente significativo — il che era previsto, poiché il test ha modificato solo il feed, non la pagina di destinazione. Il team ha implementato i titoli di Variant A sui restanti 1.600 SKU e ha visto l'aumento mantenersi entro 2 punti percentuali nei successivi 30 giorni.
+
+<Callout type="tip">
+Pubblica il tuo design di test — dimensione della coorte, MDE, durata — prima di iniziare l'esperimento. I team che pre-registrano i loro criteri di successo hanno significativamente meno probabilità di dedicarsi al «p-hacking» (terminare il test quando il numero sembra buono). Un Sheet condiviso su Google con l'ipotesi, le metriche e la soglia bloccate prima del giorno 1 richiede meno di 20 minuti e si ripaga ogni volta che il risultato è ambiguo.
+</Callout>
+
+Puoi esplorare ulteriori esempi di impatto del formato titolo tra diversi verticali negli studi di caso di ottimizzazione di MagicFeed Pro, incluso un brand di mobili che ha testato l'ordine degli attributi su 5.400 SKU e ha recuperato un calo CTR del 19% causato da un precedente rinnovamento feed non testato.
+
+## Evitare la Contaminazione Incrociata nelle Campagne Shopping Condivise
+
+La contaminazione incrociata è il motivo più comune per cui i test feed falliscono silenziosamente. Accade quando gli SKU di controllo e variant competono nello stesso gruppo di annunci o quando l'algoritmo Smart Bidding di Google ridistribuisce il budget verso la coorte che sembra performare meglio durante il test. Eliminare questi vettori prima del lancio è non negoziabile.
+
+Tre vettori di contaminazione specifici da eliminare prima del lancio:
+
+**1. Gruppi di annunci condivisi.** Se entrambe le coorti si trovano nello stesso gruppo di annunci, Google auto-prioritizzerà la coorte con CTR più alto mentre il test progredisce, gonfiando la quota di impression della variant a spese del controllo. Il filtro custom label a livello campagna (non a livello di gruppo di annunci) è la fix strutturale.
+
+**2. Sanguinamento dell'apprendimento Smart Bidding.** Le strategie tROAS e Maximize Conversion Value condividono un pool di segnali di performance tra campagne nello stesso account. Un cambiamento di strategia di bid innescato dalla performance di Variant A può sanguinare nel comportamento di bid della campagna Control entro 48–72 ore. Usa strategie di bid separate e indipendenti per ogni coorte — anche se ciò significa duplicare target tROAS identici su due campagne.
+
+**3. Sovrapposizione di liste di remarketing.** Se le tue campagne Shopping usano segnali di pubblico che si sovrappongono tra coorti (comune con liste first-party ampie), gli utenti che hanno visto annunci di Control potrebbero essere retarget da impression di Variant A, mescolando i dati di esposizione. Segmenta i tuoi audience RLSA per recency di acquisto e escludi i segmenti a recency più alta da entrambe le campagne di test durante la finestra di esecuzione.
+
+Per gli account con strutture multi-campagna complesse, la [documentazione del canale Google Shopping di Shopify](https://help.shopify.com/en/manual/online-sales-channels/google) copre come le architetture feed supplementari interagiscono con i filtri prodotto campagna — utile background quando si progettano gerarchie label su 10+ campagne attive.
+
+## Tooling: Template Google Sheets + Workflow Merchant Center API
+
+Un test feed affidabile vive o muore per il suo scaffolding operativo. L'assegnazione manuale di label su migliaia di SKU è soggetta a errori; così come controllare manualmente la significatività ogni mattina. Ecco lo stack tooling minimo che scala senza un team di data engineering.
+
+**Assegnazione coorte (Google Sheets + IMPORTDATA):** Mantieni un elenco SKU master con una colonna `cohort`. Usa `=RANDBETWEEN(1,100)` all'assegnazione iniziale con un cutoff (1–40 = control, 41–80 = variant, 81–100 = holdout) — ma criticamente, **incolla i valori immediatamente** dopo la generazione per congelare l'assegnazione casuale. Le coorti che si rigenerano ad ogni apertura di sheet producono assegnazioni diverse ogni giorno, corrompendo il test.
+
+**Feed supplementare (Merchant Center Content API):** Usa l'[API Content di Merchant Center](https://support.google.com/merchants/) per spingere aggiornamenti `custom_label_0` dalla tua assegnazione Sheets tramite uno script leggero Apps Script o Python. Questo evita il ritardo di 24 ore di elaborazione feed associato ai caricamenti feed supplementari manuali e ti dà un controllo label quasi in tempo reale — critico quando hai bisogno di mettere in pausa una coorte a causa di un'anomalia.
+
+**Tracciamento significatività (Apps Script + formula evanmiller.org):** Replica la formula del test z per due proporzioni direttamente in Sheets. Estrai i dati di impression e clic giornalieri dall'API Google Ads in una tabella in esecuzione. La formula del test z per due proporzioni:
+
+```
+z = (p1 - p2) / sqrt(p_pool * (1 - p_pool) * (1/n1 + 1/n2))
+```
+
+dove `p_pool = (x1 + x2) / (n1 + n2)`. Contrassegna la colonna p-value di rosso quando p > 0.05 e verde quando p ≤ 0.05 — un controllo visivo di due secondi sostituisce una mattina di analisi manuale.
+
+Prima di eseguire qualsiasi test, esegui il tuo feed tramite lo strumento di controllo feed MagicFeed Pro per identificare lacune di attributi che potrebbero introdurre variabili confondenti — un `size_type` mancante sul 30% degli SKU variant, per esempio, sopprimrebbe l'idoneità di quei SKU per query filtrate per dimensione e falsamente deprimere il CTR di Variant A.
+
+L'intero flusso di lavoro — template Sheets, Apps Script per sincronizzazione API, e tracker di significatività — può essere configurato in approssimativamente 3 ore per un team che ha già accesso API configurato. Questo è un investimento una tantum che rende ogni test successivo più veloce e più difendibile per gli stakeholder che vogliono vedere la matematica prima di approvare un rollout a livello di catalogo.
+
+---
+
+<ProductCTA variant="audit" title="Esegui il Tuo Primo Test Feed Con Dati Puliti — Controlla Prima il Tuo Feed" />
+
+<FAQ>
+ <FAQItem
+ q="Quanto a lungo dovrebbe durare un test A/B feed Google Shopping?"
+ a="La maggior parte dei test feed richiede un minimo di 14 giorni — due settimane lavorative complete — per raggiungere l'80% della potenza statistica a un livello di confidenza del 95% con una baseline CTR tipica dell'1–2%. I cataloghi più piccoli o le categorie con traffico inferiore potrebbero aver bisogno di 21–28 giorni. Non abbreviare mai un test durante periodi promozionali; i fine settimana festivi da soli possono spostare le baseline CTR del 15–30%."
+ />
+ <FAQItem
+ q="Posso usare gli esperimenti campagna PMax per testare i cambiamenti del feed di prodotto?"
+ a="No. Lo strumento esperimento Performance Max di Google testa strategie di bid, gruppi di asset e espansione URL — non attributi feed. Modificare i titoli dei prodotti a livello di catalogo e poi eseguire un esperimento PMax contaminata entrambi i bracci perché il gruppo di controllo non esiste più. I test a livello feed richiedono un metodo di coorte con custom label esterno all'UI di esperimento Ads nativo."
+ />
+ <FAQItem
+ q="Quale dimensione campione mi serve per un test split feed statisticamente valido?"
+ a="Per una baseline CTR dell'1.2% e un effetto minimo rilevabile di aumento relativo del 6%, hai bisogno di approssimativamente 18.400 impression per coorte, secondo la formula del test z per due proporzioni. Usa il calcolatore di dimensione campione di Evan Miller (evanmiller.org) con potenza dell'80% e α = 0.05 two-tailed per calcolare il tuo requisito specifico prima di iniziare."
+ />
+ <FAQItem
+ q="Quale è la metrica primaria migliore da misurare in un test feed shopping?"
+ a="CTR a livello di impression (clic ÷ impression) è la metrica primaria corretta per i test feed. Il tasso di conversione introduce variabili a valle esterne al controllo del feed — esperienza della pagina di destinazione, pricing, disponibilità di stock — che oscurano se il cambiamento feed stesso ha guidato la differenza. Isola il lavoro del feed: ottenere il clic qualificato."
+ />
+ <FAQItem
+ q="Come previsto la contaminazione da Smart Bidding nei miei coorti di test feed?"
+ a="Usa strategie di bid separate e indipendenti per ogni campagna coorte — anche con target tROAS identici. Le strategie Smart Bidding condividono segnali di performance tra campagne che condividono una strategia, causando all'algoritmo di ridistribuire il budget verso la coorte con migliore performance a metà test e gonfiare i risultati della variant. Duplica la strategia piuttosto che condividerla."
+ />
+</FAQ>

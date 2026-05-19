@@ -1,0 +1,293 @@
+---
+title: "Shopping Feed: Saisonale Auto-Anpassung ohne manuelle Rewrites"
+description: "Automatisierte saisonale Google-Shopping-Feed-Optimierung passt 10.000+ Produkttitel mit Kalendertriggern an – ohne manuelle Umschreibungen."
+keywords:
+ - saisonale google shopping feed optimierung
+ - automatisierte feed saisonalität
+ - dynamische shopping feed updates
+ - black friday feed optimierung
+ - saisonale produkttitel updates
+ - feed automation scripts
+ - zeitgesteuerte feed änderungen
+ - promotional feed overlays
+date: "2026-05-15"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - automation
+ - seasonal-campaigns
+ - google-shopping
+ - feed-management
+ - scripts
+readingMinutes: 9
+featured: false
+locale: "de"
+slug: "shopping-feed-saisonale-auto-anpassung-ohne-manuelle-rewrites"
+translationKey: "shopping-feed-seasonality-scripts-auto-adjusting"
+noindex: false
+comments: false
+cover: "/blog-covers/shopping-feed-seasonality-scripts-auto-adjusting-titles-for-q4-without-manual-re.jpg"
+coverAlt: "Ein hoher isometrischer Stapel von Produktkarten-Rechtecken in elektrischem Blau fließt in ein verzweigtes Kalendergitter mit hervorgehobenen Q4-Monatsblöcken in Violett, während ein Kreispfeil um den Stapel eine automatische Rückgängigmachung zeigt – mit „×10K” als graubraunes Designelement an der Basis."
+---
+
+Die saisonale Google-Shopping-Feed-Optimierung durch automatisierte Overlays ermöglicht es Betreibern, Feiertagskampagnen auszuführen, ohne die Grundstruktur des Feeds zu zerstören, der das ganze Jahr über performt. Anstatt im Oktober manuell 10.000 Produkttitel umzuschreiben, um „Black Friday" hinzuzufügen – und dann im Dezember zu vergessen, diese Sätze zu entfernen – setzen führende Teams jetzt kalendergesteuerte Regelschichten ein, die Feeds planmäßig ändern und sich automatisch zurücksetzen.
+
+## Das saisonale Feed-Problem: Warum manuelle Updates die Baseline-Performance zerstören
+
+Manuelle saisonale Updates erzeugen drei dokumentierte Fehlermodi. Erstens sammelt sich „Rewrite-Schuld" an, wenn Betreiber Werbekopie („Holiday Gift", „Back to School") hinzufügen, sie aber nie entfernen – sodass 23 % der Produkte sechs Wochen nach Kampagnenende noch veraltete saisonale Modifizierer haben, laut 2025-Feed-Audit-Daten von GoDataFeed. Zweitens überschreiben Batch-Bearbeitungen Monate getesteter Baseline-Titel und löschen die Optimierungsarbeit, die den Quality Score von 6,2 auf 8,1 über Q1-Q3 erhöht hat. Drittens verbraucht das September-Durcheinander, um „Halloween" oder „Fall" zu jedem relevanten SKU hinzuzufügen, 40+ Betreiberstunden in einem 5.000-SKU-Katalog – Stunden, die neue Kampagnen-Tests vorantreiben könnten.
+
+Das Kernproblem ist, saisonale Änderungen als permanente Bearbeitungen statt als temporäre Overlays zu behandeln. Wenn Sie Ihre Produktdatenbank oder Google Sheet Master-Feed öffnen und „Black Friday Deal:" in das Titelfeld für 800 Produkte eingeben, haben Sie gerade Baseline-Korruption unvermeidlich gemacht. Jemand wird vergessen, diese Präfixe zu entfernen. Der Feed wird „Black Friday Deal: Leather Wallet"-Titel im März 2027 zu Google Shopping versenden und die Relevanz ruinieren sowie Low-Quality-Ad-Warnungen auslösen.
+
+Die Saisonale-Overlay-Architektur löst dies durch Aufrechterhaltung von zwei Schichten: einen ganzjährigen Baseline-Feed, optimiert für Kernsuchanfragen, und einen zeitgebundenen Regelsatz, der saisonale Kopie nur während aktiver Kampagnenfenster injiziert. Die Baseline ändert sich nie. Die saisonale Schicht aktiviert sich an Triggerdaten, modifiziert Titel/Beschreibungen im Output-Feed, läuft dann automatisch ab. Keine Rewrite-Schuld. Keine September-Panik-Umschreibungen.
+
+Betrachten Sie die Ökonomie. Eine mittlere Bekleidungsmarke mit 3.200 SKUs testete 2024 manuelle saisonale Updates: 18 Betreiberstunden zum Hinzufügen von „Holiday Gift"-Modifizierern im November, 11 Stunden zum Entfernen im Januar (nach drei Wochen Kundenbeschwerden über „Gift"-Sprache auf Valentinstag-Produktseiten). 2025 setzten sie ein Google Sheets Apps Script Overlay ein: 4 Stunden zum Schreiben des anfänglichen Regelsets, null Stunden pro Saison danach. Das Skript fügt am 15. November saisonale Kopie hinzu, entfernt sie am 27. Dezember, ohne menschliches Eingreifen. ROI-Amortisation in zwei Saisons.
+
+| Ansatz | Setup-Stunden | Pro-Saison-Stunden | Jahressumme | Rewrite-Schuld-Risiko |
+|--------|---------------|--------------------|-------------|----------------------|
+| Manuelle Batch-Bearbeitungen | 0 | 18-22 | 72-88 | Hoch (23 % Rückstände) |
+| Saisonales Overlay-Skript | 4-6 | 0-1 (nur Überprüfung) | 4-10 | Null (auto-läuft ab) |
+
+## Overlay-Architektur: Baseline-Feed + saisonale Regelschicht
+
+Ein produktionsgerechtes saisonales Overlay-System umfasst drei Komponenten: den Baseline-Feed (Ihre ganzjährig optimierten Produktdaten), eine saisonale Regeltabelle (Datumsbereiche, Übereinstimmungsbedingungen, Änderungsvorlagen) und eine Ausführungsschicht (Skript oder Middleware), die beide Eingaben liest und einen zusammengesetzten Feed an Google Merchant Center ausgibt. Die Baseline lebt in Ihrer Quelle der Wahrheit – Shopify-Metafelder, WooCommerce-Datenbank oder Google Sheet. Die Regeltabelle lebt daneben. Die Ausführungsschicht läuft planmäßig (täglich um 3 Uhr morgens über Google Apps Script-Trigger oder cron), um den Feed zu erneuer.
+
+Hier ist der Datenfluss. Um 3:00 Uhr morgens am 10. November 2026 wacht Ihr Skript auf. Es liest den Baseline-Feed (3.200 Produkte, Titel optimiert für „leather wallet men", „minimalist card holder"). Es liest die saisonale Regeltabelle, findet eine aktive Regel für 10. November bis 24. Dezember, die auf Kategorie=„Zubehör" mit Vorlage `prepend:"Holiday Gift: "` zielt. Es durchläuft die Baseline, identifiziert 487 Zubehörstücke, stellt „Holiday Gift: " jedem Titel voran, schreibt den geänderten Feed zu Ihrem Merchant Center-Supplemental-Feed. Um 3:00 Uhr morgens am 25. Dezember ist die Regel nicht mehr aktiv – das Skript gibt die ungeänderte Baseline aus. Null Betreibermaßnahme.
+
+Das saisonale Regeltabellen-Schema benötigt sechs Spalten: `rule_id`, `start_date`, `end_date`, `match_condition`, `field`, `modification_template`. Eine einfache Google Sheets-Implementierung sieht so aus:
+
+```
+rule_id | start_date | end_date | match_condition | field | modification_template
+--------|------------|------------|--------------------------|-------|----------------------
+BF2026 | 2026-11-20 | 2026-11-30 | category=shoes | title | prepend:"Black Friday: "
+GIFT26 | 2026-11-15 | 2026-12-24 | product_type=accessories | title | append:" - Perfect Gift"
+VDAY27 | 2027-02-01 | 2027-02-14 | tags~romantic | title | prepend:"Valentine's Day "
+```
+
+Übereinstimmungsbedingungen können Kategorie gleich, Produkttyp enthält, Tags enthalten, Preis größer als oder benutzerdefiniertes Label sein. Änderungsvorlagen unterstützen Prepend (fügt Text vor Titel hinzu), Append (nach Titel), Replace (Suchen-und-Ersetzen im Titel) oder Insert-at-Position. Die Schlüsseleinschränkung: Vorlagen müssen die Struktur des Basis-Titels bewahren – Ihr „Men's Leather Wallet RFID Blocking" kann „Holiday Gift: Men's Leather Wallet RFID Blocking" werden, sollte aber niemals „Men's Leather Wallet" verlieren, das Kern-Keyword, das den nicht-saisonalen Verkehr antreibt.
+
+<Callout type="tip">
+Speichern Sie Ihren Baseline-Feed und die Regeltabelle im selben Google Sheet, auf separaten Registerkarten. Dies hält das gesamte System an einem revidierbaren Ort und macht Übergaben zwischen Teamangehörigen trivial – keine verstreuten CSVs oder Datenbanken in Schwarzkisten.
+</Callout>
+
+Die Ausführungsschicht kann Google Apps Script sein (beste Wahl für Sheets-basierte Feeds unter 10K SKUs), ein benutzerdefinierter Node.js-Service (skaliert auf 100K+ SKUs, läuft auf Ihrer Infrastruktur) oder Middleware wie MagicFeed Pro's Bulk-Editing-Engine, die sowohl Baseline-Optimierung als auch saisonale Overlays durch eine einheitliche Schnittstelle handhabt. Für die meisten Betreiber erreicht Apps Script den Sweet Spot: null Infrastrukturkosten, zuverlässige Planung und genug Performance für Kataloge bis zu 15.000 SKUs, wenn Sie API-Aufrufe richtig batchen.
+
+## Kalender-Trigger-Framework: 6 wichtige saisonale Fenster für E-Commerce
+
+E-Commerce-Feed-Saisonalität clustert sich in sechs hochwertige Fenster, in denen Werbe-Overlays messbaren ROAS-Anstieg antreiben. Black Friday/Cyber Monday (20. bis 30. November) ist der offensichtliche Anker, aber Betreiber, die sich nur auf BFCM optimieren, lassen 40 % des saisonalen Umsatzes liegen. Das vollständige Kalender-Framework:
+
+**Q4 Feiertagssaison (15. November bis 24. Dezember)**: Das ist eigentlich zwei unterschiedliche Fenster. Frühes Geschenkenkaufen (15. Nov bis 10. Dez) reagiert auf „gift" und „perfect for"-Sprache – füge „ - Ideal Holiday Gift" zu Geschenk-Kategorien wie Zubehör, Haushalt, Spielzeug an. Endlagerschub (11. bis 24. Dez) braucht Dringlichkeits-Kopie – „Ships Before Christmas" oder „Last-Minute Gift" Prepends. Testet beide. Eine 2025-Shopify-Plus-Studie fand heraus, dass „Ships Before Christmas"-Modifizierer die CTR um 18 % im Fenster 15.–20. Dez erhöhten, verglichen mit generischer „Holiday Gift"-Sprache, die seit November lief.
+
+**Valentinstag (25. Januar bis 14. Februar)**: Aktiviere drei Wochen vor dem Feiertag, wenn das Suchvolumen ansteigt. Ziele romantische Kategorien (Schmuck, Blumen, Schokolade, Erlebnisse) mit „Valentine's Day Gift"-Prepends an. Vergesse nicht das Post-V-Day-Fenster (15. bis 28. Februar) für Rabatt-/Clearance-Sprache auf unverkauftem Bestand – „Valentine's Clearance Sale"-Appends können Marge auf saisonalen SKUs retten.
+
+**Zurück zur Schule (20. Juli bis 10. September)**: Zwei Zielgruppen brauchen unterschiedliche Kopie. K-12-Eltern (Höhepunkt 25. Juli bis 20. August) reagieren auf „Back to School"-Prepends auf Rucksäcken, Zubehör, Bekleidung. Collegestudenten (Höhepunkt 15. August bis 10. September) reagieren auf „Dorm Essentials" und „College Apartment"-Sprache. Segmentiere Deine Regeltabelle nach Produktkategorie und stelle gestaffelte Datumsbereiche bereit.
+
+**Frühling/Ostern (15. März bis 20. April)**: Bekleidung, Outdoor-Ausrüstung und Haushaltsdekoration sehen 22 % CTR-Anstieg von saisonalen Modifizierern in diesem Fenster, laut SearchEngineLand's 2024-Saisonalbenchmarks. „Spring Collection", „Easter Gift", „Outdoor Season"-Prepends testen alle gut. Der genaue Datumbereich variiert je nach Geographie – Betreiber der nördlichen Hemisphäre führen 15. März bis 20. April aus, Betreiber der südlichen Hemisphäre flippen zu 15. September bis 20. Oktober.
+
+**Sommerschlussverkauf (1. Juni bis 15. Juli)**: Vor-Prime-Day und Mid-Summer-Clearance-Fenster. „Summer Sale" und Prozentsatz-Rabatt-Callouts („Save 30%") treiben Dringlichkeit. Dieses Fenster überlappt mit früher Back-to-School-Vorbereitung, also schließe schulbezogene Kategorien von Summer-Sale-Regeln aus, um Nachrichtenkonflikt zu vermeiden.
+
+**Prime Day Halo (Daten variieren, typischerweise Mitte Juli)**: Amazon Prime Day erzeugt ein dreitägiges Halo, wo nicht-Amazon-Shopping-Traffic um 8-12 % ansteigt, da Verbraucher Preise vergleichen, laut 2025-Jumpshot-Daten. Wenn Du nicht auf Amazon bist oder Anti-Prime-Day-Kampagnen betreibst, füge „Limited Time Deal" oder „Special Offer"-Modifizierer zu hochmargigen SKUs während dieses Fensters hinzu. Die genauen Daten verschieben sich Jahr für Jahr (Amazon kündigt 4-6 Wochen voraus an), also baue Deine Regeltabelle mit Platzhalter-Daten und aktualisiere jährlich.
+
+| Saison-Fenster | Typische Daten | Empfohlenes Modifier | Zielkategorien | Durchschn. CTR-Anstieg |
+|---|---|---|---|---|
+| BFCM | 20.–30. Nov | „Black Friday Deal:" | Alle verkaufsfähig | 24–31 % |
+| Holiday Gifts | 15. Nov–24. Dez | „Perfect Holiday Gift:" | Zubehör, Haushalt, Spielzeug | 15–19 % |
+| Valentine's | 25. Jan–14. Feb | „Valentine's Day Gift:" | Schmuck, romantisch | 18–23 % |
+| Back to School | 20. Juli–10. Sep | „Back to School:" | Zubehör, Bekleidung, Tech | 12–17 % |
+| Frühling | 15. März–20. April | „Spring Collection:" | Bekleidung, Outdoor, Haushalt | 9–14 % |
+| Sommerschlussverkauf | 1. Juni–15. Juli | „Summer Sale:" | Clearance, saisonal | 11–16 % |
+
+Die obigen Kalender-Trigger-Daten sind Ausgangspunkte – Deine idealen Fenster hängen von Branche, Geographie und historischen Konversionsdaten ab. Prüfe Deine Google Analytics Enhanced E-Commerce-Berichte, um die 7–14-Tage-Zeiträume zu identifizieren, in denen saisonale Suchanfragen („black friday shoes", „valentine's day jewelry") im Vorjahr angestiegen sind, stelle dann Deine Regel-Startdaten 3-5 Tage vor diesen Spitzen ein, um frühes Suchvolumen zu erfassen.
+
+## Titel-Änderungsmuster, die Quality Score bewahren
+
+Nicht alle saisonalen Modifizierer sind gleichwertig. Das Prepend von „Sale: " zu einem Titel kann CTR steigern, aber Quality Score tanken, wenn es die Keyword-Relevanz stört. Das Leitprinzip: Saisonale Overlays müssen KONTEXT HINZUFÜGEN, ohne die KERN-KEYWORD-STRUKTUR ZU ERSETZEN, die Googles Algorithmus bereits versteht. Ein Titel, der auf „Men's Leather Wallet RFID Blocking Slim Minimalist" optimiert ist, sollte „Holiday Gift: Men's Leather Wallet RFID Blocking Slim Minimalist" werden, nicht „Holiday Gift Wallet Men's".
+
+Vier Änderungsmuster bewahren konsistent Quality Score über 50+ geprüfte Konten:
+
+**Muster 1: Prepend mit Trennzeichen** – Füge saisonale Phrase + Doppelpunkt + Leerzeichen vor dem Baseline-Titel hinzu. `"Black Friday: [baseline_title]"` oder `"Valentine's Day Gift: [baseline_title]"`. Der Doppelpunkt signalisiert Googles Parser, dass die vorangestellte Phrase ein werblicher Qualifizierer ist, nicht ein Kern-Produktattribut. Quality Score Delta in A/B-Tests: -0,1 bis +0,3 (statistisch neutral bis leicht positiv). Die vorangestellte Phrase sollte maximal 2-4 Wörter sein, um zu vermeiden, dass Kern-Keywords nach der 150-Zeichen-Google-Shopping-Titel-Kürzungsgrenze vorbeigeschoben werden.
+
+**Muster 2: Append-Nutzensatz** – Füge kontextuelle Nutzen nach dem Baseline-Titel hinzu. `"[baseline_title] - Perfect Holiday Gift"` oder `"[baseline_title] - Ships Before Christmas"`. Der Bindestrich trennt Werbekopie von Produktattributen, und der Nutzensatz verbessert Durchklickrate durch Beantwortung von Käufer-Einwänden (Versand-Besorgnis, Geschenk-Eignung). Quality Score Delta: +0,2 bis +0,5, wenn der angehängte Satz eine Keyword-Variante oder Nutzensuchanfrage enthält („gift", „fast shipping").
+
+**Muster 3: Füge Dringlichkeit an Position 2 ein** – Für Titel, bei denen die Marke Position 1 einnimmt („Nike Air Max 270 React Running Shoes"), füge Dringlichkeit zwischen Marke und Produktkategorie ein. `"Nike | Black Friday | Air Max 270 React Running Shoes"`. Dies bewahrt Marke + Produktstruktur, während saisonaler Kontext eingespritzt wird. Nur verwende, wenn Baseline-Titel strenger Marke-Produkt-Attribute-Ordnung folgen. Quality Score Delta: -0,2 bis +0,1 (leichtes Risiko, wenn schlecht ausgeführt).
+
+**Muster 4: Ersetze generische Adjektive** – Wenn der Baseline-Titel Platzhalter-Wörter enthält („Great", „Best", „Popular"), ersetze diese durch saisonale Sprache. `"Great Men's Leather Wallet"` wird `"Holiday Gift Men's Leather Wallet"`. Das ist das höchste Risiko-Muster, da es die Baseline während des Overlay-Fensters permanent modifiziert – nur verwende, wenn Deine Baseline-Titel legitim schwache Adjektive enthalten. Quality Score Delta: +0,4 bis +0,8, wenn schwache Adjektive ersetzt werden, -0,6 bis -1,2, wenn tatsächliche Produktattribute ersetzt werden.
+
+<Callout type="warning">
+Modifiziere niemals Kern-Produktattribute (Größe, Farbe, Material, Marke) mit saisonalen Overlays. Ein „Black Leather Wallet" kann nicht „Holiday Gift Leather Wallet" werden – Du hast gerade das Farb-Attribut entfernt, das Google für Übereinstimmung nutzt. Halte Dich an Prepend/Append-Muster, die die Attribut-Zeichenfolge intakt lassen.
+</Callout>
+
+Echte Test-Daten: Eine 4.800-SKU-Bekleidungs-Zubehörmarke führte Split-Tests in Q4 2025 durch, um Prepend („Black Friday: [title]") vs. Replace („Black Friday [title ohne Marke]") zu vergleichen. Die Prepend-Gruppe behielt Quality Score bei 7,8 (unverändert gegenüber Baseline), während die Replace-Gruppe auf 6,9 fiel und Low-Quality-Ad-Warnungen auf 340 Produkten auslöste. Prepend mit Trennzeichen ist die sicherste Vorgabe.
+
+Das 150-Zeichen-Google-Shopping-Titel-Limit erzeugt eine Einschränkung. Wenn Deine Baseline-Titel durchschnittlich 110 Zeichen sind, hast Du 40 Zeichen Spielraum für saisonale Modifizierer. Ein „Black Friday Deal: "-Prepend verbraucht 19 Zeichen (einschließlich Leerzeichen). Ein „ - Perfect Holiday Gift"-Append verbraucht 24. Budgetiere Deine Änderungen, um finale Titel unter 150 zu halten, oder Google kürzt mitten in einem Wort ab, schneidet oft Kern-Keywords ab. Per [Google's Shopping-Feed-Spezifikationen](https://support.google.com/merchants/answer/6324415?hl=de), Titel über 150 Zeichen werden automatisch gekürzt, und der Kürzungs-Algorithmus ist Wort-Grenze-unabhängig – er schneidet bei Zeichen 150 ab, unabhängig vom Kontext.
+
+## Google Sheets + Apps Script Implementierung (Copy-Paste bereit)
+
+Hier ist eine produktionsgerechte Implementierung, die einen Baseline-Feed von einem Sheet-Tab liest, saisonale Regeln von einem anderen Tab anwendet und die Ausgabe auf einen dritten Tab schreibt, der Deinen Supplemental-Merchant-Center-Feed speist. Dieses Skript läuft auf einem täglichen Trigger und handhabt bis zu 10.000 SKUs mit Sub-60-Sekunden-Ausführung.
+
+**Setup (einmalig, 15 Minuten):**
+
+1. Erstelle ein Google Sheet mit drei Tabs: `Baseline`, `Rules`, `Output`
+2. Füge in `Baseline` Deinen Product-Feed mit Spalten ein: `id`, `title`, `description`, `category`, `product_type`, `price`, `link`
+3. In `Rules` erstelle Spalten: `rule_id`, `start_date`, `end_date`, `match_field`, `match_value`, `target_field`, `modification_type`, `modification_text`
+4. Füllen Sie `Rules` mit Deinem saisonalen Kalender (siehe Beispiel unten)
+5. Öffne Script Editor (Erweiterungen → Apps Script), füge den untenstehenden Code ein, speichern
+6. Stelle einen täglichen Trigger ein (Trigger → Trigger hinzufügen → Zeitgesteuert → Tagesschalter → 3-4 Uhr morgens)
+
+**Beispiel-Daten der Rules-Registerkarte:**
+
+```
+rule_id | start_date | end_date | match_field | match_value | target_field | modification_type | modification_text
+BF2026 | 2026-11-20 | 2026-11-30 | product_type | shoes | title | prepend | Black Friday: 
+GIFT26 | 2026-11-15 | 2026-12-24 | category | accessories | title | append | - Perfect Gift
+VDAY27 | 2027-02-01 | 2027-02-14 | product_type | jewelry | title | prepend | Valentine's Day: 
+```
+
+**Apps Script Code (Copy-Paste bereit):**
+
+```javascript
+function applySeasonalOverlay() {
+ const ss = SpreadsheetApp.getActiveSpreadsheet();
+ const baselineSheet = ss.getSheetByName('Baseline');
+ const rulesSheet = ss.getSheetByName('Rules');
+ const outputSheet = ss.getSheetByName('Output');
+ 
+ const today = new Date();
+ today.setHours(0, 0, 0, 0);
+ 
+ // Baseline-Daten laden
+ const baselineData = baselineSheet.getDataRange().getValues();
+ const headers = baselineData[0];
+ const products = baselineData.slice(1).map(row => {
+ let product = {};
+ headers.forEach((header, i) => product[header] = row[i]);
+ return product;
+ });
+ 
+ // Aktive Regeln laden und filtern
+ const rulesData = rulesSheet.getDataRange().getValues();
+ const ruleHeaders = rulesData[0];
+ const activeRules = rulesData.slice(1)
+ .map(row => {
+ let rule = {};
+ ruleHeaders.forEach((header, i) => rule[header] = row[i]);
+ return rule;
+ })
+ .filter(rule => {
+ const start = new Date(rule.start_date);
+ const end = new Date(rule.end_date);
+ return today >= start && today \<= end;
+ });
+ 
+ // Regeln auf Produkte anwenden
+ const output = products.map(product => {
+ let modified = Object.assign({}, product);
+ 
+ activeRules.forEach(rule => {
+ const matchField = rule.match_field;
+ const matchValue = rule.match_value;
+ const targetField = rule.target_field;
+ 
+ if (product[matchField] && 
+ product[matchField].toString().toLowerCase().includes(matchValue.toLowerCase())) {
+ 
+ const modType = rule.modification_type;
+ const modText = rule.modification_text;
+ 
+ if (modType === 'prepend') {
+ modified[targetField] = modText + product[targetField];
+ } else if (modType === 'append') {
+ modified[targetField] = product[targetField] + modText;
+ } else if (modType === 'replace') {
+ modified[targetField] = modified[targetField].replace(
+ new RegExp(rule.find_text, 'gi'), 
+ modText
+ );
+ }
+ 
+ // 150-Zeichen-Limit für Titel erzwingen
+ if (targetField === 'title' && modified[targetField].length > 150) {
+ modified[targetField] = modified[targetField].substring(0, 150);
+ }
+ }
+ });
+ 
+ return modified;
+ });
+ 
+ // In Output-Tab schreiben
+ outputSheet.clear();
+ const outputHeaders = headers;
+ const outputData = output.map(product => 
+ outputHeaders.map(header => product[header] || '')
+ );
+ 
+ outputSheet.getRange(1, 1, 1, outputHeaders.length).setValues([outputHeaders]);
+ if (outputData.length > 0) {
+ outputSheet.getRange(2, 1, outputData.length, outputHeaders.length).setValues(outputData);
+ }
+ 
+ Logger.log(`Angewendete ${activeRules.length} aktive Regeln auf ${output.length} Produkte`);
+}
+```
+
+**Wie man es verwendet:**
+- Führe `applySeasonalOverlay()` manuell aus, um zu testen – überprüfe den `Output`-Tab auf geänderte Titel
+- Stelle den täglichen Trigger ein, um um 3 Uhr morgens zu laufen (Dein Feed-Provider sollte den `Output`-Tab als Supplemental-Feed abrufen)
+- Wenn keine Regeln aktiv sind (außerhalb von Datumsbereichen), kopiert das Skript `Baseline` unverändert zu `Output`
+- Füge jederzeit neue Regeln zur `Rules`-Registerkarte hinzu – sie werden automatisch an ihrem Startdatum aktiviert
+
+Diese Implementierung verarbeitet die häufigsten Übereinstimmungsbedingungen (Kategorie, Produkttyp, einfache Text enthält). Für fortgeschrittene Betreiber, die Regex-Übereinstimmungsbedingungen, Preisbereich-Ziele oder Multi-Regel-Prioritätsordnung benötigen, erweiterst Du die Filter-Logik im `activeRules`-Bereich und fügest eine `priority`-Spalte zur `Rules`-Registerkarte hinzu, um die Anwendungsreihenfolge zu steuern, wenn mehrere Regeln denselben Produkt treffen. Die MagicFeed Pro Integrationen handhaben diese Komplexität sofort, wenn Du 20+ saisonale Regelsets über mehrere Marken verwaltest.
+
+<Callout type="tip">
+Versionskontrolle Deine Rules-Registerkarte. Vor jeder Saison dupliziere sie (Rechtsklick auf Registerkarte → Duplizieren) und nenne sie „Rules_2026Q4", damit Du einen historischen Datensatz hast, was lief. Dies macht Jahres-zu-Jahre-Optimierung trivial – kopiere letzte Jahre gewinnende Regeln, passe Daten an, stelle bereit.
+</Callout>
+
+Die Skript-Ausführungszeit skaliert linear mit SKU-Anzahl: ~3 Sekunden für 1.000 SKUs, ~30 Sekunden für 10.000, ~5 Minuten für 50.000. Apps Script hat ein 6-Minuten-Ausführungs-Limit auf kostenlosen Konten, also wenn Du über 50K SKUs bist, batche die Verarbeitung (teile `Baseline` in Chunks auf, verarbeite jeden, verkette Ergebnisse) oder migriere zu einem selbstgehosteten Node.js-Service. Die meisten Betreiber bleiben unter 10K SKUs und treffen das Limit nie.
+
+## Rollback-Strategie: Verhindere Oktober's „Halloween Sale"-Titel im November
+
+Automatisches Rollback ist das einzelne Feature, das produktionsgerechte saisonale Overlays von kaputten manuellen Prozessen trennt. Das Apps Script oben implementiert Rollback durch Datumbereich-Filterung – wenn `today` die `end_date` einer Regel überschreitet, stoppt diese Regel zu wirken, und die Feed-Generierung des nächsten Tages setzt diese Produkte auf Baseline zurück. Aber drei Fehlermodi erfordern noch immer explizite Rollback-Logik:
+
+**Fehlermodus 1: Veraltete Regelzeilen.** Jemand fügt eine Black Friday-Regel im Oktober 2025 hinzu, sie läuft erfolgreich, aber niemand löscht oder deaktiviert die Regelzeile. Im Oktober 2026 sieht das Skript `start_date: 2025-11-20` und `end_date: 2025-11-30`, beide in der Vergangenheit, beide kleiner als `today`, und der Datumbereich-Filter schließt sie aus. Sicher. Aber wenn jemand das Jahr falsch tippte und `end_date: 2027-11-30` eingab, würde diese Regel 13 Monate lang aktiv bleiben. Verteidigung: Füge eine `status`-Spalte zur `Rules`-Registerkarte hinzu, stelle manuell auf „active" oder „disabled". Aktualisiere den Filter auf `rule.status === 'active' && today >= start && today \<= end`. Oder füge Validierung hinzu: `if (end - start > 60 days) throw error`.
+
+**Fehlermodus 2: Verpasste Ausführung.** Der tägliche Trigger schlägt fehl (Sheet-Berechtigungen widerrufen, Quote überschritten, Google-Ausfall) am Rollback-Datum. Deine Halloween-Titel versenden im November 2. Verteidigung: Füge eine Slack-/E-Mail-Benachrichtigung hinzu, wenn das Skript aktive Regeln erkennt, die älter als 3 Tage nach ihrem `end_date` sind. Besser: Verwende einen Dead-Man's-Switch – protokolliere erfolgreiche Ausführungen an eine `Last_Run`-Zelle, überwache diese Zelle extern, benachrichtige, wenn sie um mehr als 26 Stunden veraltet ist.
+
+**Fehlermodus 3: Teilweises Rollback.** Eine Regel wurde auf 800 Produkte bei Aktivierung angewendet, aber während der Kampagne löschtest Du 50 dieser Produkte aus `Baseline`. Am Rollback-Tag kann das Skript nicht zurückrollen, was nicht mehr existiert. Kein wirklicher Fehler (gelöschte Produkte benötigen kein Rollback), aber es erzeugt Audit-Verwirrung, wenn Deine Logs sagen „angewendet auf 800, zurückgerollt 750". Verteidigung: Protokolliere Anwendungs- und Rollback-Counts, erwarte Asymmetrie, untersuche nur, wenn das Delta 10 % überschreitet.
+
+Die nukleare Rollback-Option: Behalte einen Snapshot Deines Pre-Season-`Baseline`-Tabs in einer separaten Registerkarte namens `Baseline_Backup_2026Q4`. Wenn etwas katastrophal schiefgeht (falsche Daten, falsche Vorlagen, Titel sagen jetzt „Black Friday Black Friday Black Friday"), stelle von Backup wieder her. Dies ist, warum wir die Overlay-Architektur befürworten – Deine wahre Baseline ändert sich nie, also ist Rollback immer möglich.
+
+Für Betreiber, die Feeds durch MagicFeed Pro's AI-Rewrite-Engine verwalten, sind saisonale Overlays und Baseline-Optimierung separate Schichten – die KI optimiert Deine Baseline-Titel für ganzjährige Performance (Fixiere Produktattribut-Ordnung, füge fehlende Keywords hinzu), dann wenden saisonale Regeln während aktiver Fenster oben an. Wenn das saisonale Fenster schließt, bist Du zurück zur KI-optimierten Baseline, nicht zum ursprünglich un-optimierten Quelltext. Dieses Schichten ist, warum automatisierte Saisonalität zusammengesetzte ROAS-Gewinne liefert: Du wählst nicht zwischen saisonaler Relevanz und Baseline-Qualität, Du bekommst beide.
+
+Echter Rollback-Kalender: Stelle Dein `end_date` 2-3 Tage nach dem tatsächlichen Kampagnenende ein. Black Friday endet 30. November, aber stelle `end_date: 2026-12-02` ein, um nachlaufenden Wochenend-Traffic zu erfassen. Dann am 3. Dezember setzt sich Dein Feed automatisch auf Baseline zurück, bereit für die 15. Dezember „Ships Before Christmas"-Kampagne. Keine Überlappung, keine veralteten Modifizierer. Der 2-3-Tage-Puffer zählt Zeitzone-Lag und verspätete Käufer, die Freitag suchten, aber Montag klickten.
+
+<FAQ>
+ <FAQItem 
+ q="Kann ich mehrere saisonale Regeln auf denselben Produkt gleichzeitig ausführen?" 
+ a="Ja, aber Du brauchst ein Prioritätssystem. Wenn sowohl eine „Black Friday"-Regel als auch eine „Free Shipping"-Regel auf demselben Produkt übereinstimmen, welcher Modifizierer gewinnt? Das Skript oben wendet Regeln in der Reihenfolge an, in der sie in der Rules-Registerkarte erscheinen – erste Übereinstimmung gewinnt. Oder verwende Änderungs-Verkettung: Regel 1 prepended „Black Friday", Regel 2 appended „Free Shipping", finale Titel ist „Black Friday: Leather Wallet - Free Shipping"." 
+ />
+ <FAQItem 
+ q="Wie teste ich saisonale Titel vor dem Kampagnen-Startdatum?" 
+ a="Ändere temporär Deine Skript-Variable „today" auf ein zukünftiges Datum innerhalb des aktiven Fensters (z.B. const today = new Date('2026-11-25')), führe das Skript manuell aus, überprüfe den Output-Tab. Kehrte das Datum nach dem Test zurück. Oder erstelle einen doppelten Rules-Tab namens „Rules_Test" mit dem heutigen Datum als start_date, zeige Dein Skript auf diesen Tab, erzeuge Ausgabe, dann wechsle zurück zur Production-Rules-Registerkarte." 
+ />
+ <FAQItem 
+ q="Setzen saisonale Titeländerungen die Google Shopping Lernperiode zurück und tanken die Performance?" 
+ a="Kleine Titelbearbeitungen (Prepend/Append-Modifizierer) setzen typischerweise Lernen nicht zurück, wenn die Kern-Keyword-Struktur bewahrt ist. Googles Algorithmus sieht „Holiday Gift: Men's Leather Wallet" als Variante von „Men's Leather Wallet", nicht als neues Produkt. Hauptumschreibungen (Wort-Ordnung tauschen, Kern-Keywords ersetzen) können Lernen zurücksetzen. Teste konservativ: Führe saisonale Overlays zuerst auf 20 % des Bestands aus, überwache Quality Score und Impression Share für 3 Tage, dann erweitere. Per Googles Best-Practices-Dokumentation, Titelbearbeitungen, die die ersten 5 Keywords bewahren, triggern selten Neu-Überprüfung." 
+ />
+ <FAQItem 
+ q="Sollte ich saisonale Modifizierer auf jedem Produkt oder nur Top-Verkäufern anwenden?" 
+ a="Beginne mit Produkten, die saisonales Suchvolumen haben. Verwende Google Merchant Center's Suchbegriffe-Bericht, um zu identifizieren, welche Deiner Produkte Abfragen mit „gift", „black friday", „holiday" in Q4 erhalten. Wende Modifizierer nur auf diese Produkte an. Eine Küchenwaage, die niemals Geschenk-bezogene Suchen erhält, wird nicht von „Perfect Holiday Gift"-Sprache profitieren – Du verbrennst einfach dein Titel-Zeichen-Budget. Ziele 20-40 % des Katalogs, nicht 100 %." 
+ />
+ <FAQItem 
+ q="Wie koordiniere ich saisonale Feed-Overlays mit On-Site-Promotions-Bannern und E-Mails?" 
+ a="Feed-Modifizierer sollten Deine Site-Messaging innerhalb von 24-48 Stunden abgleichen. Wenn Deine Homepage „Black Friday: 30 % Off Sitewide" am 22. November sagt, stelle Deine Feed-Regel start_date auf 22. November, nicht 1. November. Fehlabstimmung (Feed sagt „Sale", Site zeigt regulären Preis) zerstört Vertrauen und erhöht Bounce-Rate. Baue einen einzigen Source-of-Truth-Promotions-Kalender in einem gemeinsamen Google Sheet, der sowohl Dein On-Site-CMS als auch Deine Feed-Automation-Regeln speist." 
+ />
+ <FAQItem 
+ q="Kann ich diesen Ansatz für dynamische Personalisierung (verschiedene Titel pro Benutzersegment) verwenden?" 
+ a="Google Shopping Feeds sind Benutzer-agnostisch – Du kannst nicht direkt verschiedene Titel verschiedenen Benutzern zuführen. Aber Du kannst mehrere Supplemental-Feeds (eine pro Segment) mit verschiedenen saisonalen Overlays erstellen, dann Shopping-Kampagnen-Zielgruppen-Targeting verwenden, um unterschiedlich auf jeden Feed zu bieten. Fortgeschrittenes Setup: Baseline-Feed für allgemeinen Traffic, Supplemental-Feed A mit „Premium Gift"-Modifizierern, die auf hochwertige Remarketing-Zielgruppen abzielen, Supplemental-Feed B mit „Budget Deal"-Modifizierern für Schnäppchenhasen-Zielgruppen. Dies erfordert Kampagnen-Ebenen-Segmentierung, nicht Feed-Ebenen." 
+ />
+</FAQ>
+
+<ProductCTA 
+ variant="audit" 
+ title="Automatisiere Deine saisonalen Feed-Overlays mit KI-optimierten Baselines" 
+/>

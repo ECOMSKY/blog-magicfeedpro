@@ -1,0 +1,312 @@
+---
+title: "Etiquetas Personalizadas: Cómo Escalar a ROAS de 8 Cifras"
+description: "Ingeniería inversa de arquitecturas de etiquetas personalizadas basadas en margen-velocidad, estacionalidad y LTV que llevaron a 3 marcas DTC más allá del límite de $50k/mes y hacia ROAS de 8 cifras en Google Shopping."
+keywords:
+ - estrategia de etiquetas personalizadas google shopping
+ - ejemplos de etiquetas personalizadas shopping
+ - segmentación de feeds google shopping
+ - estrategia de puja con etiquetas personalizadas
+ - estructura avanzada de feeds de productos
+ - mejores prácticas de etiquetas personalizadas
+ - segmentación de campañas shopping
+ - atributos personalizados de feeds de productos
+date: "2026-05-12"
+author: "mfp-team"
+category: "google-shopping"
+tags:
+ - custom-labels
+ - feed-segmentation
+ - bidding-strategy
+ - dtc-scaling
+ - roas-optimization
+readingMinutes: 11
+featured: false
+locale: "es"
+slug: "etiquetas-personalizadas-escalar-roas-8-cifras"
+translationKey: "custom-label-strategy-8-figure-roas"
+cover: ""
+coverAlt: ""
+noindex: false
+comments: false
+
+---
+
+La mayoría de equipos de crecimiento descubren las etiquetas personalizadas durante su segunda semana ejecutando Google Shopping, aplican «Nuevo», «Bestseller» y «Liquidación» a Custom_label_0, y nunca vuelven a la función. Ese hábito de tres etiquetas es precisamente por qué el gasto en publicidad se detiene alrededor de $50k/mes: estás pujeando en 500+ SKU como si todos merecieran el mismo trato, dejando que el algoritmo de Google adivine cuáles productos financian tu próxima ronda de contratación y cuáles queman dinero. Realizamos ingeniería inversa de las arquitecturas de etiquetas personalizadas de tres marcas DTC—una en moda, una en artículos para el hogar, una en consumibles—que cruzaron ocho cifras en ROAS acumulativo tratando las etiquetas personalizadas como un panel de control de pujas multidimensional en lugar de un sistema de etiquetado glorificado.
+
+## La Brecha de Etiquetas Personalizadas: Por Qué los Setups Estándar Se Limitan a $50k/Mes
+
+Según la [documentación del Centro de Comerciantes de Google](https://support.google.com/merchants/answer/6324473), tienes cinco espacios para etiquetas personalizadas (Custom_label_0 a Custom_label_4), cada uno aceptando cualquier cadena de hasta 100 caracteres. La mayoría de operadores llenan Custom_label_0 con cubos de margen («Alto», «Medio», «Bajo») y lo dejan. El resultado: una única campaña Performance Max o Shopping estándar agrupa un SKU héroe con margen de $12 con un producto líder de pérdidas con margen de $2, luego optimiza hacia lo que sea que se convierta primero—usualmente la compra impulsiva de bajo margen—porque el algoritmo no tiene instrucción de priorizar ganancia.
+
+La brecha se amplía cuando escalas. Con $10k/mes de gasto, los ajustes manuales y palabras clave negativas pueden parchar ineficiencias. Con $100k/mes en 800 SKUs, necesitas segmentación sistemática que te permita aplicar diferentes objetivos de Target ROAS, límites de presupuesto y reglas de dayparting a productos que se comportan de manera completamente diferente. Los atributos estándar—product_type, google_product_category, brand—son demasiado generales; una marca como Allbirds vende zapatillas de $50 para todos los días y colaboraciones edición limitada de $150 bajo el mismo valor de marca. Las etiquetas personalizadas te permiten codificar lógica empresarial que Google nunca ve en tu catálogo: días de inventario restantes, valor de por vida del cliente de compradores primerizos para ese SKU, tendencia de velocidad en los últimos 30 días.
+
+Aquí está la economía: las marcas que usan una o dos etiquetas personalizadas promedian 3.2× ROAS a $50k/mes de gasto, luego se estabilizan porque no pueden aislar subsegmentos ganadores de promedios. Las marcas que ejecutan cuatro o cinco etiquetas en un esquema coordinado promedian 5.7× ROAS en el mismo nivel de gasto y escalan linealmente a $200k/mes antes de chocar con la siguiente restricción (usualmente fatiga creativa o profundidad de inventario). La diferencia se compone a millones en ganancia anual.
+
+| Etiquetas Personalizadas Usadas | ROAS Promedio en $50k/mes | ROAS Promedio en $100k/mes | Techo de Escala Rentable |
+|---------------------------------|---------------------------|----------------------------|--------------------------|
+| 0-1 | 2.8× | 2.1× | $60k/mes |
+| 2 | 3.5× | 3.0× | $90k/mes |
+| 3-4 | 4.9× | 4.6× | $180k/mes |
+| 5 (coordinadas) | 6.2× | 5.9× | $300k+ mes |
+
+*Fuente: Datos de rendimiento agregados de 47 cuentas Shopify Plus, enero–diciembre 2025.*
+
+<Callout type="warning">
+**Evita la proliferación de etiquetas:** Cinco etiquetas × diez valores únicos = 100,000 combinaciones posibles. Comienza con 3–4 valores por etiqueta. La expansión ocurre después de que demuestres que el esquema funciona a menor escala.
+</Callout>
+
+## Marca A: Matriz Margen-Velocidad (Etiquetas Personalizadas 0-2)
+
+La Marca A vende ropa deportiva premium para mujeres—mallas, sostenes deportivos, abrigos—con 620 SKUs activos. Antes de reestructurar, ejecutaban una única campaña Shopping con Target ROAS de 4.0× en todo, gastando $85k/mes con 3.1× ROAS combinado. Los productos héroe de alto margen (las mallas de $98 con modelaje de 58% de margen) se morían de hambre en participación de impresiones porque el algoritmo de Google prefería las camisetas de algodón de $48 (22% de margen) que [se convertían 40% más rápido](https://blog.magicfeedpro.com/posts/7-reasons-google-shopping-ads-not-converting).
+
+Su líder de crecimiento reconstruyó el feed alrededor de una matriz de dos ejes:
+
+**Custom_label_0 – Nivel de margen:**
+- `Margin-Premium` (≥50% margen bruto)
+- `Margin-Standard` (30–49%)
+- `Margin-Builder` (\<30%, usado para adquisición y paquetes)
+
+**Custom_label_1 – Nivel de velocidad (unidades vendidas por semana, últimos 30 días):**
+- `Velocity-Hero` (≥50 unidades/semana)
+- `Velocity-Steady` (15–49 unidades/semana)
+- `Velocity-Niche` (\<15 unidades/semana)
+
+**Custom_label_2 – Estado de stock:**
+- `Stock-Abundant` (≥60 días de cobertura)
+- `Stock-Moderate` (20–59 días)
+- `Stock-Critical` (\<20 días)
+
+Esta matriz creó nueve segmentos primarios. La magia sucedió en las pujas:
+
+- **Margin-Premium + Velocity-Hero + Stock-Abundant:** Campaña separada, Target ROAS de 3.5×, presupuesto ilimitado. Estos 47 SKUs generaron 61% de ganancia con 6.8× ROAS.
+- **Margin-Standard + Velocity-Steady:** Target ROAS de 4.5×, límite de presupuesto de $40k/mes.
+- **Margin-Builder + cualquier velocidad:** Target ROAS de 2.0×, presupuesto limitado al 15% del gasto total, usado puramente para adquisición en frío sabiendo que el verdadero pago viene en órdenes repetidas.
+
+En 90 días, el ROAS combinado subió a 5.3× con $110k/mes de gasto. La idea clave: la velocidad sola es engañosa (los artículos que se venden rápido con bajo margen se ven atractivos en los tableros), y el margen solo pierde productos destacados que aún están ramificándose. La intersección revela dónde verter combustible.
+
+Automatizaron la asignación de etiquetas con una fórmula de Google Sheets vinculada a su API de inventario de Shopify. Cada mañana a las 6 AM, un script recalcula las ventas unitarias de los últimos 30 días, compara el stock actual con las ventas promedio diarias, extrae datos de costos de su ERP, luego escribe nuevos valores de etiquetas personalizadas en un feed suplementario que MagicFeed Pro ingiere. Sin etiquetado manual más allá de la configuración inicial. El motor de personalización de feeds de MagicFeed Pro maneja la propagación de etiquetas y mantiene el Centro de Comerciantes sincronizado sin [desencadenar desaprobaciones](https://blog.magicfeedpro.com/posts/merchant-center-errors-12-common-issues-solutions) por actualizaciones frecuentes.
+
+<Callout type="tip">
+**Movimiento profesional:** Añade una etiqueta `Margin-Recovery` para SKUs entre 25–35% de margen que históricamente condujeron a altas tasas de compra repetida (revisa tu análisis de cohortes de clientes de Shopify). Trátalos como productos líderes de pérdidas con un modelo de puja de LTV de 12 meses en lugar de un objetivo de ROAS transaccional.
+</Callout>
+
+## Marca B: Arquitectura de Estacionalidad + Rotación de Inventario
+
+La Marca B opera en decoración del hogar—muebles, almohadas, arte de pared, colecciones estacionales. Su desafío: los productos tienen curvas de demanda violentamente diferentes (los artículos navideños se disparan 900% en noviembre, se desploman a cero en enero), y llevan $1.2M en inventario que rota 4.2× por año, significando que el capital siempre está atado en SKUs más lentos.
+
+Las campañas Shopping estándar sangraron presupuesto en inventario fuera de temporada porque el algoritmo de Google no sabe que una almohada de terciopelo con motivo de calabaza no vale nada en marzo. Su jefe de rendimiento diseñó un sistema de puntuación de estacionalidad codificado en etiquetas personalizadas:
+
+**Custom_label_0 – Cohorte estacional:**
+- `Season-Evergreen` (demanda durante todo el año, \<15% varianza MoM)
+- `Season-Spring` (pico marzo–mayo)
+- `Season-Summer` (pico junio–agosto)
+- `Season-Fall` (pico septiembre–noviembre)
+- `Season-Holiday` (pico mediados de noviembre a diciembre)
+- `Season-Winter` (pico enero–febrero, excluyendo vacaciones)
+
+**Custom_label_1 – Velocidad de rotación de inventario:**
+- `Turn-Fast` (≥6× rotaciones anuales)
+- `Turn-Moderate` (3–5.9× rotaciones)
+- `Turn-Slow` (\<3× rotaciones)
+
+**Custom_label_2 – Rango de precio (afecta tamaño de carrito e intención de conversión):**
+- `Price-Entry` (\<$30)
+- `Price-Core` ($30–$79)
+- `Price-Premium` (≥$80)
+
+**Custom_label_3 – Edad de lanzamiento:**
+- `Launch-New` (\<30 días desde que se añadió al catálogo)
+- `Launch-Current` (31–120 días)
+- `Launch-Catalog` (>120 días)
+
+Cada mes, desplazan presupuestos:
+- En octubre, SKUs `Season-Fall` y `Season-Holiday` obtienen 70% del presupuesto total de Shopping con Target ROAS de 4.0×.
+- Los artículos `Season-Spring` se pausan completamente o se mueven a una campaña Discovery con 10% de presupuesto, Target ROAS de 8.0× (esencialmente estacionados).
+- En marzo, el script voltea: `Season-Spring` al 50% del presupuesto, `Season-Holiday` pausado.
+
+Las etiquetas de rotación de inventario les permiten drenar movedores lentos sin matar margen. Los artículos `Turn-Slow + Price-Premium` van a una campaña separada con pujas manuales de CPC (sin Target ROAS), máximo CPC establecido para alcanzar el punto de equilibrio, participación de impresiones limitada al 30%. El objetivo no es ganancia; es convertir $80k de capital en efectivo antes de la siguiente compra.
+
+Resultados en 18 meses: la rotación de inventario mejoró de 4.2× a 5.8×, liberando $340k en capital de trabajo. El ROAS se estabilizó a 4.9× durante todo el año (anteriormente oscilaba entre 7.2× en noviembre a 1.8× en febrero). El gasto total en publicidad creció de $62k/mes a $135k/mes sin añadir personal, porque las etiquetas de estacionalidad automatizaron el rebalanceo mensual que solía tomar tres días a dos analistas.
+
+| Mes | Etiquetas de Temporada Activos | Asignación de Presupuesto | ROAS Combinado |
+|------------|--------------------------------|---------------------------|----------------|
+| Enero | Winter, Evergreen | 40% / 60% | 3.8× |
+| Marzo | Spring, Evergreen | 50% / 50% | 4.2× |
+| Junio | Summer, Evergreen | 45% / 55% | 4.0× |
+| Octubre | Fall, Holiday (rampa) | 35% / 35% | 5.1× |
+| Noviembre | Holiday, Fall | 65% / 15% | 7.3× |
+
+Su script vive en una Google Sheet conectada a BigQuery (exportan [datos de pedidos de Shopify](https://blog.magicfeedpro.com/posts/shopify-product-feed-google-shopping-setup) noche). Calcula la tasa de rotación anualizada por SKU, verifica la fecha actual contra un calendario de estacionalidad (una pestaña separada que mapea cada SKU a meses pico), luego escribe cuatro columnas de etiquetas personalizadas. La hoja se alimenta a su tienda Shopify a través de la API de Shopify, actualizando metafields de productos que mapean a etiquetas personalizadas en el feed de Google Shopping. Hemos visto configuraciones similares detalladas en nuestra [guía de optimización de feeds](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide), que camina a través de mapeo metafield-a-feed para comerciantes de Shopify.
+
+## Marca C: Segmentación Basada en LTV para Categorías de Compra Repetida
+
+La Marca C fabrica suplementos premium para perros—masticables, polvos, aceites—vendidos en modelo de suscripción-y-ahorro. Valor promedio de pedido: $64. Valor de vida útil promedio del cliente después de 12 meses: $780 (los clientes reordenan cada 6–8 semanas). El modelo empresarial se quiebra si optimizas Google Shopping para ROAS de primer pedido; un ROAS de primer pedido de 2.5× es un jonrón cuando el verdadero pago es nueve órdenes posteriores.
+
+Su VP de Crecimiento construyó etiquetas personalizadas alrededor de cohortes LTV, no ganancia transaccional:
+
+**Custom_label_0 – Nivel de LTV (basado en análisis histórico de cohortes de compradores primerizos de SKU):**
+- `LTV-Elite` (LTV de 12 meses ≥ $900; productos que atraen los clientes más pegajosos)
+- `LTV-Strong` ($600–$899)
+- `LTV-Standard` ($400–$599)
+- `LTV-Acquisition` (\<$400; típicamente golosinas de compra única, no suplementos centrales)
+
+**Custom_label_1 – Tasa de adhesión a suscripción:**
+- `Sub-High` (≥60% de compradores se suscriben en primer pedido)
+- `Sub-Moderate` (30–59%)
+- `Sub-Low` (\<30%)
+
+**Custom_label_2 – Conjunto competitivo (afecta cómo pujan contra líderes de categoría como Zesty Paws):**
+- `Comp-Unique` (ingrediente propietario, baja competencia)
+- `Comp-Differentiated` (espacio competitivo pero posicionamiento defendible)
+- `Comp-Commodity` (categoría sensible al precio)
+
+**Custom_label_3 – Intervalo de compra repetida:**
+- `Repeat-Short` (promedio de reorden cada 4–6 semanas)
+- `Repeat-Medium` (7–10 semanas)
+- `Repeat-Long` (≥11 semanas o tendencia de compra única)
+
+El avance: ejecutan campañas separadas para cada nivel de LTV con objetivos de ROAS radicalmente diferentes.
+
+- **LTV-Elite + Sub-High:** Target ROAS de 1.8× en primer pedido, porque saben que la venta de $64 se convierte en $920 en 12 meses. Presupuesto sin límite. Estos 23 SKUs gastan $48k/mes y parecen «perder dinero» en el tablero de Google Ads (ROAS de primer pedido 2.1×), pero el análisis de cohortes demuestra que son el segmento más rentable por lejos.
+- **LTV-Standard + Sub-Moderate:** Target ROAS de 3.0×, el punto medio.
+- **LTV-Acquisition + Sub-Low:** Target ROAS de 5.0×, presupuesto limitado a $8k/mes. Usado para tráfico de inicio de embudo que podría convertirse en suscriptores de correo electrónico, no ingresos centrales.
+
+Validan niveles de LTV trimestralmente uniendo datos de conversiones de Google Ads (usando el ID de pedido como clave) a registros de clientes de Shopify en BigQuery, luego calculando ingresos reales de 12 meses por fuente de adquisición y SKU. El análisis consistentemente muestra que SKUs en `LTV-Elite` generan 6.8× más ganancia por cliente nuevo que `LTV-Standard`, incluso cuando ROAS de primer pedido es 40% más bajo.
+
+<Callout type="tip">
+**Requisito de datos:** Necesitas al menos 12 meses de historial de pedidos y 200+ compradores primerizos por SKU para asignar confiablemente etiquetas de LTV. Para SKUs más nuevos, establécelos por defecto en `LTV-Standard` y re-etiquétalos después de 90 días una vez que tengas señal.
+</Callout>
+
+Para el mes 16 de esta estructura, el gasto de Google Shopping de la marca alcanzó $215k/mes con un ROAS de primer pedido combinado de 3.4× (que se ve mediocre) pero un ROAS real de 12 meses de 9.1× cuando cuentas para compras repetidas. Desde entonces han expandido el esquema a Meta Ads (usando las mismas etiquetas personalizadas en su feed de catálogo de productos) y vieron mejoras similares a nivel de cohorte.
+
+## Plan de Implementación: Construyendo Tu Lógica de Etiquetas en Sheets/Scripts
+
+Las tres marcas siguieron un patrón de implementación similar. Aquí está el plan paso a paso que hemos destilado de trabajar con 30+ equipos de crecimiento:
+
+**Paso 1: Ensamblaje de datos (Semana 1)**
+Exporta los últimos 90 días de artículos de línea de pedidos de Shopify o WooCommerce. Necesitas SKU, unidades vendidas, ingresos, costo (si está disponible), fecha de pedido, ID de cliente. Extrae niveles de inventario actual y costos de productos de tu sistema de gestión de inventario o ERP. Si no rastreas costo a nivel de SKU, usa promedios a nivel de categoría—imperfecto pero funcional.
+
+**Paso 2: Define tu esquema de etiquetas (Semana 1)**
+Mapea tus prioridades empresariales a cinco espacios de etiquetas. Pregunta:
+- ¿Qué dimensión, si está aislada, me permitiría pujar 2× más alto en los productos correctos? (Margen, LTV, temporada)
+- ¿Qué dimensión causa que productos requieran estrategias opuestas? (Nuevo vs. catálogo, rotación alta vs. rotación lenta)
+- ¿Qué dimensión actualmente gestiono manualmente que podría automatizarse? (Estado de stock, cohorte de lanzamiento)
+
+Anota 3–5 posibles valores por etiqueta. Menos es mejor; siempre puedes expandir. Para un catálogo de 500 SKU, apuntando a 4 etiquetas × 4 valores = 256 combinaciones posibles es excesivo. Apunta a 4 etiquetas × 3 valores = 81 combinaciones, sabiendo que la mayoría de SKUs se agruparán en 12–15 segmentos dominantes.
+
+**Paso 3: Construye la lógica de cálculo en Google Sheets (Semana 2)**
+Crea una hoja maestra con una fila por SKU. Columnas: SKU, trailing_30d_units, trailing_90d_units, current_stock_qty, cost, price, margin_pct, avg_days_to_reorder (si es modelo de suscripción), cohort_ltv (si lo tienes). Añade cinco columnas para custom_label_0 a custom_label_4.
+
+Usa fórmulas IF anidadas o IFS:
+```
+=IFS(
+ margin_pct >= 0.50, "Margin-Premium",
+ margin_pct >= 0.30, "Margin-Standard",
+ margin_pct \< 0.30, "Margin-Builder"
+)
+```
+
+Para velocidad:
+```
+=IFS(
+ trailing_30d_units / 4 >= 50, "Velocity-Hero",
+ trailing_30d_units / 4 >= 15, "Velocity-Steady",
+ trailing_30d_units / 4 \< 15, "Velocity-Niche"
+)
+```
+
+Para estado de stock (días de cobertura = current_stock_qty / ventas_semanales_promedio):
+```
+=IFS(
+ current_stock_qty / (trailing_30d_units / 4) >= 8, "Stock-Abundant",
+ current_stock_qty / (trailing_30d_units / 4) >= 3, "Stock-Moderate",
+ current_stock_qty / (trailing_30d_units / 4) \< 3, "Stock-Critical"
+)
+```
+
+**Paso 4: Automatiza la actualización del feed (Semana 2–3)**
+Si estás en Shopify, el método más limpio es actualizar metafields de productos a través de la API de Shopify, luego mapear esos metafields a etiquetas personalizadas en tu app de Google Shopping (canal de Google de Shopify, DataFeedWatch, o similar). MagicFeed Pro lee metafields automáticamente e inyecta a tu feed sin requerir que mantengas un archivo de feed suplementario separado.
+
+Para WooCommerce o plataformas personalizadas, genera un feed suplementario CSV (columnas: id, custom_label_0, custom_label_1, custom_label_2, custom_label_3, custom_label_4) y súbelo al Centro de Comerciantes en un cronograma diario. Google fusiona feeds suplementarios con tu feed primario, así que no necesitas regenerar todo el catálogo.
+
+Usa Google Apps Script (si tus datos viven en Sheets) o un script Python (si extraes de BigQuery/Snowflake) para refrescar los cálculos diariamente. Cronifícalo para las 5 AM hora local así las etiquetas se actualizan antes de la subasta del día. [Practical Ecommerce tiene un excelente tutorial](https://www.practicalecommerce.com/) de automatización de Apps Script para gestión de feeds si eres nuevo en scripts.
+
+**Paso 5: Reestructura campañas (Semana 3–4)**
+Comienza con tu segmento de mayor impacto. Para la mayoría de marcas, ese es alto margen + alta velocidad. Crea una nueva campaña Shopping (o grupo de activos Performance Max si estás en PMax), establece el filtro de producto a `custom_label_0 = "Margin-Premium" AND custom_label_1 = "Velocity-Hero"`, aplica un Target ROAS agresivo (20–30% por debajo de tu ROAS combinado actual), y dale 30% de tu presupuesto total.
+
+Déjalo ejecutar 14 días para recopilar datos, luego expande. Añade una segunda campaña para el siguiente segmento de prioridad. En 60 días, deberías tener 5–8 campañas cubriendo tus combinaciones de etiquetas principales, más una campaña general para casos extremos.
+
+<Callout type="warning">
+**Advertencia Performance Max:** Los grupos de activos de PMax comparten un único Target ROAS a nivel de campaña, así pierdes control de ROAS por segmento. Si estás atrapado en PMax, usa campañas Shopping con Shopping estándar en paralelo para tus segmentos de etiqueta más importantes, luego deja que PMax maneje la cola larga.
+</Callout>
+
+**Paso 6: Monitorea e itera (Continuo)**
+Semanal: Verifica si alguna etiqueta se desempeña sistemáticamente mal (ROAS \<50% del objetivo durante 21+ días). A menudo esto significa tu lógica de etiqueta está equivocada—tal vez marcaste un producto como «Velocity-Hero» basado en un pico viral único que ya pasó.
+
+Mensual: Recalibra los umbrales de etiquetas. Si 80% de tus SKUs caen en `Margin-Standard`, no estás segmentando; solo estás renombrando. Ajusta los cortes de margen así obtienes un desglose 40/40/20 en Premium/Standard/Builder.
+
+Trimestral: Re-ejecuta análisis de cohortes de LTV (si aplica) y validación de estacionalidad. Los mercados cambian. La almohada que era `Season-Holiday` el año pasado podría ahora tender a `Season-Evergreen` porque Instagram de diseño de interiores pivotó.
+
+## Estrategias de Puja para Cada Tipo de Etiqueta Personalizada
+
+Una vez que las etiquetas estén activas, la estrategia de puja es lo que convierte [segmentación en ganancia](https://blog.magicfeedpro.com/posts/google-shopping-bid-modifiers-vs-feed-segmentation-roi-test). Aquí está cómo cada tipo de etiqueta mapea a un enfoque de puja:
+
+**Etiquetas basadas en margen (Custom_label_0):**
+- **Margen alto (≥50%):** Target ROAS 30–40% por debajo de tu ROAS combinado. Tienes espacio para ser agresivo. Si el ROAS combinado es 4.5×, puja a 3.0× ROAS para SKUs de alto margen. Google impulsará más volumen aquí, que compone ganancia porque cada venta incremental mantiene 50%+ de ingresos.
+- **Margen bajo (\<30%):** Target ROAS 50–80% *superior* a combinado, o cambia a Maximizar Valor de Conversión con un estricto límite de presupuesto. Esencialmente le dices a Google, «Solo muestra estos si la subasta es barata». Usa estos SKUs para capturar búsqueda de marca e intención de final de embudo, no prospección en frío.
+
+**Etiquetas basadas en velocidad (Custom_label_1):**
+- **SKUs héroe (movedores rápidos):** Estos ya tienen sólidas tasas de conversión y prueba social. Empuja la participación de impresiones a 80%+ con presupuestos sin límite y un objetivo de ROAS moderado. La velocidad gana; estás defendiendo participación de mercado contra competidores que también ven estos productos convirtiendo.
+- **SKUs nicho (movedores lentos):** Limita participación de impresiones al 40%, usa CPC manual con máximo CPC de punto de equilibrio ($precio × margen% / tu CPA objetivo). Quieres visibilidad sin hemorragia de presupuesto en tráfico de baja intención. Mejor reasignar ese presupuesto a alternativas en stock.
+
+**Etiquetas de estado de stock (Custom_label_2):**
+- **Stock abundante:** Sin restricciones. Puja normalmente.
+- **Stock bajo (\<20 días de cobertura):** Reduce presupuestos en 60–80% o pausa completamente. No hay punto en pagar por clics en un producto que estará agotado en dos semanas, tanteando tu tasa de conversión y desperdiciando el tiempo del cliente. Mejor reasignar ese presupuesto a alternativas en stock.
+ 
+Según [mejores prácticas de Google](https://support.google.com/google-ads/answer/2472725), productos agotados con anuncios activos ven tasas de conversión caer 40–60% en la semana final de disponibilidad porque usuarios añaden a carrito, luego rebotan cuando se dan cuenta que el artículo está en espera. Pausarlos proactivamente preserva tu [puntuación de calidad a nivel de cuenta](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith).
+
+**Etiquetas de estacionalidad (Custom_label_0 en esquema de Marca B):**
+- **En temporada:** Asigna 60–80% de presupuesto, puja a o por debajo del Target ROAS.
+- **Temporada intermedia (un mes antes/después de pico):** Rampa arriba o abajo gradualmente (±20% presupuesto por semana) para evitar shock de subasta.
+- **Fuera de temporada:** Pausa completamente o mueve a una campaña separada «siempre activa» a 5% de presupuesto con Target ROAS 2× tu objetivo normal. Estás pescando compradores tempranos y [mercados internacionales](https://blog.magicfeedpro.com/posts/multi-currency-feed-ops-scaling-google-shopping-to-12-markets) con temporadas opuestas.
+
+**Etiquetas basadas en LTV (Custom_label_0 en esquema de Marca C):**
+- **LTV alto:** Puja en amortización de 12 meses. Si un cliente vale $900 y tu costo para servir es $200, puedes permitirte gastar $350 para adquirirlos (2.0× ROAS de primer pedido en una orden de $64). Establece Target ROAS a 1.8–2.5× e ignora el tablero de Google Ads gritando «no rentable». Tu verdad vive en datos de retención de cohortes, no en la UI de Ads.
+- **LTV bajo:** Puja en rentabilidad de primer pedido solo. Target ROAS de 4.5–6.0×. Estas son compras impulsivas o productos de compra única. Trátalos como transacciones de e-commerce estándar.
+
+Las tres marcas perfiladas aquí todas ejecutan un enfoque híbrido: establecen Target ROAS a nivel de campaña alineado a la etiqueta dominante en esa campaña, luego usan ajustes de puja (dispositivo, ubicación, audiencia) como segunda capa de control. La Marca A, por ejemplo, ejecuta `Margin-Premium + Velocity-Hero` a 3.5× ROAS base, luego aplica ajuste de puja +30% para usuarios en su lista de correo (rastreados vía Customer Match) porque esos usuarios se convierten 2.1× mejor.
+
+Una nota final sobre [Performance Max](https://blog.magicfeedpro.com/posts/performance-max-asset-groups-are-killing-your-feed-a-200k-audit-breakdown): si eres forzado a PMax debido a política o porque Shopping estándar está deprecado en tu región, pierdes control de ROAS a nivel de campaña pero puedes aún usar etiquetas personalizadas en filtros de grupo de activos. Crea grupos de activos separados para cada combinación de etiqueta importante (PMax permite hasta 100 grupos de activos por campaña). Compartirás presupuesto a nivel de campaña y objetivo de ROAS, pero el algoritmo de Google aprenderá diferentes patrones de rendimiento por grupo de activos con el tiempo. Es menos preciso que campañas separadas, pero vastamente superior a agrupar 500 SKUs en un grupo de activos.
+
+Cubrimos la mecánica de estructuras multiempresa en profundidad en el desglose de precios y características de MagicFeed Pro, donde verás cómo [reescrituras de título y descripción impulsadas por IA](https://blog.magicfeedpro.com/posts/ai-rewrites-improve-google-shopping-ctr-40-percent) interactúan con segmentación de etiquetas personalizadas para elevar tanto tasas de clic como tasas de conversión simultáneamente—un efecto compuesto que la mayoría de marcas pierden al tratar contenido de feed y estructura de feed como flujos de trabajo separados.
+
+<ProductCTA 
+ variant="audit" 
+ title="¿Tu feed está dejando dinero sobre la mesa? Obtén una auditoría gratuita de etiquetas personalizadas de MagicFeed Pro" 
+/>
+
+<FAQ>
+ <FAQItem 
+ q="¿Cuántas etiquetas personalizadas debería realmente usar?" 
+ a="Comienza con tres: nivel de margen, velocidad y estado de stock. Añade una cuarta (estacionalidad o LTV) solo después de haber probado que las primeras tres impulsan mejora de ROAS medible. Cinco etiquetas con lógica pobremente definida se desempeñan peor que dos etiquetas con definiciones firmes." 
+ />
+ <FAQItem 
+ q="¿Puedo cambiar valores de etiqueta personalizada sin reiniciar el aprendizaje de campaña?" 
+ a="Sí, pero hazlo gradualmente. Si re-etiquetas 80% de tu catálogo de la noche a la mañana, Google lo trata como una nueva campaña y reinicia el aprendizaje. Desplega cambios de etiqueta en lotes de 10–20% por semana. Las actualizaciones de feed suplementario no reinician campañas siempre que los IDs de producto permanezcan consistentes." 
+ />
+ <FAQItem 
+ q="¿Qué pasa si no tengo datos de costo a nivel de SKU?" 
+ a="Usa márgenes promedio a nivel de categoría o tipo de producto como proxy. Una categoría de camiseta con 40% de margen promedio es suficientemente buena para segmentar ropa exterior de alto margen (60%) de básicos de bajo margen (25%). La precisión mejora resultados, pero la segmentación direccional aún vence a ninguna segmentación." 
+ />
+ <FAQItem 
+ q="¿Debería usar etiquetas personalizadas o product_type para segmentación?" 
+ a="Usa ambas. Product_type es estructural (Ropa > Mujeres > Tops) y ayuda a Google entender taxonomía. Las etiquetas personalizadas codifican lógica empresarial que Google no puede inferir (margen, riesgo de stock, LTV). Piensa en product_type como tu organigrama y etiquetas personalizadas como tus prioridades de P&L." 
+ />
+ <FAQItem 
+ q="¿Cómo manejo productos nuevos que no tienen 90 días de datos de ventas?" 
+ a="Establécelos por defecto a etiquetas de nivel medio (Margin-Standard, Velocity-Steady) y añade una etiqueta separada 'Launch-New' en Custom_label_3 o _4. Ejecuta una campaña dedicada de producto nuevo con ventana de aprendizaje de 21 días a punto de equilibrio ROAS, luego re-etiqueta basado en rendimiento real y muévelos a tus campañas centrales." 
+ />
+ <FAQItem 
+ q="¿Puedo automatizar esto sin contratar un desarrollador?" 
+ a="Sí. Google Sheets + Zapier o Make.com pueden manejar la lógica de etiquetas y actualizaciones de feed para la mayoría de tiendas Shopify o WooCommerce. Si estás en BigQuery o Snowflake, necesitarás SQL o Python ligero, pero la lógica es directa. MagicFeed Pro también ofrece automatización de etiquetas gestionada como parte de su nivel empresarial—contacta si prefieres delegar el trabajo técnico." 
+ />
+</FAQ>

@@ -1,0 +1,241 @@
+---
+title: "Performance Max förstör feed: $200k revisionsanalys"
+description: "PMax kannibaliserar Shopping-kampanjer genom att marknadsföra låga marginalProdukter när feed saknar product_type-hierarki. Rättsmedlesk analys och lösningar."
+keywords:
+ - performance max asset groups shopping feed
+ - pmax vs shopping campaigns
+ - performance max cannibalization
+ - asset group optimization google
+ - product feed performance max
+ - pmax shopping feed structure
+ - performance max product targeting
+ - google shopping pmax conflict
+date: 2026-05-14
+author: "mfp-team"
+category: "google-shopping"
+tags:
+ - performance-max
+ - feed-optimization
+ - campaign-structure
+ - dtc-brands
+ - margin-recovery
+readingMinutes: 11
+featured: false
+locale: "sv"
+slug: performance-max-forstor-feed-revision
+translationKey: "performance-max-asset-groups-killing-feed-audit"
+noindex: false
+comments: false
+tldr: "Performance Max asset groups ärver feedstrukturbrister—särskilt saknade product_type-hierarkier—och systematiskt marknadsför låga marginalProdukter. Vi reviderade $200k i slösad budget hos tre varumärken och hittade samma rotorsaker på feednivå varje gång."
+cover: "/blog-covers/performance-max-asset-groups-are-killing-your-feed-a-200k-audit-breakdown.jpg"
+coverAlt: "En isometrisk produktfeedtabell delad i två vertikala kolumner — vänster kolumn staplade violetta låg-marginalkuber som stiger högt, höger kolumn med dåliga elektriska blå höga marginalblock — en fet charcoal-pil som dränerar budgetmarker (små cirklar) åt vänster mot den dominanta violetta stapeln, med en liten nedåtpekande %-indikator i charcoal förankrad längst ned till höger."
+---
+
+Vi tillbringade mars med att analysera tre åttasiffrigt DTC-varumärken—möbler, träningsplagg, hudvård—alla körande hybrid PMax och Standard Shopping. Samma klagomål från alla tre prestandachefer: budgeten skiftade till PMax, ROAS såg acceptabel ut, men bruttomarginalen sjönk 18-22% från kvartal till kvartal. Synden var inte budgetering, kreativitet eller målgruppssignaler. Det var deras [produktfeedarkitektur](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide), och PMax asset groups förstärkta varje strukturell brist i stor skala.
+
+## $200k-problemet: Varför PMax marknadsförde våra värsta produkter
+
+Märke ett sålde modularmöbler. Deras Standard Shopping-kampanjer använde anpassade etiketter för att separera hjälte-SKU:er (soffor, $800+ AOV, 42% marginal) från tillbehör (kasta kuddar, $35 AOV, 18% marginal). Performance Max lanserades i januari med en enda assetgrupp som täcker "alla produkter" och en feed utan hierarkiska `product_type`-värden. I mitten av mars gick 67% av PMax-utgifterna till tillbehör under $50. Den totala inkrementella intäkten såg fin ut—$340k—men nettobidrag efter uppfyllelse och produktkostnad var $61k. Samma budget i deras pausade Standard Shopping-kampanjer levererade historiskt $140k bidrag.
+
+Vi drog ut feeden. Varje produkt hade `product_type` inställd på Shopify-samlingens namn: "Living Room," "Bedroom," "Accessories." Ingen taxonomi. Ingen parent-child-struktur. Enligt [Googles officiella asset group-dokumentation](https://support.google.com/google-ads/answer/10724817) använder PMax `product_type` och `google_product_category` för att förstå produktrelationer och allokera budget inom assetgrupper. Platta kategorier betyder att algoritmen behandlar en $900 sektionär och en $28 kudde som motsvarande värdefull inventering i samma grupp. Den optimerar för [konverteringsvolym](https://blog.magicfeedpro.com/posts/7-reasons-google-shopping-ads-not-converting), inte marginal, och kuddar konverterar snabbare till lägre CPC:er.
+
+<Callout type="warning">
+Om din feed har `product_type`-värden på en nivå (t.ex. "Shoes" istället för "Footwear > Athletic > Running"), kan Performance Max inte differentiera produktnivåer inom en assetgrupp. Den kommer att standardisera marknadsföring av vad som helst som konverterar snabbast, oavsett enhetsekonomi.
+</Callout>
+
+Märke två—träningsplagg—hade det omvända problemet. De segmenterade assetgrupper efter kön (Men's, Women's, Unisex), men deras `product_type`-fält sammanförde tyg och stil: "Moisture-Wicking Leggings," "Cotton Tees," "Compression Shorts." Inga delade parent-kategorier. PMax kunde inte gruppera "Leggings" under "Bottoms" eller "Tees" under "Tops," så det behandlade 140 produktvarianter som 140 distinkta kategorier. Assetgrupper fragmenterade utgifter över mikrosegment, ingen nådde lärandegraden. CPA steg 34% från månad till månad medan Standard Shopping—med hjälp av [anpassade etiketter](https://blog.magicfeedpro.com/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas) som `label_0:high-margin`—bibehöll stabil prestanda.
+
+Här är marginalerosionen vi såg hos alla tre varumärken i Q1 2026:
+
+| Märke | Kanalmixskifte | Intäktändring | Bruttomargin Δ | Nettobidrag-förlust |
+|------------------|-------------------|---------------|----------------|---------------------|
+| Möbler (DTC) | +40pp till PMax | +12% | -22pp | -$87k |
+| Träningsplagg | +35pp till PMax | +8% | -18pp | -$63k |
+| Hudvård | +28pp till PMax | +6% | -19pp | -$52k |
+
+Den gemensamma tråden: feeds strukturerade för mänsklig surfning (Shopify-samlingar, WooCommerce-kategorier) men inte algoritmisk segmentering. Assetgrupper kan inte självreglera utan feedstöd.
+
+## Hur Asset Groups ärver dålig feedarkitektur
+
+Performance Max asset groups är inte dumma. De framhäver signaler från din feed, annonser, landningssidor och förstapartsdata, sedan allokerar budget dynamiskt. Problemet är *garbage in, garbage out.* Om dina feeds `product_type`-, `custom_label_0-4`- och `item_group_id`-fält inte kodar marginal, hastighet eller strategisk prioritet, tolkar PMax all inventering som lika och optimerar för vägen med minst motstånd—vanligtvis låga AOV-impulskupningar.
+
+Vi ser fem feedarkitekturfel som saboterar assetgrupper:
+
+1. **Platt eller saknad `product_type`-hierarki.** Värden på en nivå ("Apparel") förhindrar PMax från att förstå produktrelationer. Google rekommenderar upp till fem nivåer: `Apparel & Accessories > Clothing > Activewear > Leggings > High-Waisted`.
+
+2. **Inga anpassade etiketter för marginalskikt.** `custom_label_0` bör segmentera högt/medium/låg marginal. `custom_label_1` kan koda säsongsbundenhet eller lagerrisker. Utan dessa kan PMax inte skilja mellan en hjälte-SKU och en reaperartikel.
+
+3. **Inkonsekvent `item_group_id`-användning.** Om du säljer varianter (färg, storlek) bör alla varianter dela en `item_group_id` och ha unika `id`-värden. [Bruten gruppering får PMax](https://blog.magicfeedpro.com/posts/variant-clustering-in-shopping-feeds-stop-cannibalizing-your-own-ads) att behandla en blå skjorta och en röd skjorta som orelaterade produkter, fragmenterande inlärning.
+
+4. **Generiska eller nyckelordsstuffade titlar.** Titlar som "Buy Premium Organic Cotton T-Shirt Online Best Price" förvirrar assetgroup tema-klustring. PMax använder titelsemanstik för att kartlägga produkter till kreativa tillgångar. Nyckelordsskräp försämrar den mappningen.
+
+5. **Tomma eller platshållare `description`-fält.** Beskrivningar matar PMax:s förståelse för produktförmåner och användningsfall. En 20-ordig generisk beskrivning kopierad över 500 SKU:er ger algoritmen ingenting att skilja sig på.
+
+Möbelvarumärkets feed hade problem 1, 2 och 5. Vi exporterade deras Merchant Center-feed och körde en snabb Python-revision:
+
+```python
+import pandas as pd
+
+df = pd.read_csv('product_feed.csv')
+
+# Check product_type depth
+df['pt_levels'] = df['product_type'].str.count('>') + 1
+print(df['pt_levels'].value_counts())
+# Output: 1.0 → 2,847 rows (100% single-level)
+
+# Check for custom labels
+print(df[['custom_label_0','custom_label_1']].isna().sum())
+# Output: custom_label_0 2847, custom_label_1 2847 (all empty)
+
+# Check description uniqueness
+print(df['description'].nunique(), '/', len(df))
+# Output: 23 / 2847 (23 unique descriptions across 2,847 SKUs)
+```
+
+När vi omstrukturerade deras feed—lade till femlevelig `product_type`, fyllde `custom_label_0` med marginalskåp och skrev om beskrivningar med AI-driven produktkategorisering—stabiliserades PMax assetgroup-prestandan inom två veckor. Höga marginalfår återkrävde 51% av intryckningar, och bidragsmarginal återhämtade 14 procentenheter.
+
+![Före och efter feedomstrukturering: PMax impressionandel efter marginalskikt](/content-images/posts/performance-max-asset-groups-killing-feed-audit/1.webp)
+
+## Product_Type-hierarkin PMax faktiskt behöver (med exempel)
+
+Googles feedspec tillåter upp till fem nivåer i `product_type`, avgränsade av ` > `. De flesta e-handelsplattformar standard till två eller tre baserat på butikskataloger, men PMax drar nytta av djupare, marginalmedvetna hierarkier. Här är hur vi återuppbyggde `product_type` för de tre varumärkena:
+
+**Möbler (före):**
+```
+Living Room
+Bedroom
+Accessories
+```
+
+**Möbler (efter):**
+```
+Furniture > Seating > Sofas > Sectional > Premium
+Furniture > Seating > Chairs > Accent > Mid-Tier
+Furniture > Decor > Throw Pillows > Decorative > Budget
+```
+
+**Träningsplagg (före):**
+```
+Moisture-Wicking Leggings
+Cotton Tees
+Compression Shorts
+```
+
+**Träningsplagg (efter):**
+```
+Apparel > Women's > Bottoms > Leggings > High-Performance
+Apparel > Women's > Tops > T-Shirts > Essentials
+Apparel > Men's > Bottoms > Shorts > Compression
+```
+
+**Hudvård (före):**
+```
+Moisturizers
+Serums
+Cleansers
+```
+
+**Hudvård (efter):**
+```
+Skincare > Face > Moisturizers > Anti-Aging > Luxury
+Skincare > Face > Serums > Vitamin C > Core
+Skincare > Face > Cleansers > Gel > Value
+```
+
+Lägg märke till mönstret: **Kategori > Kön eller rum > Produkttyp > Stil eller förmån > Marginalskikt.** Den slutliga nivån kodar explicit strategisk prioritet (Premium, Core, Budget eller Luxury, Mid-Tier, Value). Detta låter dig skapa assetgrupper efter nivå-fyra-värden och använd nivå-fem för att kontrollera budgetallokeringar via smarta budgetmål.
+
+Vi fyllde också i `custom_label_0` med marginalskåp och `custom_label_1` med lagerrisker (Evergreen, Seasonal, Clearance). Tillsammans med den nya hierarkin kunde PMax assetgrupper självsegmentera utan manuella listgruppsuteslutningar.
+
+<Callout type="tip">
+Om din feed har 1 000+ SKU:er och manuell kategorisering är opraktisk kan verktyg som MagicFeed Pro autogenerera hierarkiska `product_type`-värden med GPT-4 och ditt katalogtitel-/beskriningdata. Vi återuppbyggde möbelvarumärkets 2 847-SKU-feed på 90 minuter.
+</Callout>
+
+En viktig anmärkning: `product_type` är fritext medan `google_product_category` måste matcha [Googles taxonomi](https://support.google.com/merchants/answer/6324436). Använd `product_type` för strategisk segmentering och `google_product_category` för överensstämmelse. PMax läser båda, men `product_type` har mer vikt för [assetgroup-riktning](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith) eftersom det är unikt för din katalog.
+
+## Revisionschecklista: 8 feedattribut som styr PMax-beteende
+
+När du misstänker att PMax kannibaliserar margin reviderar du dessa åtta feedfält innan du rör budgetering eller assetgroup-inställningar. Vi använder denna checklista vid varje klientonboarding:
+
+| Attribut | Revisionsfråga | Röd flagga | Fixprioritering |
+|------------------------|--------------------------------------------------------------------------------|----------------------------------------|-----------------|
+| `product_type` | Är hierarkin ≥3 nivåer? Kodar den djupaste nivån marginal? | En nivå eller saknad | Kritisk |
+| `custom_label_0` | Segmenterar den produkter efter marginalskikt (Högt/Med/Lågt)? | Tom eller icke-marginalvärden | Kritisk |
+| `custom_label_1` | Flaggar den säsongsbundenhet, lagerrisker eller promoberättigande? | Tom eller duplicerar `custom_label_0` | Högt |
+| `item_group_id` | Är alla varianter av samma produkt grupperade under en ID? | Saknad eller unik per variant | Högt |
+| `title` | Är den beskrivande (varumärke + typ + nyckelattribut) utan nyckelordsstuff? | Generisk eller 15+ ord | Medel |
+| `description` | Är den unik per SKU och ≥100 tecken? | Kopierad boilerplate eller \<50 tecken | Medel |
+| `price` + `sale_price` | Är båda ifyllda? Är `sale_price` bara inställd vid faktisk rabatt? | Permanenta "rea"-priser eller saknad | Medel |
+| `availability` | Är den realtid? (I stock / Out of stock / Preorder) | Statisk "in stock" för alla SKU:er | Lågt |
+
+Möbelvarumärket hade kritiska problem i raderna 1-4, medel-problem i raderna 5-6. Träningsplaggvarumärket hade kritiska problem i raderna 1 och 3, plus ett unikt problem: deras `item_group_id` användes SKU-prefix som ändrades säsongsmässigt, så vårlänningar 2025 och höstlängningar 2025 behandlades som orelaterade produkter. PMax kunde inte överföra inlärning mellan säsonger.
+
+Efter att ha fixat dessa åtta attribut skickade vi om feeds till Merchant Center och relanserade PMax-kampanjer med omstrukturerade assetgrupper. Hudvårdsvarumärket såg snabbaste vändningen—marginalövervinning nådde breakeven på 11 dagar—eftersom deras katalog var minst (340 SKU:er) och renast efter fix.
+
+För detaljerad vägledning om anpassad etikettstrategisk se vår sammanfattning om hur DTC-varumärken använder anpassade etiketter för att kontrollera annonseringsutgifter. Det inlägget innehåller etikettschemamällar för abonnementsprodukter, buntar och marginalriskmatriser.
+
+## Kampanjstruktur: När man ska separera PMax från Standard Shopping
+
+En av de vanligaste frågorna vi får: *Ska vi köra PMax och Standard Shopping samtidigt, eller konsolidera i PMax?* Svaret beror på feedmognad och marginalvarians.
+
+**Kör hybrid (PMax + Standard Shopping) om:**
+- Din katalog har högt marginalvarians (t.ex. 10-50% bruttomargin över SKU:er). Standard Shopping med manuella listgrupper låter dig skydda hjälte-produkter.
+- Du behöver detaljerad kontroll över varumärkat vs. icke-märkt trafik. PMax kombinerar Sökning, Shopping, Visning, YouTube och Discover; Standard Shopping är endast Shopping.
+- Din [feedrevision-poäng](https://blog.magicfeedpro.com/posts/merchant-center-errors-12-common-issues-solutions) är \<70/100 (vårt interna riktmärke: 8 attribut × 10 poäng varje, avdrag för saknade/brytna fält). Rensa upp feeden först, *sedan* konsolider.
+
+**Konsolidera i PMax om:**
+- Din katalog är marginalhomojen (t.ex. alla SKU:er är 35-45% marginal). PMax optimerar för intäkt utan marginalrisk.
+- Du har högkvalitativa produktbilder, videomaterial och tillräckligt budget för att nå lärandegraden över assetgrupper ($500+/dag per grupp).
+- Din feed har hierarkisk `product_type`, ifyllda anpassade etiketter och unika beskrivningar. PMax behöver dessa för att självsegmentera effektivt.
+
+Vi förespråkar en stegvis metod. Börja hybrid, även om din feed är ren. Allokera 60-70% av budgeten till Standard Shopping och 30-40% till PMax. Övervaka marginalsbidrag per kanal veckovis. Om PMax konsekvent levererar jämförbar eller bättre marginaleffektivitet efter 30 dagar och fyra fullständiga lärandecykler, skifta ytterligare 20pp av budgeten. Om marginal försämras pausar du PMax och diagnostiserar feedproblem innan du återupptar.
+
+Möbelvarumärket körde hybrid i 60 dagar efter feedfix. Vid dag 45 matchade PMax bidragsmarginalen Standard Shopping (39,2% vs. 39,8%), så de skiftade till 50/50. Vid dag 75 var PMax i ledning (41,1% vs. 38,4%), och de flyttade till 70/30 till förmån för PMax. Nyckeln: de konsoliderade inte blindt. De validerade feedändringar med data.
+
+Ett strukturfel vi ofta ser: att köra en enda "alla produkter" PMax-kampanj. Om din katalog sträcker sig över flera vertikaler eller marginalskikt, dela upp i 2-4 assetgrupper med icke-överlappande `product_type`-filter. Till exempel körde träningsplaggvarumärket tre assetgrupper:
+
+1. **Högt-Marginal Core** (Leggings, Sports Bras, Joggers): `product_type` innehåller "High-Performance" eller "Core", `custom_label_0` = "High Margin"
+2. **Essentials** (Tees, Tanks, Socks): `product_type` innehåller "Essentials", `custom_label_0` = "Medium Margin"
+3. **Clearance/Seasonal** (Förra säsongens färger, utfasade stilar): `custom_label_1` = "Clearance"
+
+Varje assetgrupp hade distinkta ROAS-mål (2,8×, 2,2×, 1,5×) och kreativa uppsättningar som betonar olika värdepropositarter (prestation, mångsidighet, pris). Detta lät PMax optimera inom marginalgarantier snarare än blandning av höga och låga AOV:er i en enda inlärningspool.
+
+## Verkliga siffror: Marginalövervinning efter feedomstrukturering
+
+Vi spårade alla tre varumärken i 90 dagar efter feedfix. Här är marginalbidragslyftet per vecka, indexerat till vecka noll (pre-fix baseline = 100):
+
+| Vecka | Möbler | Träningsplagg | Hudvård | Genomsnittligt lyft |
+|-------|---------|---------------|---------|-------------------|
+| 0 | 100 | 100 | 100 | 100 |
+| 2 | 104 | 102 | 108 | 105 |
+| 4 | 112 | 109 | 118 | 113 |
+| 6 | 121 | 115 | 124 | 120 |
+| 8 | 128 | 119 | 127 | 125 |
+| 12 | 134 | 123 | 129 | 129 |
+
+Den genomsnittliga marginalbidraget förbättrades 29% vid vecka 12. Möbelvarumärket—som hade den sämsta initiala feedkvaliteten—såg den största absoluta återhämtningen: från $61k till $142k månatlig nettobidrag på samma $88k PMax-utgift. Det är en $81k månatlig swing, eller $972k årligt, från enbart feedfixar.
+
+Vi spårade också icke-PMax-prestanda för att kontrollera för externa faktorer (säsongsbundenhet, promokort). Standard Shopping och betalad socialbidrag höll sig platt ±3pp, vilket bekräftade att liften var PMax-specifik. Mekanismen: bättre `product_type`-hierarkier låter PMax allokera budget till högre marginalProdukter, och [unika beskrivningar + titlar förbättrade annonsrelevanspoäng](https://blog.magicfeedpro.com/posts/ai-rewrites-improve-google-shopping-ctr-40-percent), som sänkte CPC:erna med 11-17%.
+
+![Marginalbidrag indexerat till baseline, tre varumärken över 12 veckor](/content-images/posts/performance-max-asset-groups-killing-feed-audit/2.webp)
+
+En icke-uppenbar förmån: kundens LTV förbättrades. När PMax marknadsför höga marginalProdukter förvärvade du kunder genom bättre produkter. Möbelvarumärkets PMax-framtagna kunder hade 18% högre 180-dagars LTV än pre-fix PMax-kunder, troligt eftersom sektionärer (högt marginal) är betraktade köp som förankrar ett rum, medan kuddar (låg marginal) är impulsökningar. Bättre förstaobjekt-produktmix → starkare kundgrupper.
+
+För varumärken skeptiska om feedinvestering erbjuder vi en gratis revision som poängsätter din feed på de åtta kritiska attributen och uppskattar marginalåterhämtningspotential. Möbelvarumärkets initiala poäng var 28/100; postfix var det 91/100. Den 63-poängs förbättringen låste upp $81k månatligt lyft.
+
+<ProductCTA variant="audit" title="Kostar din feed dig sex siffror i marginal?" />
+
+## FAQ
+
+<FAQ>
+<FAQItem q="Hur lång tid tar det för PMax att reagera på feedändringar?" a="Google crawlar Merchant Center-feeds om varannan dag, men Performance Max-inlärningscykler körs 7-14 dagar. Förvänta riktningsbundna ändringar inom en vecka och stabil ny prestanda vid dag 21. Om du gör drastiska ändringar (t.ex. omklassificera 80% av SKU:erna) pausar du PMax i 48 timmar efter feedominsändning för att tvinga en ren omväxing." />
+
+<FAQItem q="Kan jag använda anpassade etiketter för att helt exkludera låga marginalProdukter från PMax?" a="Ja. Ställ in custom_label_0 = 'Exclude PMax' för låga marginalProdukter, filtrera sedan bort dem i dina assetgroup-produktfeedinställningar. Men detta minskar katalogstorleken och kan skada inlärningen. En bättre metod: behåll dem men använd ROAS-mål (via tROAS smart budgetering) för att deprioritera dem algoritmiskt." />
+
+<FAQItem q="Ska product_type matcha mina Shopify eller WooCommerce samlingar?" a="Nej. Butikskataloger är utformade för mänsklig navigering. Product_type bör vara en marginalmedveten, algoritmvänlig hierarki. Använd separat kartlogik—antingen manuella CSV-åsidosättningar eller ett feedhanteringsverktyg som genererar product_type oberoende av plattformskategorier." />
+
+<FAQItem q="Vad händer om min katalog är för liten för flera assetgrupper?" a="Om du har \<200 SKU:er, kör en enda assetgrupp men prioritera feedkvalitet. Med begränsad inventering förlitar sig PMax ännu mer på product_type-hierarki och anpassade etiketter för att differentiera. Även en 50-SKU-katalog bör ha 3+ nivåers product_type och marginalbaserad custom_label_0." />
+
+<FAQItem q="Behöver jag unika beskrivningar för varje SKU-variant (färg, storlek)?" a="Varianter som delar en item_group_id kan dela en basbeskrivning, men lägg till variantspecifika detaljer. För en blå t-shirt: 'Organisk bomullscrewneck-tee. Andningsbar, försvagad, etikettlös. Den här färgen: Deep Ocean Blue, passar med neutral botten.' Unik sista mening = tillräcklig differentiering för PMax." />
+
+<FAQItem q="Hur vet jag om PMax kannibaliserar Standard Shopping kontra att vara inkrementell?" a="Kör ett geohållningstest: pausera PMax i 20% av geo-områdena (stater eller storstadsområden) i 30 dagar och jämför total Shopping-intäkt (PMax + Standard) i test vs. kontroll. Om kontrollerinkomsten förblir platt medan testintäkten sjunker, är PMax inkrementell. Om testinkomsten stiger eller förblir platt, kannibaliserar PMax. De flesta varumärken ser 60-80% inkrementialitet när feeden är ren." />
+</FAQ>

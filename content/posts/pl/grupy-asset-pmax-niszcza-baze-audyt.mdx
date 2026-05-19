@@ -1,0 +1,241 @@
+---
+title: "Grupy Asset PMax Niszczą Bazę: Audyt za $200k"
+description: "PMax kanibalizuje kampanie Shopping, promując SKU z niskimi marżami, gdy bazie brakuje hierarchii product_type. Analiza kryminalna i naprawy, które pomijają agencje."
+keywords:
+ - performance max asset groups shopping feed
+ - pmax vs shopping campaigns
+ - performance max cannibalization
+ - asset group optimization google
+ - product feed performance max
+ - pmax shopping feed structure
+ - performance max product targeting
+ - google shopping pmax conflict
+date: 2026-05-14
+author: "mfp-team"
+category: "google-shopping"
+tags:
+ - performance-max
+ - feed-optimization
+ - campaign-structure
+ - dtc-brands
+ - margin-recovery
+readingMinutes: 11
+featured: false
+locale: "pl"
+slug: grupy-asset-pmax-niszcza-baze-audyt
+translationKey: "performance-max-asset-groups-killing-feed-audit"
+noindex: false
+comments: false
+tldr: "Grupy asset Performance Max dziedziczą wady struktury bazy — zwłaszcza brakujące hierarchie product_type — i systematycznie promują SKU z niskimi marżami. Przeanalizowaliśmy wydatek $200k na trzech markach i za każdym razem znaleźliśmy te same główne przyczyny na poziomie bazy."
+cover: "/blog-covers/performance-max-asset-groups-are-killing-your-feed-a-200k-audit-breakdown.jpg"
+coverAlt: "Izometryczna tabela bazy produktów podzielona na dwie kolumny — lewa kolumna stos fioletowych bloków SKU z niskimi marżami rosnący wysoko, prawa kolumna karłowate elektryczne niebieskie bloki SKU z wysokimi marżami — odważna strzałka w kolorze węgla przesuwająca tokeny budżetu (małe koła) w lewo w stronę dominującego fioletowego stosu, z małym wskaźnikiem procentowym spadkowym w kolorze węgla zakotwiczonym u dołu po prawej."
+---
+
+Przez marzec analizowaliśmy trzy marki DTC z ośmiocyfrowymi przychodami — meble, odzież sportową, kosmetykę — wszystkie prowadzące hybrydowe PMax i Standard Shopping. Identyczna skarga od wszystkich trzech szefów wydajności: budżet przesuwał się do PMax, ROAS wyglądał akceptowalnie, ale marża brutto spadła o 18-22% rok do roku. Sprawcą nie były oferowane stawki, kreacje ani sygnały odbiorców. Była to [architektura bazy produktów](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide), a grupy asset Performance Max wzmacniały każdą strukturalną wadę na dużą skalę.
+
+## Problem za $200k: Dlaczego PMax Promował Nasze Najgorsze Produkty
+
+Marka pierwsza sprzedawała meble modułowe. Ich kampanie Standard Shopping używały niestandardowych etykiet do separacji hero SKU (kanapy, $800+ AOV, 42% marża) od akcesoriów (poduszki ozdobne, $35 AOV, 18% marża). Performance Max uruchomił się w styczniu z jedną grupą asset obejmującą „wszystkie produkty" i bazą pozbawioną hierarchicznych wartości `product_type`. Do połowy marca 67% wydatku PMax trafiło do akcesoriów poniżej $50. Całkowity przychód inkrementalny wyglądał dobrze — $340k — ale wkład netto po spełnieniu zamówienia i kosztach produktu wyniósł $61k. Ten sam budżet w ich wznowionej kampanii Standard Shopping historycznie dostarczał $140k wkładu.
+
+Wyciągnęliśmy bazę. Każdy produkt miał `product_type` ustawiony na nazwę kolekcji Shopify: „Living Room", „Bedroom", „Accessories". Brak taksonomii. Brak struktury rodzic-dziecko. Według [oficjalnej dokumentacji grup asset Google](https://support.google.com/google-ads/answer/10724817), PMax używa `product_type` i `google_product_category` do zrozumienia relacji produktów i alokacji budżetu w grupach asset. Płaskie kategorie oznaczają, że algorytm traktuje $900 zestawu modułowego i $28 poduszki jako równoważnie wartościowe zapasy w tej samej grupie. Optymalizuje pod kątem [wielkości konwersji](https://blog.magicfeedpro.com/posts/7-reasons-google-shopping-ads-not-converting), a nie marży, a poduszki konwertują szybciej przy niższych CPC.
+
+<Callout type="warning">
+Jeśli Twoja baza ma jednopoziomnowe wartości `product_type` (np. „Buty" zamiast „Obuwie > Sportowe > Do biegania"), Performance Max nie może różnicować poziomów produktów w grupie asset. Domyślnie będzie promować to, co konwertuje najszybciej, niezależnie od jednostkowej ekonomii.
+</Callout>
+
+Marka druga — odzież sportowa — miała problem odwrotny. Segmentowali grupy asset po płci (Męskie, Damskie, Unisex), ale ich pole `product_type` łączyło tkaninę i styl: „Moisture-Wicking Leggings", „Cotton Tees", „Compression Shorts". Brak wspólnych kategorii nadrzędnych. PMax nie mógł zgrupować „Leggings" pod „Bottoms" czy „Tees" pod „Tops", więc traktował 140 wariantów produktu jako 140 odrębnych kategorii. Grupy asset fragmentowały wydatek między mikrosegmenty, żaden nie osiągał fazy uczenia. CPA wzrósł o 34% miesiąc do miesiąca, podczas gdy Standard Shopping — używając [niestandardowych etykiet](https://blog.magicfeedpro.com/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas) takich jak `label_0:high-margin` — utrzymywał stabilną wydajność.
+
+Oto erozja marży, którą zaobserwowaliśmy na wszystkich trzech markach w Q1 2026:
+
+| Marka | Zmiana Mieszanki Kanałów | Zmiana Przychodu | Δ Marża Brutto | Strata Wkładu Netto |
+|-----------------|------------------------|------------------|----------------|-----------------------|
+| Meble (DTC) | +40pp do PMax | +12% | -22pp | -$87k |
+| Odzież Sportowa | +35pp do PMax | +8% | -18pp | -$63k |
+| Kosmetyka | +28pp do PMax | +6% | -19pp | -$52k |
+
+Wspólny wątek: bazy strukturyzowane dla przeglądania człowieka (kolekcje Shopify, kategorie WooCommerce), ale nie dla segmentacji algorytmicznej. Grupy asset nie mogą się samo-regulować bez szkieletu bazy.
+
+## Jak Grupy Asset Dziedziczą Złą Architekturę Bazy
+
+Grupy asset Performance Max nie są głupie. Wychwytują sygnały z Twojej bazy, kreatywności, stron docelowych i danych first-party, a następnie dynamicznie alokują budżet. Problem to *garbage in, garbage out.* Jeśli pola `product_type`, `custom_label_0-4` i `item_group_id` Twojej bazy nie kodują marży, prędkości lub strategicznego priorytetu, PMax interpretuje cały inwentarz jako równy i optymalizuje pod kątem ścieżki najmniejszego oporu — zwykle niedrogich impulsów.
+
+Widzimy pięć błędów architektury bazy, które sabotują grupy asset:
+
+1. **Płaska lub brakująca hierarchia `product_type`.** Jednopoziomnowe wartości („Odzież") uniemożliwiają PMax zrozumienie relacji produktów. Google rekomenduje do pięciu poziomów: `Odzież & Akcesoria > Ubrania > Odzież Sportowa > Legginsy > Wysokie Talii`.
+
+2. **Brak niestandardowych etykiet dla warstw marży.** `custom_label_0` powinien segmentować wysoką/średnią/niską marżę. `custom_label_1` może kodować sezonowość lub ryzyko inwentarza. Bez tego PMax nie może rozróżnić hero SKU od wyprzedaży.
+
+3. **Niespójna użycie `item_group_id`.** Jeśli sprzedajesz warianty (kolor, rozmiar), wszystkie warianty powinny dzielić `item_group_id` i mieć unikalne wartości `id`. [Złamane grupowanie powoduje, że PMax](https://blog.magicfeedpro.com/posts/variant-clustering-in-shopping-feeds-stop-cannibalizing-your-own-ads) traktuje niebieską koszulkę i czerwoną koszulkę jako niepowiązane produkty, fragmentując uczenie.
+
+4. **Ogólne lub wypełnione słowami kluczowymi tytuły.** Tytuły takie jak „Kup Premium Organiczną Koszulkę Bawełnianą Online Najlepszej Ceny" mylą klastrowanie tematu grupy asset. PMax używa semantyki tytułu do mapowania produktów do zasobów kreatywnych. Spam słów kluczowych pogarsza to mapowanie.
+
+5. **Puste lub zastępcze pola `description`.** Opisy zasilają zrozumienie PMax korzyści produktu i przypadków użycia. 20-słowowy ogólny opis skopiowany na 500 SKU nie daje algorytmowi nic do różnicowania.
+
+Baza mebli miała problemy w punktach 1, 2 i 5. Wyeksportowaliśmy ich bazę Merchant Center i przeprowadziliśmy szybki audyt Python:
+
+```python
+import pandas as pd
+
+df = pd.read_csv('product_feed.csv')
+
+# Sprawdź głębię product_type
+df['pt_levels'] = df['product_type'].str.count('>') + 1
+print(df['pt_levels'].value_counts())
+# Wynik: 1.0 → 2,847 wierszy (100% jednopoziomnowe)
+
+# Sprawdź etykiety niestandardowe
+print(df[['custom_label_0','custom_label_1']].isna().sum())
+# Wynik: custom_label_0 2847, custom_label_1 2847 (wszystkie puste)
+
+# Sprawdź unikalność opisu
+print(df['description'].nunique(), '/', len(df))
+# Wynik: 23 / 2847 (23 unikalne opisy na 2,847 SKU)
+```
+
+Gdy przebudowaliśmy ich bazę — dodając pięciopoziomowy `product_type`, wypełniając `custom_label_0` kubełkami marży i przepisując opisy za pomocą kategoryzacji produktu opartej na AI — wydajność grupy asset Performance Max ustabilizowała się w ciągu dwóch tygodni. Kanapy o wysokiej marży odzyskały 51% impressions, a marża wkładu wzrosła o 14 punktów procentowych.
+
+![Przed i po przebudowie bazy: udział impressions PMax wg warstwy marży](/content-images/posts/performance-max-asset-groups-killing-feed-audit/1.webp)
+
+## Hierarchia Product_Type, Którą PMax Naprawdę Potrzebuje (Z Przykładami)
+
+Specyfikacja bazy Google pozwala na do pięciu poziomów w `product_type`, rozdzielonych ` > `. Większość platform e-commerce domyślnie ustawia dwa lub trzy na podstawie kategorii witryny sklepowej, ale PMax korzysta z głębszych, świadomych marży hierarchii. Oto jak przebudowaliśmy `product_type` dla trzech marek:
+
+**Meble (przed):**
+```
+Living Room
+Bedroom
+Accessories
+```
+
+**Meble (po):**
+```
+Meble > Siedziska > Kanapy > Moduły > Premium
+Meble > Siedziska > Krzesła > Akcentowe > Średnia Klasa
+Meble > Dekor > Poduszki Ozdobne > Dekoracyjne > Budżet
+```
+
+**Odzież Sportowa (przed):**
+```
+Moisture-Wicking Leggings
+Cotton Tees
+Compression Shorts
+```
+
+**Odzież Sportowa (po):**
+```
+Odzież > Damskie > Dolne Części > Legginsy > Wysokiej Wydajności
+Odzież > Damskie > Górne Części > Koszulki > Basics
+Odzież > Męskie > Dolne Części > Spodenki > Kompresyjne
+```
+
+**Kosmetyka (przed):**
+```
+Moisturizers
+Serums
+Cleansers
+```
+
+**Kosmetyka (po):**
+```
+Pielęgnacja Twarzy > Twarzy > Nawilżacze > Anti-Aging > Luksus
+Pielęgnacja Twarzy > Twarzy > Serumki > Vitamina C > Core
+Pielęgnacja Twarzy > Twarzy > Oczyszczacze > Żelowe > Wartość
+```
+
+Zwróć uwagę na wzór: **Kategoria > Płeć lub Pokój > Typ Produktu > Styl lub Korzyść > Warstwa Marży.** Ostatni poziom wyraźnie koduje strategiczny priorytet (Premium, Core, Budżet lub Luksus, Średnia Klasa, Wartość). To pozwala tworzyć grupy asset na podstawie wartości poziomu czwartego i używać poziomu piątego do kontroli alokacji budżetu przez inteligentne cele licytacji.
+
+Wypełniliśmy również `custom_label_0` kubełkami marży i `custom_label_1` ryzykiem inwentarza (Evergreen, Seasonal, Clearance). Połączone z nową hierarchią, grupy asset Performance Max mogły się samo-segmentować bez ręcznego wykluczania grup listingów.
+
+<Callout type="tip">
+Jeśli Twoja baza ma 1000+ SKU i ręczna kategoryzacja jest niepraktyczna, narzędzia takie jak MagicFeed Pro mogą auto-generować hierarchiczne wartości `product_type` używając GPT-4 i danych tytułu/opisu Twojego katalogu. Przebudowaliśmy bazę meblową 2,847 SKU w 90 minut.
+</Callout>
+
+Ważna uwaga: `product_type` to tekst wolny, podczas gdy `google_product_category` musi pasować do [taksonomii Google](https://support.google.com/merchants/answer/6324436). Używaj `product_type` do segmentacji strategicznej i `google_product_category` do zgodności. PMax czyta oba, ale `product_type` ma większą wagę do [kierowania grup asset](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith) ponieważ jest unikalny dla Twojego katalogu.
+
+## Lista Kontrolna Audytu: 8 Atrybutów Bazy Kontrolujących Zachowanie PMax
+
+Gdy podejrzewasz, że PMax kanibalizuje marżę, przeanalizuj te osiem pól bazy zanim zmienisz stawki lub ustawienia grupy asset. Używamy tej listy kontrolnej przy każdym onboardingu klienta:
+
+| Atrybut | Pytanie Audytu | Czerwona Flaga | Priorytet Naprawy |
+|-------------------------|-------------------------------------------------------------------------------|-----------------------------------------------|--------------|
+| `product_type` | Czy hierarchia ma ≥3 poziomy? Czy najgłębszy poziom koduje marżę? | Jednopoziomnowy lub brakujący | Krytyczny |
+| `custom_label_0` | Czy segmentuje produkty wg warstwy marży (Wysoka/Średnia/Niska)? | Pusty lub wartości bez marży | Krytyczny |
+| `custom_label_1` | Czy flaguje sezonowość, ryzyko inwentarza, czy możliwość promocji? | Pusty lub duplikaty `custom_label_0` | Wysoki |
+| `item_group_id` | Czy wszystkie warianty tego samego produktu są zgrupowane pod jednym ID? | Brakujący lub unikalny per wariant | Wysoki |
+| `title` | Czy jest opisowy (marka + typ + kluczowe atrybuty) bez spamu słów kluczowych? | Ogólny lub 15+ słów | Średni |
+| `description` | Czy jest unikalny per SKU i ≥100 znaków? | Skopiowana szablonowość lub \<50 znaków | Średni |
+| `price` + `sale_price` | Czy oba są wypełnione? Czy `sale_price` ustawiony tylko przy rzeczywistej wyprzedaży? | Permanentne ceny „wyprzedażowe" lub brakująca logika | Średni |
+| `availability` | Czy jest real-time? (W magazynie / Brak / Przedsprzedaż) | Statyczne „w magazynie" dla wszystkich SKU | Niski |
+
+Baza mebli miała problemy krytyczne w wierszach 1-4, średnie problemy w wierszach 5-6. Baza odzieży sportowej miała problemy krytyczne w wierszach 1 i 3, plus unikalny problem: ich `item_group_id` używały prefiksów SKU, które zmieniały się sezonowo, więc legginsy z wiosny 2025 i legginsy z jesieni 2025 były traktowane jako niepowiązane produkty. PMax nie mógł przenosić uczenia między sezonami.
+
+Po naprawieniu tych ośmiu atrybutów, ponownie przesłaliśmy bazy do Merchant Center i uruchomiliśmy kampanie PMax ze przebudowanymi grupami asset. Marka kosmetyki vidziała najszybszy zwrot — odzyskanie marży osiągnęło próg rentowności w 11 dni — ponieważ ich katalog był najmniejszy (340 SKU) i najczystszy po naprawie.
+
+Aby uzyskać szczegółowe wskazówki na temat strategii etykiet niestandardowych, zobacz nasz przebieg dotyczący tego, jak marki DTC używają etykiet niestandardowych do kontroli wydatków na reklamy. Ten post zawiera szablony schematów etykiet dla produktów subskrypcyjnych, bundli i macierzy ryzyka marży.
+
+## Struktura Kampanii: Kiedy Separować PMax od Standard Shopping
+
+Jedno z najczęstszych pytań, które otrzymujemy: *Czy powinniśmy prowadzić PMax i Standard Shopping jednocześnie, czy skonsolidować się w PMax?* Odpowiedź zależy od dojrzałości bazy i wariancji marży.
+
+**Prowadź hybrydę (PMax + Standard Shopping) jeśli:**
+- Twój katalog ma wysoką wariancję marży (np. 10-50% marża brutto na SKU). Standard Shopping z ręcznym grupowaniem listingów pozwala chronić produkty hero.
+- Potrzebujesz szczegółowej kontroli nad ruchem znakowym vs. non-znakowym. PMax łączy Search, Shopping, Display, YouTube i Discover; Standard Shopping to tylko Shopping.
+- Twój [wynik audytu bazy](https://blog.magicfeedpro.com/posts/merchant-center-errors-12-common-issues-solutions) wynosi \<70/100 (nasz wewnętrzny benchmark: 8 atrybutów × 10 punktów każdy, odliczenia za pola brakujące/uszkodzone). Najpierw posprzątaj bazę, *następnie* skonsoliduj.
+
+**Skonsoliduj się w PMax jeśli:**
+- Twój katalog jest mniej więcej jednorodny pod względem marży (np. wszystkie SKU to 35-45% marża). PMax będzie optymalizować pod kątem przychodów bez ryzyka marży.
+- Posiadasz wysokiej jakości obrazy produktów, zasoby wideo i wystarczający budżet, aby osiągnąć fazę uczenia na grupach asset ($500+/dzień za grupę).
+- Twoja baza ma hierarchiczny `product_type`, wypełnione niestandardowe etykiety, i unikalne opisy. PMax potrzebuje tego do efektywnego samo-segmentowania.
+
+Opowiadamy się za podejściem fazowym. Zacznij hybrydowo, nawet jeśli Twoja baza jest czysta. Przydziel 60-70% budżetu do Standard Shopping i 30-40% do PMax. Monitoruj wkład marży po kanałach co tydzień. Jeśli PMax konsekwentnie dostarcza porównywalną lub lepszą efektywność marży po 30 dniach i czterech pełnych cyklach uczenia, przesunąć kolejne 20pp budżetu. Jeśli marża ulega pogorszeniu, wstrzymaj PMax i zdiagnozuj problemy bazy przed wznowieniem.
+
+Baza mebli prowadzi hybrydę przez 60 dni po naprawie bazy. Do dnia 45, wkład marży PMax pasował do Standard Shopping (39,2% vs. 39,8%), więc przesunęli się na 50/50. Do dnia 75, PMax wziął na siebie (41,1% vs. 38,4%), i przesunęli się na 70/30 na korzyść PMax. Kluczem: nie skonsolidowali się w ciemno. Walidowali zmiany bazy danymi.
+
+Jeden strukturalny błąd, który często widzimy: prowadzenie jednej kampanii PMax „wszystkich produktów". Jeśli katalog obejmuje wiele wertykali lub warstw marży, podziel na 2-4 grupy asset z nie-nakładającymi się filtrami `product_type`. Na przykład, marka odzieży sportowej prowadziła trzy grupy asset:
+
+1. **Wysoka Marża Core** (Legginsy, Staniki Sportowe, Spodnie Treningowe): `product_type` zawiera „Wysokiej Wydajności" lub „Core", `custom_label_0` = „Wysoka Marża"
+2. **Basics** (Koszulki, Topiki, Skarpety): `product_type` zawiera „Basics", `custom_label_0` = „Średnia Marża"
+3. **Wyprzedaż/Sezonowe** (Kolory z poprzedniego sezonu, wycofane style): `custom_label_1` = „Clearance"
+
+Każda grupa asset miała wyraźne cele ROAS (2,8×, 2,2×, 1,5×) i zestawy kreatywne podkreślające różne propozycje wartości (wydajność, wszechstronność, cena). To pozwoliło PMax optymalizować w granicach zabezpieczeń marży zamiast mieszania wysokiego i niskiego AOV w jedną pulę uczenia.
+
+## Rzeczywiste Liczby: Odzyskanie Marży Po Przebudowie Bazy
+
+Śledziliśmy wszystkie trzy marki przez 90 dni po naprawie bazy. Oto podniesienie wkładu marży co tydzień, indeksowane do tygodnia zero (pre-fix baseline = 100):
+
+| Tydzień | Meble | Odzież Sportowa | Kosmetyka | Średnie Podniesienie |
+|------|-----------|------------|----------|----------|
+| 0 | 100 | 100 | 100 | 100 |
+| 2 | 104 | 102 | 108 | 105 |
+| 4 | 112 | 109 | 118 | 113 |
+| 6 | 121 | 115 | 124 | 120 |
+| 8 | 128 | 119 | 127 | 125 |
+| 12 | 134 | 123 | 129 | 129 |
+
+Średni wkład marży poprawił się o 29% do tygodnia 12. Marka mebli — która miała najgorszą początkową jakość bazy — widziała największe bezwzględne odzyskanie: z $61k do $142k wkład netto co miesiąc na tym samym $88k wydatku PMax. To zmiana $81k co miesiąc, lub $972k rocznie, z samych napraw bazy.
+
+Śledziliśmy również wydajność bez PMax, aby kontrolować czynniki zewnętrzne (sezonowość, kalendarze promocji). Wkład Standard Shopping i paid social pozostały płaskie ±3pp, potwierdzając, że podniesienie było specyficzne dla PMax. Mechanizm: lepsze hierarchie `product_type` pozwoliły PMax alokować budżet do SKU o wyższych marżach, a [unikalne opisy + tytuły poprawiły wyniki istotności reklam](https://blog.magicfeedpro.com/posts/ai-rewrites-improve-google-shopping-ctr-40-percent), obniżając CPC o 11-17%.
+
+![Wkład marży indeksowany do baseline, trzy marki w ciągu 12 tygodni](/content-images/posts/performance-max-asset-groups-killing-feed-audit/2.webp)
+
+Jedna nieoczywista korzyść: poprawiła się LTV klienta. Gdy PMax promuje SKU o wysokiej marży, nabywasz klientów poprzez lepsze produkty. Klienci marki mebli pozyskani z PMax mieli o 18% wyższą 180-dniową LTV niż pre-fix klienci PMax, prawdopodobnie dlatego, że zestawy modułowe (wysoka marża) to rozważane zakupy, które ustawiają pokój, podczas gdy poduszki (niska marża) to impulsywne dodatki. Lepsza pierwsza mieszanka produktów zamówienia → silniejsze kohorty klientów.
+
+Dla marek skeptycznych wobec inwestycji w bazę, oferujemy bezpłatny audyt, który ocenia Twoją bazę na ośmiu atrybutach krytycznych i szacuje potencjał odzyskania marży. Początkowa ocena bazy mebli wynosiła 28/100; po naprawie 91/100. To 63-punktowe podniesienie odblokło $81k podniesienie marży co miesiąc.
+
+<ProductCTA variant="audit" title="Czy Twoja Baza Kosztuje Cię Sześć Liczb Marży?" />
+
+## FAQ
+
+<FAQ>
+<FAQItem q="Jak długo trwa, zanim PMax zareaguje na zmiany w bazie?" a="Google prze-indeksuje bazy Merchant Center co 24 godziny, ale cykle uczenia Performance Max trwają 7-14 dni. Oczekuj zmian kierunkowych w ciągu tygodnia i stabilną nową wydajność do dnia 21. Jeśli wprowadzisz drastyczne zmiany (np. reklasyfikacja 80% SKU), wstrzymaj PMax na 48 godzin po ponownym przesłaniu bazy, aby wymusić czystą re-naukę." />
+
+<FAQItem q="Czy mogę używać etykiet niestandardowych do całkowitego wykluczenia produktów o niskiej marży z PMax?" a="Tak. Ustaw custom_label_0 = 'Exclude PMax' dla SKU o niskiej marży, a następnie odfiltruj je w ustawieniach bazy produktów grupy asset. Jednak to zmniejsza rozmiar katalogu i może zaszkodzić uczeniu. Lepsze podejście: zatrzymaj je, ale użyj celów ROAS (przez inteligentne licytacje tROAS) do algorytmicznego ich depriorytetowania." />
+
+<FAQItem q="Czy product_type powinien pasować do moich kolekcji Shopify lub WooCommerce?" a="Nie. Kategorie witryny sklepowej są zaprojektowane do nawigacji człowieka. Product_type powinien być hierarchią świadomą marży, przyjazną algorytmom. Użyj oddzielnej logiki mapowania — albo ręczne przesłonięcia CSV, albo narzędzie zarządzania bazą, które generuje product_type niezależnie od kategorii platformy." />
+
+<FAQItem q="Co jeśli mój katalog jest zbyt mały dla wielu grup asset?" a="Jeśli masz \<200 SKU, prowadź jedną grupę asset, ale priorytetyzuj jakość bazy. Ze ograniczoną ilością inwentarza, PMax polega jeszcze bardziej na hierarchii product_type i niestandardowych etykietach do różnicowania. Nawet katalog 50 SKU powinien mieć 3+ level product_type i oparty na marży custom_label_0." />
+
+<FAQItem q="Czy potrzebuję unikalne opisy dla każdego wariantu SKU (kolor, rozmiar)?" a="Warianty dzielące item_group_id mogą dzielić bazowy opis, ale dołącz szczegóły specyficzne dla wariantu. Dla niebieskiej koszulki: „Organiczna bawełniana koszulka crew neck. Oddychająca, zmniejszona, bez metki. Ten kolor: Głębokie Niebieskie, pasuje do neutralnych spodni." Unikalny ostatni sens = wystarczająca różnicowanie dla PMax." />
+
+<FAQItem q="Jak się dowiedzieć, czy PMax kanibalizuje Standard Shopping vs. być inkrementalnym?" a="Uruchom test geo-holdout: wstrzymaj PMax w 20% geos (stanów lub obszarów metropolitalnych) przez 30 dni i porównaj całkowity przychód Shopping (PMax + Standard) w teście vs. kontroli. Jeśli przychód kontroli pozostaje płaski, podczas gdy przychód testowy spada, PMax jest inkrementalny. Jeśli przychód testowy wzrasta lub pozostaje płaski, PMax kanibalizuje. Większość marek widzi 60-80% inkrementalności, gdy baza jest czysta." />
+</FAQ>

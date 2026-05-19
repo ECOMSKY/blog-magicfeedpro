@@ -1,0 +1,221 @@
+---
+slug: "erros-merchant-center-12-problemas-comuns-solucoes"
+translationKey: "merchant-center-errors-12-common-issues-solutions"
+locale: "pt"
+title: "Erros do Merchant Center: 12 Problemas Comuns e Soluções"
+description: "Os 12 problemas mais comuns de desaprovação no Merchant Center — o que causa cada um, como diagnosticar e corrigir sem perder impressões."
+keywords:
+ - erros merchant center
+ - desaprovação de produto google
+ - diagnóstico merchant center
+ - erros google shopping
+ - correção de feed
+date: 2026-05-05
+updated: 2026-05-05
+author: "mfp-team"
+category: "merchant-center"
+tags:
+ - merchant-center
+ - troubleshooting
+ - disapprovals
+ - listicle
+featured: false
+comments: false
+cover: ""
+coverAlt: "Painel de diagnóstico do Google Merchant Center mostrando problemas de produtos"
+---
+
+Se você já ficou olhando para a página de Diagnósticos do Merchant Center se perguntando o que „desempenho limitado: incompatibilidade de preço" realmente significa, este artigo é para você.
+
+Esses 12 erros representam aproximadamente 90% das desaprovações que vemos em auditorias de clientes. Cada um tem um gatilho específico, um caminho de diagnóstico específico e uma solução de 30 minutos.
+
+## 1. GTIN ausente
+
+**O erro**: „Campo obrigatório ausente [gtin]" ou „Desempenho limitado devido ao GTIN ausente".
+
+**O que causa**: produtos de marca (revendedores) devem fornecer o GTIN (UPC/EAN/ISBN). Produtos de marca própria podem ser isentos definindo `identifier_exists` como `false`, mas a maioria dos catálogos esquece de fazer isso.
+
+**Diagnosticar**:
+
+```text
+Merchant Center → Produtos → Diagnósticos → Filtro: Problema = „GTIN ausente"
+```
+
+**Solucionar**:
+
+- Produtos de marca revendidos: obtenha o GTIN do seu fornecedor ou procure no site do fabricante. Adicione-o ao campo `barcode` da variante no Shopify ou equivalente na sua plataforma.
+- Marca própria / feito à mão: defina `identifier_exists: false` no seu feed. No Shopify, isso é um metafield (`google.identifier_exists: FALSE`).
+
+<Callout type="tip" title="Não deixe em branco">
+Deixar o GTIN em branco sem `identifier_exists: false` é o pior dos dois mundos — você recebe um aviso *e* perde o benefício de ranking de ter um. Defina a flag explicitamente.
+</Callout>
+
+## 2. Categoria de Produto Google incorreta
+
+**O erro**: „Categoria de produto não específica o suficiente" ou „Incompatibilidade de produto com categoria".
+
+**O que causa**: seu produto é mapeado para uma categoria muito ampla (ex. „Roupas e Acessórios" em vez de „Roupas e Acessórios > Roupas > Camisas e Blusas > Camisas Sociais").
+
+**Solucionar**: abra o produto, defina o caminho completo de 5 níveis da Categoria de Produto Google. A taxonomia é publicada em uma planilha Google que você pode consultar. A especificidade importa — caminhos de 5 níveis classificam 2–3× melhor que 2 níveis em média.
+
+## 3. Problemas de qualidade de imagem
+
+**O erro**: „Qualidade de imagem muito baixa" ou „Sobreposição promocional na imagem".
+
+**O que causa**:
+
+- Imagem \< 250×250px (requisito obrigatório)
+- Imagem com sobreposição de texto, logotipos, marcas d'água ou bordas
+- Imagem com manequins (em algumas categorias de roupas)
+- Imagem não em fundo limpo
+
+**Solucionar**: a imagem principal deve ser o produto centralizado em fundo limpo, ≥800px (ideal 1500×1500), sem sobreposição. Para lojas Shopify, use a imagem *principal* do produto na variante, não uma foto de estilo de vida.
+
+## 4. Incompatibilidade de preço entre feed e página de destino
+
+**O erro**: „Incompatibilidade de preço" ou „Preço da página de destino difere do feed".
+
+**O que causa**: o preço no seu feed não corresponde ao preço exibido na PDP. Causas comuns:
+
+- Preços de promoção aplicados no checkout, mas não no feed
+- Desvio de conversão de moeda em feeds multirregionais
+- Incompatibilidade de preço com ou sem imposto
+- Diferenças de IVA entre países
+
+**Solucionar**:
+
+- Corresponda `price` no feed ao preço exato com imposto que o cliente vê na PDP.
+- Se executar uma promoção, preencha `sale_price` e `sale_price_effective_date` — não apenas mude `price` temporariamente.
+
+## 5. Política de devoluções ausente ou incorreta
+
+**O erro**: „Política de devoluções ausente" ou „URL da política de devoluções não carrega".
+
+**O que causa**: desde 2024, o Google exige uma política de devoluções claramente acessível vinculada da sua conta do Merchant Center.
+
+**Solucionar**:
+
+- Merchant Center → Ferramentas → Devoluções → configure a política padrão (período em dias, envio de devolução, taxa de reposição).
+- Verifique se a URL no seu site leva a uma página com a política claramente visível — o rastreador do Google verifica isso.
+
+## 6. Classe de produto restrita
+
+**O erro**: „Política de produto restrito" — aplica-se a álcool, suplementos, cosméticos com ingredientes prescritos, armas, jogos de azar, etc.
+
+**O que causa**: seu produto está em uma categoria restrita que requer certificação adicional (ex. suplementos precisam de listas de ingredientes; cosméticos precisam de certos rótulos).
+
+**Solucionar**:
+
+- Identifique a categoria restrita específica a partir do motivo da desaprovação.
+- Para suplementos: forneça os atributos `nutrition_facts` e `ingredients`.
+- Para restrição por idade: forneça `age_group: adult` e certifique-se de que sua PDP tenha verificação de idade.
+- Para algumas categorias (álcool, armas em alguns países): solicite uma isenção através da ferramenta de política do Merchant Center.
+
+## 7. Problemas na página de destino
+
+**O erro**: „Página de destino não corresponde" ou „Erro na página de destino".
+
+**O que causa**:
+
+- A página de destino redireciona (302 chain) antes de resolver
+- A página de destino retorna 4xx ou 5xx
+- A página de destino é renderizada em branco (JS pesado, LCP lento)
+- O produto mostrado na PDP não corresponde ao feed (ex. cor errada)
+
+**Solucionar**:
+
+- Resolva qualquer cadeia de redirecionamento — a URL final deve ser a PDP canônica.
+- Para lojas com muito JavaScript, certifique-se de que o conteúdo do produto é renderizado no servidor ou pré-renderizado para rastreadores.
+- Verifique se `availability` no feed corresponde ao que a PDP diz.
+
+## 8. Incompatibilidade de envio
+
+**O erro**: „Envio não computável" ou „Custo de envio diferente do feed".
+
+**O que causa**:
+
+- Suas configurações de envio no Merchant Center não cobrem o país de destino.
+- O feed diz envio grátis, mas a PDP cobra envio.
+- Envio em nível de variante (ex. itens pesados) não declarado no feed.
+
+**Solucionar**:
+
+- Merchant Center → Ferramentas → Envio e devoluções → certifique-se de que todo país onde você vende está configurado.
+- Para produtos pesados, substitua o envio no nível do produto via atributo `shipping`.
+
+## 9. Disponibilidade obsoleta ou quebrada
+
+**O erro**: „Fora de estoque — deveria estar em estoque" ou vice-versa.
+
+**O que causa**: seu feed diz `in_stock`, mas a PDP mostra „esgotado", ou seu feed se atualiza muito lentamente quando o inventário muda.
+
+**Solucionar**:
+
+- Mude de fetch agendada para push (Content API ou push nativo do Google do Shopify).
+- Defina `availability_date` para produtos em pré-encomenda para que o Google continue mostrando-os.
+- Audite o atraso entre a atualização de inventário da sua loja e o reflexo no Merchant Center. Qualquer coisa > 1 hora custará impressões durante esgotamentos.
+
+## 10. Conteúdo proibido
+
+**O erro**: „Conteúdo proibido" — geralmente acionado em armas, drogas, falsificação, conteúdo adulto, químicos perigosos ou mercadorias com temática política.
+
+**O que causa**: qualquer produto que toque as políticas de conteúdo restrito do Google.
+
+**Solucionar**:
+
+- Se falso-positivo (ex. uma marca de roupas esportivas sinalizada para „armas" por causa de uma luva de kickboxing), apresente uma solicitação de revisão manual através de Merchant Center → Diagnósticos → Solicitar revisão.
+- Se seu produto genuinamente se enquadra em uma categoria proibida, você não pode anunciá-lo no Shopping. Mova-o para fora do Shopping e dependa de outros canais.
+
+## 11. Configuração de imposto ausente
+
+**O erro**: „Imposto não configurado para destino".
+
+**O que causa**: nos EUA (imposto estadual por estado), na UE (IVA por país) ou outras configurações multijurisdiccionais, suas configurações de imposto do Merchant Center não cobrem o estado/país de destino.
+
+**Solucionar**:
+
+- Merchant Center → Ferramentas → Imposto → configure por estado (EUA) ou por país (UE).
+- Para UE, certifique-se de usar preços com imposto incluído (o padrão para EU Shopping).
+
+## 12. Erros de estrutura de feed
+
+**O erro**: „Não é possível analisar feed" ou „Formato de feed inválido".
+
+**O que causa**:
+
+- Caracteres especiais não escapados (ampersandos, aspas dentro de campos CSV)
+- Delimitadores de coluna incorretos
+- Problemas de codificação (UTF-8 vs ISO-8859-1)
+- Campos multivalores não formatados com o separador correto (`/` para tamanhos, etc.)
+
+**Solucionar**:
+
+- Para feeds CSV/TSV: valide via ferramenta „Testar feed" do Merchant Center antes de fazer upload.
+- Para feeds XML: valide a estrutura XML (feche todas as tags) e escape caracteres especiais.
+- Para Shopify/BigCommerce/canais nativos: isso raramente acontece; se acontecer, entre em contato com o suporte do aplicativo do canal.
+
+## Como fazer auditoria semanal sem perder seu fim de semana
+
+Uma auditoria do Merchant Center de 15 minutos semanalmente detecta 95% dos problemas antes de sangrar orçamento:
+
+1. **Diagnósticos → Problemas**: classifique por „Impressões afetadas" em ordem decrescente. Aborde qualquer coisa acima de 1K afetadas.
+2. **Produtos → Desaprovados**: verifique a lista. Agrupe por tipo de problema. Corrija o padrão mais comum primeiro (uma correção geralmente limpa 20+ SKUs).
+3. **Ferramentas → Revisões**: responda a quaisquer novas solicitações de revisão manual dentro de 48 horas.
+4. **Desempenho → Mais vendidos**: verifique se seus 20 SKUs principais ainda estão mostrando share de impressões saudável.
+
+## FAQ
+
+<FAQ>
+ <FAQItem q="Quanto tempo leva para o Merchant Center reaprovar um produto corrigido?" a="As verificações automáticas geralmente são concluídas dentro de 1–24 horas após o próximo fetch do feed. Solicitações de revisão manual podem levar 3–7 dias, mas geralmente são mais rápidas. Fazer push da correção via Content API o coloca na frente da fila." />
+ <FAQItem q="Corrigir desaprovações trará minhas impressões de volta ao baseline?" a="Geralmente dentro de 7–10 dias. Contas muito desaprovadas podem passar por uma re-classificação probatória — comece corrigindo os SKUs com maior impressão primeiro para recuperar mais rápido." />
+ <FAQItem q="Por que continuo vendo novas categorias de erro que nunca vi antes?" a="O Google adiciona e refina categorias de problemas de produtos várias vezes por ano. A expansão 2024–2026 se concentrou em conformidade de política de devoluções, qualidade de imagem e precisão de preço. Faça auditoria semanal para detectar novos cedo." />
+ <FAQItem q="Posso apelar uma desaprovação com a qual discordo?" a="Sim. Em Merchant Center → Diagnósticos → clique no problema → „Solicitar revisão". Forneça contexto. Falsos-positivos genuínos (raros, mas reais) geralmente são revertidos dentro de 3–5 dias úteis." />
+</FAQ>
+
+## Referência rápida
+
+Se você memorizar apenas uma coisa: **Diagnósticos → classifique por Impressões afetadas → corrija os 3 principais semanalmente**. Essa única disciplina manterá seu feed mais saudável que 90% das contas.
+
+<ProductCTA variant="audit" title="Obtenha uma auditoria completa do Merchant Center, grátis">
+Puxamos seu feed ativo, identificamos todos os aglomerados de desaprovação e fornecemos uma lista de correção priorizada com a remediação de 30 min por tipo de problema.
+</ProductCTA>

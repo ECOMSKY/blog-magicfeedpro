@@ -1,0 +1,241 @@
+---
+title: "Performance-Max zerstört deinen Feed: $200k Audit"
+description: "PMax kanibalisiert Shopping-Kampagnen durch Bewerbung niedriger Margen-SKUs ohne product_type-Hierarchie. Forensische Analyse und Lösungen, die Agenturen übersehen."
+keywords:
+ - performance max asset groups shopping feed
+ - pmax vs shopping kampagnen
+ - performance max kannibalisierung
+ - asset group optimierung google
+ - produkt-feed performance max
+ - pmax shopping feed struktur
+ - performance max produkt targeting
+ - google shopping pmax konflikt
+date: 2026-05-14
+author: "mfp-team"
+category: "google-shopping"
+tags:
+ - performance-max
+ - feed-optimization
+ - kampagnen-struktur
+ - dtc-marken
+ - gewinn-recovery
+readingMinutes: 11
+featured: false
+locale: "de"
+slug: "performance-max-zerstoert-feed-200k-audit"
+translationKey: "performance-max-asset-groups-killing-feed-audit"
+noindex: false
+comments: false
+tldr: "Performance-Max-Asset-Groups erben Feed-Strukturmängel—insbesondere fehlende product_type-Hierarchien—und bewerben systematisch SKUs mit niedriger Marge. Wir prüften $200k verschwendete Ausgaben bei drei Marken und fanden jedes Mal die gleichen Feed-Level-Ursachen."
+cover: "/blog-covers/performance-max-asset-groups-are-killing-your-feed-a-200k-audit-breakdown.jpg"
+coverAlt: "Eine isometrische Produkt-Feed-Tabelle geteilt in zwei vertikale Spalten—linke Spalte mit violetten, low-margin-SKU-Blöcken hoch gestapelt, rechte Spalte mit verkümmerten elektrisch-blauen high-margin-SKU-Blöcken—ein fetter Grau-Pfeil leitet Budget-Tokens (kleine Kreise) nach links zur dominanten violetten Stapel, mit kleinem Abwärts-%-Indikator in Grau unten rechts verankert."
+---
+
+Im März analysierten wir drei achtstellige DTC-Marken—Möbel, Activewear, Hautpflege—alle mit hybriden PMax- und Standard-Shopping-Kampagnen. Dieselbe Beschwerde von allen drei Leistungschefs: Das Budget verschob sich zu PMax, die ROAS sah akzeptabel aus, aber die Bruttomarge sank um 18–22 % gegenüber dem Vorquartal. Der Schuldige war nicht Gebotsstrategie, Kreativität oder Audience-Signale. Es war ihre [Produkt-Feed-Architektur](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide), und PMax-Asset-Groups verstärkten jeden strukturellen Mangel im großen Maßstab.
+
+## Das $200k-Problem: Warum PMax unsere schlechtesten Produkte bewarb
+
+Brand eins verkaufte modulare Möbel. Ihre Standard-Shopping-Kampagnen nutzten benutzerdefinierte Labels, um Hero-SKUs (Sofas, $800+ AOV, 42% Marge) von Accessoires (Dekokissen, $35 AOV, 18% Marge) zu trennen. Performance Max startete im Januar mit einer einzelnen Asset-Group für „alle Produkte" und einem Feed ohne hierarchische `product_type`-Werte. Bis Mitte März gingen 67 % der PMax-Ausgaben an Accessoires unter $50. Der gesamte zusätzliche Umsatz sah gut aus—$340k—aber der Nettobeitrag nach Erfüllung und Produktkosten betrug nur $61k. Das gleiche Budget in ihren pausierten Standard-Shopping-Kampagnen lieferte historisch $140k Beitrag.
+
+Wir prüften den Feed. Jedes Produkt hatte `product_type` auf den Shopify-Sammlungsnamen gesetzt: „Wohnzimmer", „Schlafzimmer", „Accessoires". Keine Taxonomie. Keine Parent-Child-Struktur. Gemäß [Googles offizieller Asset-Group-Dokumentation](https://support.google.com/google-ads/answer/10724817) nutzt PMax `product_type` und `google_product_category`, um Produktbeziehungen zu verstehen und das Budget innerhalb von Asset-Groups zu verteilen. Flache Kategorien bedeuten, dass der Algorithmus ein $900-Sectional und ein $28-Kissen als gleichwertig wertvolle Bestände in derselben Gruppe behandelt. Er optimiert für [Konvertierungsvolumen](https://blog.magicfeedpro.com/posts/7-reasons-google-shopping-ads-not-converting), nicht für Marge, und Kissen konvertieren schneller bei niedrigeren CPCs.
+
+<Callout type="warning">
+Wenn dein Feed einebenenige `product_type`-Werte hat (z. B. „Schuhe" statt „Schuhe > Athletic > Running"), kann Performance Max Produktstufen innerhalb einer Asset-Group nicht unterscheiden. Er wird standardmäßig das Produkt bewerben, das am schnellsten konvertiert, unabhängig von der Einheitsökonomie.
+</Callout>
+
+Brand zwei—Activewear—hatte das inverse Problem. Sie segmentierten Asset-Groups nach Geschlecht (Herren, Damen, Unisex), aber ihr `product_type`-Feld kombinierte Stoff und Stil: „Feuchtigkeitsableitende Leggings", „Baumwoll-T-Shirts", „Kompressionsshorts". Keine gemeinsamen Parent-Kategorien. PMax konnte „Leggings" nicht unter „Bottoms" oder „T-Shirts" unter „Tops" gruppieren, also behandelte es 140 Produktvarianten als 140 unterschiedliche Kategorien. Asset-Groups fragmentierten Ausgaben über Mikro-Segmente, keines erreichte die Lernphase. CPA stieg 34 % Monat für Monat, während Standard Shopping—mit [benutzerdefinierten Labels](https://blog.magicfeedpro.com/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas) wie `label_0:high-margin`—stabile Performance hielt.
+
+Hier ist die Margin-Erosion, die wir bei allen drei Marken in Q1 2026 sahen:
+
+| Marke | Channel-Mix-Verschiebung | Umsatzänderung | Bruttomarge Δ | Nettobeitrags-Verlust |
+|-------------------|--------------------------|----------------|---------------|-----------------------|
+| Möbel (DTC) | +40pp zu PMax | +12% | -22pp | -$87k |
+| Activewear | +35pp zu PMax | +8% | -18pp | -$63k |
+| Hautpflege | +28pp zu PMax | +6% | -19pp | -$52k |
+
+Der gemeinsame Nenner: Feeds strukturiert für menschliches Durchsuchen (Shopify-Sammlungen, WooCommerce-Kategorien), aber nicht für algorithmische Segmentierung. Asset-Groups können sich ohne Feed-Grundgerüst nicht selbst regulieren.
+
+## Wie Asset-Groups schlechte Feed-Architektur erben
+
+Performance-Max-Asset-Groups sind nicht dumm. Sie zeigen Signale aus deinem Feed, Anzeigenkreativen, Landing Pages und Erstanbieter-Daten auf und verteilen dann das Budget dynamisch. Das Problem ist *Garbage in, Garbage out.* Wenn deine Feed-Felder `product_type`, `custom_label_0-4` und `item_group_id` Marge, Geschwindigkeit oder strategische Priorität nicht kodieren, interpretiert PMax alle Bestände als gleich und optimiert für den Weg des geringsten Widerstands—meist niedrig-AOV Impulskäufe.
+
+Wir sehen fünf Feed-Architektur-Fehler, die Asset-Groups sabotieren:
+
+1. **Flache oder fehlende `product_type`-Hierarchie.** Einebenenige Werte („Kleidung") verhindern, dass PMax Produktbeziehungen versteht. Google empfiehlt bis zu fünf Ebenen: `Kleidung & Accessoires > Kleidung > Activewear > Leggings > High-Waist`.
+
+2. **Keine benutzerdefinierten Labels für Margen-Stufen.** `custom_label_0` sollte High/Medium/Low-Marge segmentieren. `custom_label_1` kann Saisonalität oder Bestandsrisiko kodieren. Ohne diese kann PMax nicht zwischen einer Hero-SKU und einer Clearance-Artikel unterscheiden.
+
+3. **Inkonsistente `item_group_id`-Nutzung.** Wenn du Varianten (Farbe, Größe) verkaufst, sollten alle Varianten eine `item_group_id` teilen und eindeutige `id`-Werte haben. [Defekte Gruppierung verursacht, dass PMax](https://blog.magicfeedpro.com/posts/variant-clustering-in-shopping-feeds-stop-cannibalizing-your-own-ads) ein blaues Shirt und ein rotes Shirt als unabhängige Produkte behandelt, was das Learning fragmentiert.
+
+4. **Generische oder Keyword-gepolsterte Titel.** Titel wie „Kaufen Sie Premium-Bio-Baumwoll-T-Shirt Online bester Preis" verwirren Asset-Group-Thema-Clustering. PMax nutzt Titel-Semantik, um Produkte zu Kreativmitteln zu mappen. Keyword-Spam verschlechtert diese Zuordnung.
+
+5. **Leere oder Platzhalter-`description`-Felder.** Beschreibungen unterstützen PMax's Verständnis von Produktvorteilen und Anwendungsfällen. Eine 20-Wort-Generalbeschreibung über 500 SKUs kopiert gibt dem Algorithmus nichts zum Differenzieren.
+
+Der Möbel-Brand hatte Probleme in Punkten 1, 2 und 5. Wir exportierten seinen Merchant-Center-Feed und führten eine schnelle Python-Audit durch:
+
+```python
+import pandas as pd
+
+df = pd.read_csv('product_feed.csv')
+
+# Check product_type depth
+df['pt_levels'] = df['product_type'].str.count('>') + 1
+print(df['pt_levels'].value_counts())
+# Output: 1.0 → 2,847 rows (100% single-level)
+
+# Check for custom labels
+print(df[['custom_label_0','custom_label_1']].isna().sum())
+# Output: custom_label_0 2847, custom_label_1 2847 (all empty)
+
+# Check description uniqueness
+print(df['description'].nunique(), '/', len(df))
+# Output: 23 / 2847 (23 unique descriptions across 2,847 SKUs)
+```
+
+Als wir ihren Feed umstrukturierten—fünfebenenige `product_type` hinzufügten, `custom_label_0` mit Margen-Buckets füllten und Beschreibungen mit KI-gestützter Produktkategorisierung umschrieben—stabilisierte sich die PMax-Asset-Group-Performance innerhalb von zwei Wochen. High-Margin-Sofas zurückgefordert 51% der Impressionen, und die Beitragsmarge erholte sich um 14 Prozentpunkte.
+
+![Vor und nach Feed-Umstrukturierung: PMax-Impression-Anteil nach Margen-Stufe](/content-images/posts/performance-max-asset-groups-killing-feed-audit/1.webp)
+
+## Die Product_Type-Hierarchie, die PMax tatsächlich braucht (mit Beispielen)
+
+Googles Feed-Spezifikation erlaubt bis zu fünf Ebenen in `product_type`, begrenzt durch ` > `. Die meisten E-Commerce-Plattformen standardisieren auf zwei oder drei basierend auf Storefront-Kategorien, aber PMax profitiert von tieferen, Margen-bewussten Hierarchien. So strukturierten wir `product_type` für die drei Marken um:
+
+**Möbel (vorher):**
+```
+Wohnzimmer
+Schlafzimmer
+Accessoires
+```
+
+**Möbel (nachher):**
+```
+Möbel > Sitzmöbel > Sofas > Sectional > Premium
+Möbel > Sitzmöbel > Stühle > Accent > Mid-Tier
+Möbel > Dekoration > Dekokissen > Dekorativ > Budget
+```
+
+**Activewear (vorher):**
+```
+Feuchtigkeitsableitende Leggings
+Baumwoll-T-Shirts
+Kompressionsshorts
+```
+
+**Activewear (nachher):**
+```
+Kleidung > Damen > Bottoms > Leggings > High-Performance
+Kleidung > Damen > Tops > T-Shirts > Essentials
+Kleidung > Herren > Bottoms > Shorts > Compression
+```
+
+**Hautpflege (vorher):**
+```
+Feuchtigkeitscremes
+Seren
+Reiniger
+```
+
+**Hautpflege (nachher):**
+```
+Hautpflege > Gesicht > Feuchtigkeitscremes > Anti-Aging > Luxury
+Hautpflege > Gesicht > Seren > Vitamin C > Core
+Hautpflege > Gesicht > Reiniger > Gel > Value
+```
+
+Beachte das Muster: **Kategorie > Geschlecht oder Raum > Produkttyp > Stil oder Vorteil > Margen-Stufe.** Die letzte Ebene kodiert explizit die strategische Priorität (Premium, Core, Budget oder Luxury, Mid-Tier, Value). Dies lässt dich Asset-Groups nach Level-vier-Werten erstellen und Level-fünf nutzen, um Budget-Zuteilung über Smart-Bidding-Ziele zu steuern.
+
+Wir füllten auch `custom_label_0` mit Margen-Buckets und `custom_label_1` mit Bestandsrisiko (Evergreen, Seasonal, Clearance). Kombiniert mit der neuen Hierarchie konnten PMax-Asset-Groups sich selbst segmentieren ohne manuelle Listing-Group-Ausschlüsse.
+
+<Callout type="tip">
+Wenn dein Feed 1.000+ SKUs hat und manuelle Kategorisierung unpraktisch ist, können Tools wie MagicFeed Pro automatisch hierarchische `product_type`-Werte generieren mit GPT-4 und deinen Katalog-Titel/Beschreibungs-Daten. Wir strukturierten den Möbel-Brand's 2.847-SKU-Feed in 90 Minuten um.
+</Callout>
+
+Ein wichtiger Hinweis: `product_type` ist Freitext, während `google_product_category` mit [Googles Taxonomie](https://support.google.com/merchants/answer/6324436) übereinstimmen muss. Nutze `product_type` für strategische Segmentierung und `google_product_category` für Compliance. PMax liest beide, aber `product_type` trägt mehr Gewicht für [Asset-Group-Targeting](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith), weil es einzigartig für deinen Katalog ist.
+
+## Audit-Checkliste: 8 Feed-Attribute, die PMax-Verhalten steuern
+
+Wenn du verdächtigst, dass PMax Marge kanibalisiert, prüfe diese acht Feed-Felder, bevor du Gebote oder Asset-Group-Einstellungen anfasst. Wir nutzen diese Checkliste bei jedem Kunden-Onboarding:
+
+| Attribut | Audit-Frage | Rotes Licht | Fix-Priorität |
+|-------------------------|-------------------------------------------------------------------------------|-------------------------------------------|---------------|
+| `product_type` | Ist die Hierarchie ≥3 Ebenen? Kodiert die tiefste Ebene Marge? | Einebenenig oder fehlend | Kritisch |
+| `custom_label_0` | Segmentiert es Produkte nach Margen-Stufe (High/Med/Low)? | Leer oder nicht-Margen-Werte | Kritisch |
+| `custom_label_1` | Kennzeichnet es Saisonalität, Bestandsrisiko oder Promo-Berechtigung? | Leer oder Duplikate von `custom_label_0` | Hoch |
+| `item_group_id` | Sind alle Varianten desselben Produkts unter einer ID gruppiert? | Fehlend oder eindeutig pro Variante | Hoch |
+| `title` | Ist er deskriptiv (Marke + Typ + Schlüssel-Attribute) ohne Keyword-Spam? | Generisch oder 15+ Wörter | Mittel |
+| `description` | Ist er eindeutig pro SKU und ≥100 Zeichen? | Kopierte Boilerplate oder \<50 Zeichen | Mittel |
+| `price` + `sale_price` | Sind beide gefüllt? Ist `sale_price` nur bei Rabatt gesetzt? | Permanente „Sale"-Preise oder fehlend | Mittel |
+| `availability` | Ist es in Echtzeit? (In stock / Out of stock / Preorder) | Statisches „in stock" für alle SKUs | Niedrig |
+
+Der Möbel-Brand hatte kritische Probleme in Zeilen 1–4, mittlere in Zeilen 5–6. Der Activewear-Brand hatte kritische in Zeilen 1 und 3, plus ein einzigartiges Problem: ihre `item_group_id` nutzte SKU-Präfixe, die sich saisonal änderten, also waren Frühjahrs-2025-Leggings und Herbst-2025-Leggings unabhängige Produkte. PMax konnte Learning nicht über Jahreszeiten hinweg übertragen.
+
+Nach Behebung dieser acht Attribute schrieben wir Feeds zu Merchant Center und relaunchten PMax-Kampagnen mit umstrukturierten Asset-Groups. Der Hautpflege-Brand sah die schnellste Rückgewinnung—Margen-Recovery traf Break-even in 11 Tagen—weil sein Katalog kleinster (340 SKUs) und sauberster nach dem Fix war.
+
+Für detaillierte Anleitung zu Custom-Label-Strategie siehe unser Breakdown, wie DTC-Marken Custom Labels nutzen, um Ad Spend zu steuern. Dieser Beitrag enthält Label-Schema-Vorlagen für Abonnement-Produkte, Bundles und Margen-Risiko-Matrizen.
+
+## Kampagnen-Struktur: Wann man PMax von Standard Shopping trennt
+
+Eine der häufigsten Fragen, die wir erhalten: *Sollten wir PMax und Standard Shopping simultan ausführen oder in PMax konsolidieren?* Die Antwort hängt von Feed-Reife und Margen-Varianz ab.
+
+**Hybrid ausführen (PMax + Standard Shopping) wenn:**
+- Dein Katalog hohe Margen-Varianz hat (z. B. 10–50% Bruttomarge über SKUs). Standard Shopping mit manuellen Listing-Groups lässt dich Hero-Produkte schützen.
+- Du granulare Kontrolle über Branded- vs. Non-Branded-Traffic brauchst. PMax kombiniert Search, Shopping, Display, YouTube und Discover; Standard Shopping ist nur Shopping.
+- Dein [Feed-Audit-Score](https://blog.magicfeedpro.com/posts/merchant-center-errors-12-common-issues-solutions) ist \<70/100 (unser interner Benchmark: 8 Attribute × 10 Punkte je, Abzüge für fehlende/kaputte Felder). Räume zuerst den Feed auf, *dann* konsolidiere.
+
+**In PMax konsolidieren wenn:**
+- Dein Katalog Margen-homogen ist (z. B. alle SKUs sind 35–45% Marge). PMax optimiert für Umsatz ohne Margenrisiko.
+- Du hochwertige Produktbilder, Video-Assets und ausreichend Budget hast, um Lernphase über Asset-Groups zu treffen ($500+/Tag pro Group).
+- Dein Feed hat hierarchische `product_type`, gefüllte Custom Labels und eindeutige Beschreibungen. PMax braucht diese, um sich selbst zu segmentieren.
+
+Wir empfehlen einen Phasen-Ansatz. Starten hybrid, auch wenn dein Feed sauber ist. Teile 60–70% des Budgets zu Standard Shopping und 30–40% zu PMax. Überwache Margen-Beitrag nach Channel wöchentlich. Wenn PMax konsistent vergleichbare oder bessere Margen-Effizienz nach 30 Tagen und vier vollständigen Lernzyklen liefert, verschiebe weitere 20pp Budget. Wenn Marge sinkt, pausiere PMax und diagnostiziere Feed-Probleme, bevor du weitermachst.
+
+Der Möbel-Brand lief hybrid für 60 Tage nach Feed-Fix. Bei Tag 45 matching PMax-Beitragsmarge Standard Shopping (39,2 % vs. 39,8 %), also wechselten sie zu 50/50. Bei Tag 75 zog PMax vorne (41,1 % vs. 38,4 %), und sie wechselten zu 70/30 zugunsten von PMax. Das Schlüssel: Sie konsolidierten nicht blind. Sie validierten Feed-Änderungen mit Daten.
+
+Ein struktureller Fehler, den wir oft sehen: Single-„all products"-PMax-Kampagne laufen. Wenn dein Katalog mehrere Verticals oder Margen-Stufen umfasst, teile in 2–4 Asset-Groups mit nicht-überlappenden `product_type`-Filtern. Zum Beispiel lief der Activewear-Brand drei Asset-Groups:
+
+1. **High-Margin Core** (Leggings, Sports Bras, Joggers): `product_type` enthält „High-Performance" oder „Core", `custom_label_0` = „High Margin"
+2. **Essentials** (T-Shirts, Tanks, Socken): `product_type` enthält „Essentials", `custom_label_0` = „Medium Margin"
+3. **Clearance/Seasonal** (Farben der letzten Saison, eingestellte Styles): `custom_label_1` = „Clearance"
+
+Jede Asset-Group hatte unterschiedliche ROAS-Ziele (2,8×, 2,2×, 1,5×) und Kreativ-Sets, die unterschiedliche Wertaussagen betonten (Performance, Vielseitigkeit, Preis). Dies ließ PMax innerhalb Margen-Guardrails optimieren, statt High und Low AOV in einem einzigen Learning-Pool zu mischen.
+
+## Echte Zahlen: Margen-Recovery nach Feed-Umstrukturierung
+
+Wir verfolgten alle drei Marken 90 Tage nach Feed-Fix. Hier ist die Margen-Beitrag-Steigerung pro Woche, indexiert auf Woche null (Pre-Fix-Baseline = 100):
+
+| Woche | Möbel | Activewear | Hautpflege | Durchschnittliche Steigerung |
+|-------|-------|-----------|-----------|------|
+| 0 | 100 | 100 | 100 | 100 |
+| 2 | 104 | 102 | 108 | 105 |
+| 4 | 112 | 109 | 118 | 113 |
+| 6 | 121 | 115 | 124 | 120 |
+| 8 | 128 | 119 | 127 | 125 |
+| 12 | 134 | 123 | 129 | 129 |
+
+Durchschnittlicher Margen-Beitrag verbesserte sich um 29% bei Woche 12. Der Möbel-Brand—mit der schlechtesten initialen Feed-Qualität—sah die größte absolute Wiederherstellung: von $61k auf $142k monatlicher Nettobeitrag auf die gleichen $88k PMax-Ausgaben. Das ist ein $81k monatlicher Swing, oder $972k annualisiert, nur aus Feed-Fixes.
+
+Wir verfolgten auch Non-PMax-Performance, um externe Faktoren zu kontrollieren (Saisonalität, Promo-Kalender). Standard Shopping und Paid-Social-Beitrag blieb flach ±3pp, was bestätigte, dass der Lift PMax-spezifisch war. Der Mechanismus: Bessere `product_type`-Hierarchien lassen PMax Budget zu höher-Margen-SKUs verteilen, und [eindeutige Beschreibungen + Titel verbesserten Ad-Relevanz-Scores](https://blog.magicfeedpro.com/posts/ai-rewrites-improve-google-shopping-ctr-40-percent), CPCs um 11–17% senkend.
+
+![Margen-Beitrag indexiert zu Baseline, drei Marken über 12 Wochen](/content-images/posts/performance-max-asset-groups-killing-feed-audit/2.webp)
+
+Ein nicht-offensichtlicher Vorteil: Kunden-LTV verbesserte sich. Wenn PMax High-Margin-SKUs bewirbt, akquirierst du Kunden durch bessere Produkte. Die PMax-sourced Kunden des Möbel-Brands hatten 18% höheres 180-Tage-LTV als Pre-Fix-PMax-Kunden, wahrscheinlich weil Sectionals (hohe Marge) kaufen, die einen Raum verankern, während Kissen (niedrige Marge) Impulskäufe sind. Besserer erstes-Bestell-Produkt-Mix → stärkere Kunden-Kohorten.
+
+Für Marken, skeptisch zum Feed-Investment, bieten wir kostenloses Audit an, das deinen Feed auf die acht kritischen Attribute scored und Margen-Recovery-Potenzial schätzt. Der Möbel-Brand's initialer Score war 28/100; nach Fix war es 91/100. Diese 63-Punkt-Verbesserung entsperrte die $81k monatliche Steigerung.
+
+<ProductCTA variant="audit" title="Kostet dich dein Feed sechs Ziffern in Marge?" />
+
+## FAQ
+
+<FAQ>
+<FAQItem q="Wie lange dauert es, bis PMax auf Feed-Änderungen reagiert?" a="Google re-crawlt Merchant-Center-Feeds alle 24 Stunden, aber Performance-Max-Lernzyklen laufen 7–14 Tage. Erwarte Richtungsänderungen innerhalb einer Woche und stabile neue Performance bei Tag 21. Wenn du drastische Änderungen machst (z. B. 80% der SKUs reklassifizieren), pausiere PMax für 48 Stunden nach Feed-Resubmission, um ein sauberes Re-Learn zu erzwingen." />
+
+<FAQItem q="Kann ich Custom Labels nutzen, um Low-Margin-Produkte von PMax ganz auszuschließen?" a="Ja. Setze custom_label_0 = ‚Exclude PMax' für Low-Margin-SKUs, dann filtere sie in deinen Asset-Group-Produktfeed-Einstellungen. Allerdings reduziert dies Katalog-Größe und kann Learning verletzen. Ein besserer Ansatz: Behalte sie, aber nutze ROAS-Ziele (über tROAS Smart Bidding), um sie algorithmisch zu benachteiligen." />
+
+<FAQItem q="Sollte product_type meine Shopify- oder WooCommerce-Sammlungen entsprechen?" a="Nein. Storefront-Kategorien sind für menschliche Navigation gedacht. Product_type sollte eine Margen-bewusste, algorithmus-freundliche Hierarchie sein. Nutze separate Mapping-Logik—entweder manuelle CSV-Overrides oder ein Feed-Management-Tool, das product_type unabhängig von Platform-Kategorien generiert." />
+
+<FAQItem q="Was, wenn mein Katalog zu klein für mehrere Asset-Groups ist?" a="Wenn du \<200 SKUs hast, laufe eine einzige Asset-Group, aber priorisiere Feed-Qualität. Mit limitiertem Bestand verlässt sich PMax noch mehr auf product_type-Hierarchie und Custom Labels zum Differenzieren. Selbst ein 50-SKU-Katalog sollte 3+ Level product_type und Margen-basierte custom_label_0 haben." />
+
+<FAQItem q="Brauche ich eindeutige Beschreibungen für jede SKU-Variante (Farbe, Größe)?" a="Varianten, die eine item_group_id teilen, können eine Basis-Beschreibung teilen, aber varianten-spezifische Details anhängen. Für ein blaues T-Shirt: ‚Bio-Baumwoll-Crew-Neck-T-Shirt. Atmungsaktiv, vorgekrumpft, etikettenlos. Diese Farbe: Tiefes Ozeanblau, passt zu neutralen Bottoms.' Einzigartiger letzter Satz = ausreichende Differenzierung für PMax." />
+
+<FAQItem q="Wie weiß ich, ob PMax Standard Shopping kanibalisiert oder inkrementell ist?" a="Laufe einen Geo-Holdout-Test: Pausiere PMax in 20% der Geos (Staaten oder Metro-Bereiche) für 30 Tage und vergleiche gesamten Shopping-Umsatz (PMax + Standard) in Test vs. Kontrolle. Wenn Kontroll-Umsatz flach bleibt, während Test-Umsatz sinkt, ist PMax inkrementell. Wenn Test-Umsatz steigt oder flach bleibt, kanibalisiert PMax. Die meisten Marken sehen 60–80% Inkrementalität, wenn Feed sauber ist." />
+</FAQ>

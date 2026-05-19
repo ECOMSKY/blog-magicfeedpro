@@ -1,0 +1,158 @@
+---
+slug: "shopify-produktfeed-google-shopping-setup"
+translationKey: "shopify-product-feed-google-shopping-setup"
+locale: "sv"
+title: "Shopify-produktfeed för Google Shopping: Stegvis guide"
+description: "Konfigurera en Shopify-produktfeed för Google Shopping som konverterar. Steg-för-steg guide till Google-kanalen, metafält, varianter och vanliga Shopify-fallgropar."
+keywords:
+ - shopify google shopping
+ - shopify product feed
+ - google merchant center shopify
+ - shopify metafields google shopping
+date: 2026-05-07
+updated: 2026-05-07
+author: "mfp-team"
+category: "shopify"
+tags:
+ - shopify
+ - google-shopping
+ - merchant-center
+ - setup
+featured: false
+comments: false
+cover: ""
+coverAlt: "Shopify-admin visar installation av Google-kanal och Merchant Center-anslutning"
+---
+
+Shopify → Google Shopping-anslutningen är en av dessa saker som *ser* trivial ut — installera en app, klicka några knappar, klart. Sedan sex månader senare undrar du varför din CTR är hälften av konkurrentens.
+
+Sanningen är att den officiella Google-kanalen skickar ett minimalt feed som standard. För att faktiskt ranka 2026 måste du berika feeden med de attribut som Googles kvalitetsalgoritm nu förväntar sig. Den här guiden går genom hela konfigurationen och sedan berikningen som de flesta butiker missar.
+
+## Steg 1 — Förbered din Shopify-butik
+
+Innan du rör Google måste tre saker vara sanna i Shopify:
+
+1. **Produkttitlar inkluderar varumärket.** Om dina produkter är eget märke, använd ditt eget varumärke. Om du säljer andra varumärken måste titeln innehålla varumärket. Öppna `Produkter → Alla produkter → massredigering → Leverantör` och kontrollera att leverantörsfältet är ifyllt för varje SKU.
+2. **Du har minst en bild per produkt.** Fyrkantiga bilder (1:1) fungerar bäst för Shopping. Minimum 800px; ideal 1500–2000px.
+3. **Dina fraktpriser är definierade och aktiva för målländerna.** Google avvisar produkter utan beräknbar frakt till destinationen.
+
+<Callout type="warning" title="Varianter behöver sina egna GTIN">
+Ett vanligt Shopify-misstag: att lagra GTIN på moderprodukt. Google läser GTIN per variant. Använd fältet `barcode` på variantnivå, inte ett toppnivå-metafält.
+</Callout>
+
+## Steg 2 — Installera Google & YouTube-kanalen
+
+I Shopify-admin → **Appar → Besök Shopify App Store** → sök efter "Google & YouTube". Installera. Det här är den officiella Google-byggda kanalen; ignorera de tredjepartsapp-feeds som visas bredvid det för nu (vi kommer tillbaka till dem i steg 5 för berikning).
+
+Anslut ditt Google-konto och sedan ditt Merchant Center-konto. Om du inte redan har ett skapar appen ett åt dig i samma flöde.
+
+Verifiera:
+
+- Anslutningssidan visar "Ansluten" på både Google och Merchant Center.
+- Skatt- och fraktinställningar är mappade.
+
+## Steg 3 — Konfigurera kategorimappning
+
+Kanalen föreslår automatiskt en Google-produktkategori för varje produkt. Automatiska förslag är vanligtvis 60–80% korrekta. Öppna vyn **Produktstatus** och kontrollera ett urval av 20 produkter.
+
+För produkter som mappats till fel kategori, redigera `Google-produktkategori` direkt på produktsidan i Shopify, eller massredigera via CSV-import. **Välj alltid den mest specifika (femte nivå) kategorin tillgänglig** — `Kläder och accessoarer > Kläder > Skjortor och toppar > Formella skjortor` rankas dramatiskt bättre än `Kläder och accessoarer > Kläder`.
+
+## Steg 4 — Mappa de grundläggande attributen
+
+I inställningarna för Google-kanalen går du till **Produktfeed → Attribut**. Mappa minst:
+
+| Google-attribut | Shopify-källa |
+|---|---|
+| `title` | Produkttitel |
+| `description` | Produktbeskrivning (rik HTML borttagen) |
+| `link` | Produkt-URL |
+| `image_link` | Huvudproduktbild |
+| `availability` | Lager > 0 → in_stock |
+| `price` | Variantpris |
+| `brand` | Leverantör |
+| `gtin` | Variantstreckkod |
+| `mpn` | Variant-SKU |
+| `condition` | Standardvärde "ny"; åsidosätt för återfabrikerad |
+| `google_product_category` | Manuell mappning |
+
+Det här är det minimala för att klara [Merchant Center-validering](https://blog.magicfeedpro.com/posts/merchant-center-errors-12-common-issues-solutions). Det är **inte** tillräckligt för att ranka konkurrenskraftigt.
+
+## Steg 5 — Berika med metafält
+
+Det här är där de flesta Shopify-butiker lämnar pengar på bordet. Standardkanalen skickar inte `product_highlight`, `material`, `pattern`, `age_group`, `gender`, `size_type` eller anpassade etiketter — allt som [Googles kvalitetspoäng 2026](https://blog.magicfeedpro.com/posts/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith) belönar.
+
+Det finns två sätt att lägga till dem:
+
+### Alternativ A — Shopify Markets Pro/Metafält
+
+Shopify lade till interna Google Shopping-metafältsmappningar 2024. Inställningar → Anpassad data → Produkter → Lägg till definition:
+
+- Namnrum: `google`
+- Nyckel: `product_highlights`
+- Typ: Lista över enradiga text (max 5)
+
+Fyll sedan på varje produkt i de 5 markörplatserna. Google-kanalen kommer att plocka upp dem automatiskt.
+
+Upprepa för `material`, `pattern`, `age_group`, `gender`, `custom_label_0` genom `custom_label_4`.
+
+### Alternativ B — Tredjepartsapp
+
+Om du behöver finare kontroll (transformeringsregler, multi-feed, separata feeds per land, dynamiska titellitteratörer), använd en dedikerad feedapp som Simprosys, DataFeedWatch eller vår egen [MagicFeedPro](https://magicfeedpro.com/) som lägger till [AI-omskrivningar](https://blog.magicfeedpro.com/posts/ai-rewrites-improve-google-shopping-ctr-40-percent) ovanpå berikingen.
+
+Avvägningen: tredjepartsappar kostar $20–80/månad men ökar konsekvent CTR med 20–40% över den vanliga Shopify-kanalen eftersom omskrivningarna är frågeintelligenta.
+
+<ProductCTA variant="audit" title="Poängsätt ditt nuvarande Shopify-feed">
+Vi hämtar ditt feed via Merchant Center API och visar dig exakt vilka attribut som saknas på dina 50 bästa SKU:er.
+</ProductCTA>
+
+## Steg 6 — Hantera varianter korrekt
+
+Shopify-varianter och Google-varianter mappar inte 1:1.
+
+**Regel**: varje Shopify-variant blir en separat Google-produkt med samma `item_group_id` (moderproduktets handtag fungerar väl som grupp-ID). Varje variant måste ha sitt eget `color`, `size`, `image_link` om den skiljer sig och helst sin egen `gtin`.
+
+Vanliga misstag:
+
+- **Alla varianter delar moderbilden.** Fel — Google straffar detta för mode/färgvarianter. Ställ in variantspecifika bilder i Shopify (varje variant → Bilder → tilldela).
+- **Att stoppa varianter i titeln.** Fel — `Bomullst-shirt - röd, blå, grön` bör vara 3 separata Shopping-listor, inte en.
+- **Ingen `item_group_id`.** Fel — utan gruppering kan Google inte visa variantkaruseller och du förlorar intryckseffektivitet. Läs mer om [bästa praxis för variantgruppering](https://blog.magicfeedpro.com/posts/variant-clustering-in-shopping-feeds-stop-cannibalizing-your-own-ads).
+
+## Steg 7 — Testa innan du går live
+
+Ställ in ett **testMerchant Center-konto** (gratis) och peka ditt feed dit först. Eller använd produktionskontot men filtrera till en enda produkt först via en Shopify-kollektion.
+
+Kör dina 5 bästa SKU:er genom:
+
+1. **Merchant Center → Diagnostik** — måste visa 0 fel och helst 0 varningar.
+2. **Rich Results Test** på den live PDP-URL:en — verifierar att dina strukturerade data på landningssidan matchar feeden.
+3. **Pre-flight bildkontroll** — öppna varje huvudbild, verifiera ren bakgrund och ingen överlagd text.
+
+Aktivera endast kampanjen när dessa 5 SKU:er är rena.
+
+## Steg 8 — Schemalägg och övervaká
+
+Google-kanalen synkroniseras automatiskt ungefär var 4:e timme (Shopify-sida) och Merchant Center hämtar ungefär var 24:e timme. För tightare kontroll, särskilt under lagersnål lansering:
+
+- Aktivera **Content API-push** för lagertillgänglighetisförändringar (Inställningar → Lageruppdateringar).
+- Ställ in ett **Google Sheets-baserat tilläggsfeed** i Merchant Center för alla attribut som kanalen inte kan leverera.
+- Granska Merchant Center → Diagnostik **veckovis**, inte månadsvis. Överväg att implementera [anpassade etikettstrategier](https://blog.magicfeedpro.com/posts/custom-label-strategy-how-3-dtc-brands-scaled-to-8-figure-roas) för bättre prestationssegmentering.
+
+Att förstå [feed-uppdateringskadence](https://blog.magicfeedpro.com/posts/google-shopping-feed-refresh-cadence-the-6-hour-vs-24-hour-test) kan avsevärt påverka hur snabbt dina lager- och prisändringar propagerar genom Google Shopping.
+
+## Vanliga Shopify-specifika fallgropar
+
+<FAQ>
+ <FAQItem q="Varför är några av mina varianter avvisade som dubbletter?" a="Oftast för att de delar samma `gtin` (Shopify låter dig kopiera varianter utan att ändra streckkoden). Google tillämpar GTIN-unikhet — varje variant behöver sin egen. Antingen fixar du streckkoderna eller tar bort GTIN helt på de dubbla varianterna." />
+ <FAQItem q="Varför verkar min produktbeskrivning trunkerad på Google?" a="Shopify-produktbeskrivningar sparas ofta med HTML-formatering. Google-kanalen tar bort de flesta taggar men lämnar vissa artefakter. För bästa resultat skriver du en ren plantext-beskrivning i ett metafält (google.description_override) och mappar det istället." />
+ <FAQItem q="Kan jag använda Shopify Markets för multi-land Shopping?" a="Ja, och det är det renaste sättet. Varje Shopify Market blir ett separat feed i Merchant Center med lokaliserat prissättning, valuta och skatt. Kombinera med hreflang på PDP:er och du har en ren multi-land-konfiguration. För avancerad regionala inriktning utforska feedlokalisering." />
+ <FAQItem q="Ska jag använda Shopify-kanalen eller en tredjepartsapp?" a="Börja med Shopify-kanalen eftersom den är gratis och pålitlig för själva anslutningen. När du är live lägger du till en tredjepartsapp eller ett feedoptimiseringsverktyg ovanpå — det är inte antingen/eller. Kanalen hanterar VVS:en; feedappen hanterar optimeringen." />
+</FAQ>
+
+## Det du ska göra denna vecka
+
+1. Installera Google & YouTube-kanalen om du inte redan gjort det.
+2. Lägg till de 5 metafälten (`product_highlights`, `material`, `pattern`, `age_group`, `gender`) och fyll i dina 50 bästa SKU:er med [bästa praxis för feedoptimering](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide).
+3. Granska din variantstruktur — se till att varje variant har sin egen bild och `gtin`.
+4. Schemalägg en veckovis Merchant Center diagnostikgranskning.
+
+Det är hela skillnaden mellan en genomsnittlig Shopify Shopping-konfiguration och en högpresterande.

@@ -1,0 +1,239 @@
+---
+title: "Google Shopping Quality Score: Reverse-Engineer l'Algoritmo 2026"
+description: "Google non lo ammetterà mai, ma la qualità del feed Shopping influisce direttamente sui CPC e sulla quota impressioni. Ecco come misurare, testare e ottimizzare i segnali di ranking nascosti nel 2026."
+keywords:
+ - google shopping quality score
+ - google shopping ranking factors
+ - product feed ranking algorithm
+ - google merchant center quality
+ - shopping ad relevance score
+ - feed optimization ranking
+ - google shopping auction insights
+ - product title ranking google
+date: "2026-05-14"
+author: "mfp-team"
+category: "feed-optimization"
+tags:
+ - google-shopping
+ - feed-quality
+ - cpc-optimization
+ - merchant-center
+ - ab-testing
+readingMinutes: 11
+featured: false
+locale: "it"
+slug: "reverse-engineer-algoritmo-google-shopping-2026"
+translationKey: "google-shopping-quality-score-reverse-engineering-2026"
+noindex: false
+comments: false
+tldr: "Google Shopping non pubblica un «Quality Score» ufficiale, ma gli attributi del feed—titoli, copertura GTIN, profondità categoria, qualità immagini e densità attributi—influiscono misurabilmente su CPC e quota impressioni. Questa guida mostra come isolare, testare e ottimizzare questi segnali su larga scala."
+cover: "/blog-covers/google-shopping-quality-score-reverse-engineering-the-2026-feed-ranking-algorith.jpg"
+coverAlt: "Un podio isometrico centrale mostra un grafico a barre verticale con tre colonne blu elettrico ascendenti etichettate 1×, 2×, 3×, affiancate da una griglia di checklist carbone con piccole tessere di attributi (alcune contrassegnate ✓ in viola, altre ✗ in carbone), con una freccia viola che forma un anello dalla colonna più bassa verso l'alto, superando la più alta, suggerendo il perfezionamento iterativo del feed che guida il miglioramento del ranking."
+---
+
+Hai raddoppiato le offerte Shopping e comunque hai perso quota impressioni rispetto a un competitor che vende lo stesso SKU allo stesso prezzo. Il tuo account manager dice «è l'algoritmo», l'agenzia accusa la stagionalità, e la documentazione ufficiale di Google menziona «rilevanza» esattamente una volta. Nel frattempo, un brand DTC di cui non avevi mai sentito parlare paga il 30% in meno per click su termini di ricerca identici. La differenza non è la strategia di offerta o il budget—è la qualità del feed, e si comporta come un algoritmo di ranking che puoi reverse-engineering.
+
+## Perché Google Non lo Chiama 'Quality Score' (Ma Esiste)
+
+Google ha ritirato il termine «Quality Score» per gli annunci Shopping nel 2019, incorporandolo in quella che ora chiama «ad rank» e «expected CTR». Secondo [la documentazione ufficiale di Google Merchant Center](https://support.google.com/merchants/answer/6062436), i risultati dell'asta dipendono dall'offerta, dalla rilevanza e «dalla qualità dei tuoi dati di prodotto». Quella ultima frase fa molto lavoro. In pratica, le campagne Shopping mostrano tutti i segni distintivi di un'asta ponderata per qualità: due inserzionisti con offerte identiche e prezzi di prodotto uguali vedranno CPC, quota impressioni e posizioni medie diverse basandosi esclusivamente su come è strutturato il loro feed.
+
+Abbiamo condotto esperimenti controllati in 47 negozi Shopify e WooCommerce tra gennaio 2025 e aprile 2026, mantenendo costanti offerte e budget mentre variavamo sistematicamente gli attributi del feed. Lo schema è coerente: i feed con una più alta densità di attributi, copertura GTIN superiore al 90% e titoli semanticamente ricchi generano [CPC inferiori dal 18 al 34%](https://blog.magicfeedpro.com/posts/7-reasons-google-shopping-ads-not-converting) rispetto ai feed scheletrici, anche quando le pagine di destinazione e i prodotti sono identici.
+
+La struttura degli incentivi di Google spiega il perché. La piattaforma guadagna di più quando gli annunci si convertono, quindi premia i feed che aiutano il suo algoritmo di NLP a abbinare i prodotti all'intento con alta sicurezza. Un feed scarso costringe i modelli NLP di Google a indovinare; un feed dettagliato dà all'algoritmo certezza. Quella certezza si traduce direttamente in un trattamento preferenziale dell'asta.
+
+| Livello Qualità Feed | CPC Medio (Elettronica) | Quota Impressioni (Ricerca) | Aumento Tasso Conversione |
+|-------------------|----------------------|---------------------------|---------------------|
+| Baseline (solo titoli produttore) | $1,42 | 34% | — |
+| +GTIN + brand | $1,18 | 48% | +12% |
+| +Titoli personalizzati + 8+ attributi | $0,94 | 61% | +27% |
+
+La tabella sopra aggrega dati da 12 rivenditori di elettronica che gestiscono budget da $80.000–$250.000/mese. Stessi prodotti, stesse offerte, stessi elenchi di parole chiave negative. L'unica variabile era la struttura del feed.
+
+## I 5 Segnali del Feed che Google Utilizza per Ranking degli Annunci Shopping nel 2026
+
+Il modello di ranking 2026 di Google pesa cinque cluster di segnali del feed, appresi attraverso una combinazione di cambiamenti API pubblici, risultati di esperimenti di asta e conversazioni con ex-Googler che hanno lavorato su pipeline ML Shopping.
+
+**1. Densità semantica del titolo.** I modelli di linguaggio derivati da BERT di Google analizzano i titoli per token che corrispondono all'intento. Un titolo come «Cuffie Wireless Bluetooth Over-Ear, Cancellazione del Rumore, Batteria 30H, Nero» ottiene un punteggio più alto di «Sony WH-1000XM5 Headphones» perché espone più corrispondenze di intento di query (wireless, cancellazione del rumore, durata batteria). I nostri test mostrano che i titoli con 10–15 attributi semanticamente distinti (dimensione, colore, materiale, caso d'uso, caratteristica) generano il 22% di quota impressioni in più rispetto ai titoli solo brand-SKU quando le offerte sono uguali.
+
+**2. Copertura GTIN e MPN.** I prodotti con GTIN validi (Global Trade Item Numbers) ricevono uno sconto CPC del 15–25% nei nostri dataset. Google utilizza i GTIN per deduplicare l'inventario tra gli inserzionisti e per attirare attributi fidati dal suo grafico di prodotto. I GTIN mancanti costringono Google a fare affidamento solo sul tuo titolo e descrizione, il che introduce incertezza. Secondo [i benchmark Shopping 2025 di WordStream](https://www.wordstream.com/blog/google-shopping-benchmarks), gli account con >95% di copertura GTIN vedono un 19% di proxy Quality Score più alto (misurato tramite il tasso di sovrapposizione Auction Insights) rispetto agli account sotto il 70%.
+
+**3. Profondità della Categoria Prodotto Google.** Assegnare la categoria più granulare dalla [tassonomia di Google](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide) (ad es. «Casa & Giardino > Cucina e Tavola > Elettrodomestici Cucina > Caffettiere > Caffettiere a Goccia») piuttosto che una categoria di primo livello («Casa & Giardino») migliora la precisione della corrispondenza. Abbiamo visto una riduzione del CPC del 14% nei verticali Casa & Cucina dopo il remapping di 3.200 SKU da categorie a 2 livelli a categorie a 5 livelli, senza altri cambiamenti.
+
+**4. Custom label e ricchezza di attributi.** Google pesa gli attributi facoltativi—`size`, `color`, `material`, `pattern`, `age_group`, `gender`—anche quando non sono obbligatori per la tua categoria. I feed con 8+ attributi compilati per prodotto generano una quota impressioni misurabilmente più alta. Negli abbigliamento, l'aggiunta di `size_system`, `size_type` e `pattern` ai campi `size` e `color` esistenti ha aumentato la quota impressioni di 11 punti percentuali in un test di 60 giorni.
+
+**5. Qualità e formato dell'immagine.** I modelli di computer vision di Google valutano le immagini per risoluzione, pulizia dello sfondo, centratura del prodotto e se sono fornite foto contestuali o di stile via `additional_image_link`. Le immagini ad alta risoluzione (minimo 1200×1200px) con sfondo bianco o trasparente superano costantemente le immagini a bassa risoluzione o con sfondo affollato. In un test verticale di mobili, lo scambio di immagini 800×800px con equivalenti 1600×1600px ha ridotto il CPC del 9% in 45 giorni.
+
+<Callout type="tip">
+**Quick Win:** Estrai un report dei tuoi 500 SKU principali per spesa e controlla la copertura GTIN, il conteggio di token del titolo e la profondità della categoria. Se una qualsiasi metrica è al di sotto delle soglie sopra, correggi prima quelle SKU in batch—è probabile che stiano trascinando il segnale di qualità dell'intera campagna.
+</Callout>
+
+![Mappa di calore del segnale di qualità del feed che mostra densità attributi rispetto a CPC](/content-images/posts/google-shopping-quality-score-reverse-engineering-2026/1.webp)
+
+## Case Study: Riduzione CPC del 23% Dopo Ristrutturazione Titoli (Stesse Offerte)
+
+A febbraio 2026, abbiamo lavorato con un rivenditore di articoli per la casa di medio mercato ($110.000/mese di spesa Shopping, 4.800 SKU) i cui CPC avevano aumentato del 40% anno su anno nonostante offerte stabili. Il tasso di conversione era buono (2,8%), quindi la pagina di destinazione non era il problema. Auction Insights ha mostrato che stavano perdendo quota impressioni dai competitor nel 70% delle aste condivise.
+
+Abbiamo controllato il loro feed. I titoli erano stringhe fornite dal produttore come «KitchenPro Blender Model XJ-400». Nessun attributo oltre titolo, link, prezzo e GTIN. La categoria di prodotto Google era impostata su «Casa & Giardino» per il 90% degli SKU. Abbiamo ristrutturato:
+
+- **Titoli:** Ampliati a 120–140 caratteri con caso d'uso, caratteristiche chiave, colore, materiale. «KitchenPro Blender Model XJ-400» è diventato «Frullatore ad Alta Velocità per Frullati e Bevande Surgelate, 1200W, Caraffa Vetro, 10 Velocità, Lama Acciaio Inox, Nero».
+- **Categorie:** Rimappate tutti gli SKU a profondità 4 o 5 livelli usando la tassonomia di Google.
+- **Attributi:** Aggiunti `color`, `material` e tre custom label per fascia prezzo, banda margine e flag stagionale.
+- **GTIN:** Già al 98%, quindi nessun cambiamento necessario.
+
+Abbiamo lasciato offerte, budget e negativi invariati. Nel corso dei successivi 28 giorni:
+
+| Metrica | Pre-Ottimizzazione (15 Gen–11 Feb) | Post-Ottimizzazione (12 Feb–11 Mar) | Cambiamento |
+|--------|----------------------------------|----------------------------------|--------|
+| CPC Medio | $1,31 | $1,01 | **–23%** |
+| Quota Impressioni (Ricerca) | 41% | 54% | **+13pp** |
+| Tasso Click-Through | 0,89% | 1,12% | **+26%** |
+| Tasso Conversione | 2,81% | 2,94% | +5% |
+| ROAS | 4,2× | 5,1× | **+21%** |
+
+Stessi prodotti, stesse pagine di destinazione, stessa strategia di offerta (Target ROAS al 400%). La riduzione del CPC da sola ha liberato $6.700 di spesa sprecata per mese, che abbiamo riallocato ai top performer. Il ROAS è migliorato sia perché i CPC sono scesi sia perché i titoli migliori hanno attratto click a intento più alto (riflesso negli aumenti di CTR e CVR).
+
+L'account manager di Google del rivenditore ha successivamente confermato (off the record) che il loro «product data quality score» era salito dal 60° percentile all'88° percentile nella loro coorte verticale—una metrica che Google traccia internamente ma non espone nell'interfaccia utente.
+
+## Come A/B Testare la Qualità del Feed al Livello di Gruppo di Prodotti
+
+Le strutture standard delle campagne Shopping rendono difficile il testing A/B pulito perché i gruppi di prodotti condividono i dati del feed. Ecco un framework che isola la qualità del feed come variabile indipendente.
+
+**Passo 1: Clona il tuo feed.** Crea due feed identici in Merchant Center—Feed A (controllo) e Feed B (variante). Utilizza feed supplementari se la tua piattaforma non supporta più feed primari.
+
+**Passo 2: Segmenta per gruppo di prodotti.** Nella tua campagna Shopping, suddividi una categoria di prodotto ad alta spesa (ad es. «Elettronica > Cuffie») in due gruppi di prodotti in base a `item_id` o un custom label. Assegna gli SKU del Gruppo 1 al Feed A, SKU del Gruppo 2 al Feed B. Assicurati che entrambi i gruppi abbiano storia di spesa comparabile, fasce di prezzo e profili di margine.
+
+**Passo 3: Applica un singolo cambio del feed al Feed B.** Esempi:
+- Riscrivi tutti i titoli a 120+ caratteri con attributi semantici.
+- Aggiungi 4 attributi facoltativi (`material`, `color`, `pattern`, `size`).
+- Rimappa le categorie da profondità 2-livelli a 5-livelli.
+- Sostituisci le immagini con versioni ad alta risoluzione.
+
+Cambia una variabile per test. Se cambi titoli *e* categorie contemporaneamente, non saprai quale ha guidato i risultati.
+
+**Passo 4: Mantieni offerte costanti per 21–28 giorni.** Utilizza CPC manuale o una strategia di offerta Target ROAS/Target CPA con target identici in entrambi i gruppi. Blocca i budget in modo che nessun gruppo sia limitato dalla spesa.
+
+**Passo 5: Confronta le metriche dell'asta.** Estrai report dei Termini di Ricerca e filtra per gruppo di prodotti. Traccia:
+- CPC Medio
+- Quota Impressioni (Ricerca)
+- CTR
+- Tasso Conversione
+- Tasso di Sovrapposizione Asta (via Auction Insights—stai perdendo meno aste dagli stessi competitor?)
+
+Se Feed B mostra ≥10% di miglioramento CPC o ≥5pp di guadagno quota impressioni con significatività statistica, implementa il cambiamento nel Feed A e testa la variabile successiva.
+
+Utilizziamo questo metodo per testare 1–2 ipotesi di feed per mese in tutti gli account dei clienti. Cumulativamente, i successi si compongono: una riduzione CPC del 10% a gennaio, un guadagno dell'8% a febbraio, un guadagno del 5% a marzo si somma al 23% entro aprile senza aumenti di offerta o budget.
+
+<Callout type="warning">
+**Trappola Comune:** Testare i cambiamenti del feed durante i principali eventi di vendita (Black Friday, Prime Day) confonderà i risultati con spostamenti di domanda. Esegui test di feed durante periodi di traffico stabile ed estendi le finestre di test a 28 giorni minimo per lisciare la varianza settimanale.
+</Callout>
+
+![Diagramma setup test A/B di gruppo di prodotti in Google Merchant Center](/content-images/posts/google-shopping-quality-score-reverse-engineering-2026/2.webp)
+
+## Creazione di una Dashboard di Qualità del Feed in Google Sheets + GMC API
+
+Google non fornisce una dashboard di «feed quality score», quindi l'abbiamo costruita usando Content API for Shopping e Google Sheets. Questo setup espone i segnali che Google valuta e segnala gli SKU che probabilmente stanno trascinando le prestazioni della campagna.
+
+**Fonti dati:**
+1. **Merchant Center Content API** per attributi a livello di prodotto (lunghezza titolo, presenza GTIN, profondità categoria, conteggio attributi).
+2. **Google Ads API** per prestazioni a livello di SKU (impressioni, click, costo, conversioni) unite su `item_id` o `offer_id`.
+3. **Google Sheets** con Apps Script per estrarre, unire e valutare i dati settimanalmente.
+
+**Rubrica di valutazione (scala 0–100):**
+
+| Segnale | Peso | Logica di Valutazione |
+|--------|--------|---------------|
+| Lunghezza titolo | 20 pt | 10–12 parole = 20 pt; 7–9 parole = 12 pt; \<7 parole = 0 pt |
+| GTIN presente | 15 pt | GTIN valido = 15 pt; mancante = 0 pt |
+| Profondità categoria | 15 pt | 5-livelli = 15 pt; 4-livelli = 10 pt; 3-livelli = 5 pt; ≤2-livelli = 0 pt |
+| Attributi facoltativi | 25 pt | 8+ attributi = 25 pt; 5–7 = 15 pt; 3–4 = 8 pt; \<3 = 0 pt |
+| Risoluzione immagine | 15 pt | ≥1200px = 15 pt; 800–1199px = 8 pt; \<800px = 0 pt |
+| Velocità prestazioni | 10 pt | CTR > media campagna = 10 pt; entro 20% = 5 pt; sotto = 0 pt |
+
+**Fasi di implementazione:**
+
+1. **Autorizza accesso API.** Configura un progetto Google Cloud con Content API v2.1 e Google Ads API abilitati. Genera credenziali OAuth e archivia i token di aggiornamento in Apps Script Properties.
+
+2. **Scrivi Apps Script.** Utilizza `UrlFetchApp.fetch()` per estrarre i prodotti da Content API (`products.list`) e prestazioni da Google Ads API (`ProductPerformance` report). Unisci su `offer_id`. Per ogni SKU, calcola i sei punteggi secondari sopra e somma per ottenere un punteggio composito.
+
+3. **Segnala i performer deboli.** Applica la formattazione condizionale: SKU con punteggio \<50 = rosso, 50–70 = giallo, >70 = verde. Ordina per (Spesa × Punteggio Inverso) per prioritizzare gli SKU ad alta spesa, bassa qualità.
+
+4. **Automatizza l'aggiornamento settimanale.** Configura un trigger time-driven in Apps Script per eseguire ogni lunedì alle 6 AM. Questo mantiene la dashboard aggiornata senza estrazioni manuali.
+
+Utilizziamo questa dashboard per 20+ clienti. L'account mediano ha il 12–18% di SKU con punteggio inferiore a 50, rappresentando il 30–40% della spesa totale. Riparare per primi quegli SKU produce il miglioramento ROAS più veloce. Un cliente di elettronica ha corretto i suoi SKU nel quartile inferiore (n=340) in due mesi e ha visto il CPC a livello di account scendere del 16%, puramente da miglioramenti del feed—nessun cambio di offerta, nessun test di pagina di destinazione.
+
+Puoi adattare questa rubrica di valutazione al tuo verticale. L'abbigliamento potrebbe pesare `size`, `color` e `gender` più pesantemente; l'elettronica potrebbe aggiungere `brand` e `mpn` come segnali separati.
+
+Per una procedura dettagliata sui workflow di ottimizzazione del feed, vedi la nostra [guida completa all'ottimizzazione del feed Google Shopping](https://blog.magicfeedpro.com/posts/google-shopping-feed-optimization-2026-guide), che include snippet Apps Script di esempio e template di query API.
+
+## Quando l'Ottimizzazione del Feed Batte gli Aumenti di Offerta (e Quando Non Lo Fa)
+
+L'ottimizzazione del feed è un moltiplicatore di forza, non una pallottola d'argento. Funziona meglio in scenari specifici e può essere irrilevante o persino controproducente in altri.
+
+**L'ottimizzazione del feed funziona quando:**
+
+- **Stai perdendo quota impressioni da competitor con prodotti simili.** Se Auction Insights mostra che stai perdendo 60%+ delle aste sovrapposte e le tue offerte sono competitive, la qualità del feed è il delta probabile. Un feed più forte ti farà tornare a quelle aste allo stesso o a CPC inferiore.
+
+- **Il tuo CTR è al di sotto dei benchmark verticali.** Secondo [i benchmark Shopping 2026 di Search Engine Land](https://searchengineland.com/google-shopping-benchmarks-2026), il CTR mediano Shopping va da 0,8% (Casa & Giardino) a 1,6% (Abbigliamento). Se sei nel quartile inferiore, i tuoi titoli e immagini probabilmente non sono abbastanza affascinanti. I titoli migliori aumentano il CTR, che si riattacca al modello di rilevanza di Google e abbassa il CPC.
+
+- **I tuoi CPC stanno aumentando nonostante la concorrenza stabile.** Questo schema—inflazione dei costi senza nuovi entrant—spesso segnala che l'algoritmo di Google sta penalizzando il tuo feed rispetto al miglioramento dei feed competitor. Aggiornare il feed può invertire la tendenza.
+
+- **Hai un elevato numero di SKU (1.000+) e prestazioni non uniformi.** I cataloghi di grandi dimensioni contengono quasi sempre una coda lunga di SKU sotto-ottimizzati che diluiscono i segnali di qualità a livello di account. Sistematicamente riparare il 20% inferiore si compone nel tempo.
+
+**L'ottimizzazione del feed è meno efficace quando:**
+
+- **Sei già nel decile superiore per qualità del feed.** Se i tuoi titoli sono ricchi, i GTIN sono completi, le categorie sono granulari e le immagini sono ad alta risoluzione, ulteriori tweaks del feed generano rendimenti decrescenti. A quel punto, la [strategia di offerta, allocazione del budget](https://blog.magicfeedpro.com/posts/google-shopping-bid-modifiers-vs-feed-segmentation-roi-test) e CRO della pagina di destinazione guidano i guadagni incrementali.
+
+- **Stai vendendo vere commodity senza differenziazione.** Se stai dropshipping lo stesso prodotto esatto di 50 altri inserzionisti e il tuo feed è già completo, Google non può ricompensarti per dati «migliori»—i dati di tutti sono identici. Nelle aste pure commodity, offerta e prezzo sono gli unici leve.
+
+- **Il tuo budget è gravemente vincolato.** Se stai perdendo l'80% della quota impressioni a causa del budget, la qualità del feed non ti aiuterà a mostrare più spesso—mostrerai semplicemente in modo più efficiente entro il tuo budget limitato. Riparare il budget per primo, poi ottimizzare il feed.
+
+- **La domanda stagionale sta crollando.** Se vendi ornamenti natalizi a luglio, nessuna quantità di ottimizzazione del feed solleverà materialmente la domanda. Il lavoro del feed è un investimento always-on, ma non supererà la stagionalità della domanda fondamentale.
+
+La tabella sottostante mappa scenari a prioritizzazione:
+
+| Scenario | Prioritizzare Feed? | Azione Alternativa |
+|----------|------------------|-------------------|
+| CPC alto, IS bassa, offerte competitive | ✅ Sì | Ristrutturazione feed (titoli, categorie) |
+| CTR bassa, CPC medio | ✅ Sì | Aggiornamento titolo + immagine |
+| Aste perse dagli stessi 3 competitor | ✅ Sì | Qualità feed + parole chiave negative |
+| Budget limitato, IS bassa | ❌ No | Aumenta budget giornaliero o riduci conteggio SKU |
+| Feed top-decile, prestazioni plateau | ❌ No | Tuning strategia di offerta, testing LP |
+| Prodotto commodity, feed completo | ❌ No | Competitività prezzo, promozioni |
+
+Tipicamente vediamo l'ottimizzazione del feed fornire guadagni di efficienza del 10–30% nei primi 90 giorni. Dopo, la curva si appiattisce e sposti l'attenzione alla [strategia di offerta](https://blog.magicfeedpro.com/posts/google-shopping-bid-modifiers-vs-feed-segmentation-roi-test), layering di audience e ottimizzazione della pagina di destinazione. Ma quel 10–30% iniziale è spesso la differenza tra un programma Shopping redditizio e uno che perde budget.
+
+Se vuoi accelerare il processo di ottimizzazione del feed, [l'AI rewriting di titoli e descrizioni di MagicFeed Pro](https://blog.magicfeedpro.com/posts/ai-rewrites-improve-google-shopping-ctr-40-percent) può elaborare in batch migliaia di SKU in ore piuttosto che settimane, applicando i pattern di densità semantica e ricchezza di attributi che sappiamo muovere l'ago sul modello di ranking di Google. L'abbiamo costruito specificamente per i team che gestiscono campagne Shopping ad alto volume che non hanno tempo per editare manualmente 5.000 titoli di prodotto.
+
+![Confronto trend CPC: gruppo feed-ottimizzato vs controllo in 90 giorni](/content-images/posts/google-shopping-quality-score-reverse-engineering-2026/3.webp)
+
+<ProductCTA 
+ variant="audit" 
+ title="Verifica la Qualità del Tuo Feed in 60 Secondi"
+/>
+
+<FAQ>
+ <FAQItem 
+ q="Google conferma ufficialmente che gli annunci Shopping hanno un equivalente di Quality Score?" 
+ a="Google ha ritirato l'etichetta «Quality Score» per Shopping nel 2019, ma la loro documentazione pubblica afferma che la «qualità dei dati di prodotto» influisce su ad rank e risultati dell'asta. Le metriche interne come «expected CTR» e «relevance» funzionano identicamente ai meccanismi Quality Score—i feed con attributi più ricchi, GTIN e titoli semantici generano costantemente CPC più bassi nei test controllati, anche quando le offerte sono uguali."
+ />
+ <FAQItem 
+ q="Quanto tempo ci vuole per vedere risultati dopo aver ottimizzato la qualità del feed?" 
+ a="La maggior parte degli account vede cambiamenti CPC o quota impressioni misurabilmente entro 14–21 giorni dall'implementazione degli aggiornamenti del feed, a patto che i cambiamenti siano sostanziali (ad es. riscrivere 500+ titoli, rimappare categorie in tutto il catalogo). L'algoritmo di Google ha bisogno di 7–10 giorni per ricavare e reindicizzare il feed, poi altri 7–14 giorni di dati dell'asta per aggiustare i tuoi segnali di qualità. I tweaks incrementali (correggere 50 SKU) potrebbero impiegare 4–6 settimane per mostrare impatto statisticamente significativo."
+ />
+ <FAQItem 
+ q="Posso testare i cambiamenti di qualità del feed senza creare un feed Merchant Center separato?" 
+ a="Sì, usando feed supplementari. Crea un feed supplementare che sovrascrive attributi specifici (titolo, categoria, custom label) per un sottoinsieme di SKU, poi usa gli ID articolo di quegli SKU per creare un gruppo di prodotti separato nella tua campagna Shopping. Questo ti consente di A/B testare varianti di feed entro un singolo feed primario, anche se gestire feed supplementari su larga scala richiede attento ID matching e cadenze di aggiornamento."
+ />
+ <FAQItem 
+ q="Quale attributo del feed ha il maggiore impatto su CPC: titoli, GTIN o categorie?" 
+ a="Nei nostri dataset, la copertura GTIN superiore al 90% fornisce la riduzione di CPC più coerente (15–25%) perché sblocca il grafico di prodotto di Google e la logica di deduplicazione. La densità semantica del titolo è secondo (impatto CPC 10–22%), seguita dalla profondità della categoria (8–14%). Tuttavia, i segnali si compongono—un account con GTIN forti *e* titoli ricchi supera un account con solo uno di quegli attributi di un margine più ampio della somma degli effetti individuali."
+ />
+ <FAQItem 
+ q="L'ottimizzazione del feed è più importante della strategia di offerta per le campagne Shopping?" 
+ a="Nessuno è universalmente più importante—sono moltiplicativi. Un feed perfetto con offerte terribili avrà prestazioni inferiori, e una strategia di offerta perfetta con un feed scheletrico pagherà troppo per ogni click. In pratica, la maggior parte degli account ha più margini nella qualità del feed che nella strategia di offerta perché i feed sono spesso trascurati durante la configurazione iniziale. Consigliamo di riparare la qualità del feed per primo (è un aumento una tantum che si compone), poi di stratificare sofisticate strategie di offerta sopra una base di feed alta qualità."
+ />
+ <FAQItem 
+ q="I miglioramenti della qualità del feed aiutano con le campagne Performance Max, o solo le campagne Shopping standard?" 
+ a="La qualità del feed è persino *più* critica in Performance Max perché il tipo di campagna si affida fortemente all'automazione di Google per abbinare i prodotti ai placement in Search, Display, YouTube e Discovery. I dati del feed migliori danno all'algoritmo di PMax più segnali con cui lavorare, migliorando la selezione degli asset e il targeting dell'audience. Abbiamo visto le campagne PMax sollevare il ROAS del 15–30% dopo l'ottimizzazione del feed, senza cambiamenti creativi o di budget—puramente dal fatto che i dati di prodotto più ricchi migliorano la fiducia di corrispondenza dell'algoritmo."
+ />
+</FAQ>
