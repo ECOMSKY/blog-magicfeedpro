@@ -289,8 +289,28 @@ def main() -> None:
         print(f'  → {slug}')
         print(f'    title: {title[:80]}')
 
-        # 1. Ask Claude for the subject
-        subject = claude_subject(title, description, body)
+        # 1. Ask Claude for the subject. Catch ANY exception so a single
+        # transient (401, 429, network) doesn't kill the whole batch —
+        # the next article in the loop may have a different fate and the
+        # workflow stays green. Auth errors are exit-fast (no point
+        # retrying 200 articles against a dead key) with a one-liner the
+        # admin can act on without reading the stack.
+        try:
+            subject = claude_subject(title, description, body)
+        except Exception as exc:  # noqa: BLE001
+            kind = type(exc).__name__
+            msg = str(exc)
+            auth_failed = (
+                "authentication_error" in msg
+                or "invalid x-api-key" in msg
+                or kind == "AuthenticationError"
+            )
+            if auth_failed:
+                print('    ✗ Claude AUTH error — ANTHROPIC_API_KEY secret is invalid.')
+                print('      Rotate it: GitHub → Settings → Secrets and variables → Actions')
+                sys.exit(78)  # neutral-error: GH Actions marks the step skipped
+            print(f'    ✗ Claude subject failed ({kind}): {msg[:140]} — skipping')
+            continue
         print(f'    Claude subject: {subject[:120]}…')
 
         # 2. Compose full prompt + generate
