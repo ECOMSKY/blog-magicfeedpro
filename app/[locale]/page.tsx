@@ -1,3 +1,9 @@
+// Revalidate the homepage every 60s so newly-published articles
+// surface within a minute instead of staying invisible until the
+// next server restart. The individual post page is already
+// force-dynamic; this just fixes the index that was caching forever.
+export const revalidate = 60;
+
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import type { Locale } from '@/i18n/config';

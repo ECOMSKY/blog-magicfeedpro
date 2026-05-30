@@ -1,3 +1,6 @@
+// 60s ISR so a brand-new category shows up in the index within a minute.
+export const revalidate = 60;
+
 import Link from 'next/link';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';

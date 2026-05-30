@@ -1,3 +1,6 @@
+// 60s ISR — author archive picks up newly-attributed posts within a minute.
+export const revalidate = 60;
+
 import { notFound } from 'next/navigation';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';

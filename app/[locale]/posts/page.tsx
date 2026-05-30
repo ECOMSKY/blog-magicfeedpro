@@ -1,3 +1,7 @@
+// 60s ISR — same rationale as the homepage: new posts must surface in
+// the listing within a minute, not "after the next deploy".
+export const revalidate = 60;
+
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';
 import { locales } from '@/i18n/config';

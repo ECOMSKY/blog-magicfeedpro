@@ -1,3 +1,7 @@
+// 60s ISR so a new article published in this category appears within
+// a minute on the category listing.
+export const revalidate = 60;
+
 import { notFound } from 'next/navigation';
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 import type { Metadata } from 'next';

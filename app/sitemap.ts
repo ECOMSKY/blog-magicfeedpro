@@ -1,3 +1,9 @@
+// 60s ISR so /sitemap.xml includes a newly-published article within a
+// minute — important for Google + Bing crawlers that pull sitemap
+// often. The previous infinite-cache behavior meant Google would miss
+// new URLs until a server restart.
+export const revalidate = 60;
+
 import type { MetadataRoute } from 'next';
 import { locales, defaultLocale } from '@/i18n/config';
 import type { Locale } from '@/i18n/config';
